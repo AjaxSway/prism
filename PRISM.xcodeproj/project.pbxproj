@@ -11,6 +11,7 @@
 		3B55FF59508C7993714B23D0 /* PostingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3E2FF5950159D187A254BD /* PostingQueue.swift */; };
 		45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF581196F074CC78EF6E49A /* PRISMApp.swift */; };
 		67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78577F32B524B5DB42C33D4A /* PRISMRootView.swift */; };
+		9CBC5475587B5C4419167E50 /* BlotatoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */; };
 		C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */; };
 		DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */; };
 		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
@@ -24,6 +25,7 @@
 		5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMState.swift; sourceTree = "<group>"; };
 		61119682068B87BF0DFD440E /* BrainConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainConnector.swift; sourceTree = "<group>"; };
 		78577F32B524B5DB42C33D4A /* PRISMRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMRootView.swift; sourceTree = "<group>"; };
+		8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlotatoService.swift; sourceTree = "<group>"; };
 		BCF581196F074CC78EF6E49A /* PRISMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMApp.swift; sourceTree = "<group>"; };
 		D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMSettingsView.swift; sourceTree = "<group>"; };
 		E6596EFF9E2967BA5F98871F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -34,6 +36,7 @@
 		30914D318B7B1D383559AC66 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */,
 				61119682068B87BF0DFD440E /* BrainConnector.swift */,
 			);
 			path = Services;
@@ -154,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CBC5475587B5C4419167E50 /* BlotatoService.swift in Sources */,
 				F3B428250B1560910C037304 /* BrainConnector.swift in Sources */,
 				45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */,
 				C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */,

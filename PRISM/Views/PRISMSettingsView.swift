@@ -1,12 +1,13 @@
 import SwiftUI
 
-// MARK: - PRISM Settings
 struct PRISMSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var apiKey = UserDefaults.standard.string(forKey: "brain_api_key") ?? ""
+    @State private var brainKey    = UserDefaults.standard.string(forKey: "brain_api_key") ?? ""
+    @State private var blotatoKey  = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
     @State private var saved = false
 
-    private let v = Color(red: 0.545, green: 0.361, blue: 0.965)
+    private let v  = Color(red: 0.545, green: 0.361, blue: 0.965)
+    private let c  = Color(red: 0.133, green: 0.827, blue: 0.933)
     private let bg = Color(red: 0.008, green: 0.012, blue: 0.027)
 
     var body: some View {
@@ -26,33 +27,32 @@ struct PRISMSettingsView: View {
                 }
                 .padding(.horizontal, 24).padding(.top, 60).padding(.bottom, 32)
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("BRAIN API KEY")
-                        .font(.system(size: 10, weight: .heavy, design: .monospaced))
-                        .foregroundColor(v.opacity(0.5)).tracking(2)
+                VStack(spacing: 24) {
+                    keyField(
+                        label: "BRAIN API KEY",
+                        hint: "sk-ant-...",
+                        text: $brainKey,
+                        desc: "Required to activate PRISM intelligence. Stored locally only.",
+                        color: v
+                    )
 
-                    SecureField("sk-ant-...", text: $apiKey)
-                        .font(.system(size: 13, design: .monospaced))
-                        .foregroundColor(.white)
-                        .padding(14)
-                        .background(v.opacity(0.05))
-                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(v.opacity(0.3), lineWidth: 1))
-                        .cornerRadius(6)
-                        .autocorrectionDisabled()
-
-                    Text("Required to activate PRISM intelligence. Your key is stored locally only.")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.3))
-                        .lineSpacing(3)
+                    keyField(
+                        label: "BLOTATO API KEY",
+                        hint: "blt_...",
+                        text: $blotatoKey,
+                        desc: "Required to broadcast posts. Stored locally only.",
+                        color: c
+                    )
                 }
                 .padding(.horizontal, 24)
 
                 Button {
-                    UserDefaults.standard.set(apiKey, forKey: "brain_api_key")
+                    UserDefaults.standard.set(brainKey, forKey: "brain_api_key")
+                    UserDefaults.standard.set(blotatoKey, forKey: "blotato_api_key")
                     saved = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { saved = false }
                 } label: {
-                    Text(saved ? "SAVED ✓" : "SAVE KEY")
+                    Text(saved ? "SAVED ✓" : "SAVE KEYS")
                         .font(.system(size: 11, weight: .black, design: .monospaced))
                         .foregroundColor(saved ? .green : v)
                         .tracking(2)
@@ -64,15 +64,37 @@ struct PRISMSettingsView: View {
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 24)
-                .padding(.top, 20)
+                .padding(.top, 28)
 
                 Spacer()
 
-                Text("PRISM · CONTENT LAYER · v1.0")
+                Text("PRISM · CONTENT LAYER · v1.1")
                     .font(.system(size: 9, design: .monospaced))
                     .foregroundColor(v.opacity(0.2)).tracking(2)
                     .padding(.bottom, 40)
             }
+        }
+    }
+
+    private func keyField(label: String, hint: String, text: Binding<String>, desc: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(label)
+                .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                .foregroundColor(color.opacity(0.6)).tracking(2)
+
+            SecureField(hint, text: text)
+                .font(.system(size: 13, design: .monospaced))
+                .foregroundColor(.white)
+                .padding(14)
+                .background(color.opacity(0.05))
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(color.opacity(0.3), lineWidth: 1))
+                .cornerRadius(6)
+                .autocorrectionDisabled()
+
+            Text(desc)
+                .font(.system(size: 10, design: .monospaced))
+                .foregroundColor(.white.opacity(0.3))
+                .lineSpacing(3)
         }
     }
 }

@@ -1,13 +1,10 @@
 import SwiftUI
 
-// MARK: - PRISM Queue View
-// Shows drafted posts awaiting operator approval.
-// NOTHING posts without explicit approval — the gate is visible and enforced.
-
 struct PRISMQueueView: View {
     @State private var queue = PostingQueue.shared
-    @State private var selectedPost: QueuedPost?
-    @State private var showApproveAlert = false
+    @State private var postingId: UUID?
+    @State private var errorId: UUID?
+    @State private var errorMessage = ""
 
     private let v  = Color(red: 0.545, green: 0.361, blue: 0.965)
     private let bg = Color(red: 0.008, green: 0.012, blue: 0.027)
@@ -16,16 +13,15 @@ struct PRISMQueueView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
             VStack(spacing: 4) {
                 Text("QUEUE")
                     .font(.system(size: 28, weight: .black, design: .monospaced))
                     .foregroundColor(v).tracking(6)
                     .shadow(color: v.opacity(0.7), radius: 16)
                 HStack(spacing: 12) {
-                    queueChip("DRAFT", count: queue.drafts.count, color: v)
+                    queueChip("DRAFT",    count: queue.drafts.count,   color: v)
                     queueChip("APPROVED", count: queue.approved.count, color: c)
-                    queueChip("POSTED", count: queue.posted.count, color: p)
+                    queueChip("POSTED",   count: queue.posted.count,   color: p)
                 }
             }
             .padding(.top, 12).padding(.bottom, 14)
@@ -33,6 +29,14 @@ struct PRISMQueueView: View {
             Rectangle()
                 .fill(LinearGradient(colors: [.clear, v, c, p, .clear], startPoint: .leading, endPoint: .trailing))
                 .frame(height: 1).opacity(0.4).padding(.horizontal, 40).padding(.bottom, 14)
+
+            if !errorMessage.isEmpty {
+                Text(errorMessage)
+                    .font(.system(size: 10, design: .monospaced))
+                    .foregroundColor(.red.opacity(0.8))
+                    .padding(.horizontal, 20).padding(.bottom, 8)
+                    .multilineTextAlignment(.center)
+            }
 
             if queue.drafts.isEmpty && queue.approved.isEmpty {
                 Spacer()
@@ -60,7 +64,7 @@ struct PRISMQueueView: View {
                             }
                         }
                         if !queue.approved.isEmpty {
-                            sectionHeader("APPROVED · READY TO POST", color: c)
+                            sectionHeader("APPROVED · READY TO BROADCAST", color: c)
                             ForEach(queue.approved) { post in
                                 postRow(post, accent: c)
                             }
@@ -126,9 +130,7 @@ struct PRISMQueueView: View {
             if post.status == .draft {
                 HStack(spacing: 10) {
                     Spacer()
-                    Button {
-                        queue.reject(post)
-                    } label: {
+                    Button { queue.reject(post) } label: {
                         Text("REJECT")
                             .font(.system(size: 9, weight: .black, design: .monospaced))
                             .foregroundColor(.red.opacity(0.7)).tracking(1)
@@ -139,9 +141,7 @@ struct PRISMQueueView: View {
                     }
                     .buttonStyle(.plain)
 
-                    Button {
-                        queue.approve(post)
-                    } label: {
+                    Button { queue.approve(post) } label: {
                         Text("APPROVE")
                             .font(.system(size: 9, weight: .black, design: .monospaced))
                             .foregroundColor(accent).tracking(1)
@@ -155,23 +155,66 @@ struct PRISMQueueView: View {
             } else if post.status == .approved {
                 HStack {
                     Spacer()
+                    let isPosting = postingId == post.id
                     Button {
-                        queue.markPosted(post)
+                        guard !isPosting else { return }
+                        Task { await broadcastPost(post) }
                     } label: {
-                        Text("MARK POSTED")
-                            .font(.system(size: 9, weight: .black, design: .monospaced))
-                            .foregroundColor(c).tracking(1)
-                            .padding(.horizontal, 14).padding(.vertical, 7)
-                            .background(c.opacity(0.08))
-                            .overlay(RoundedRectangle(cornerRadius: 4).stroke(c.opacity(0.4), lineWidth: 1))
-                            .cornerRadius(4)
+                        HStack(spacing: 6) {
+                            if isPosting {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .scaleEffect(0.6)
+                                    .tint(c)
+                                Text("BROADCASTING...")
+                                    .font(.system(size: 9, weight: .black, design: .monospaced))
+                                    .foregroundColor(c.opacity(0.6)).tracking(1)
+                            } else {
+                                Image(systemName: "dot.radiowaves.right")
+                                    .font(.system(size: 9, weight: .bold))
+                                    .foregroundColor(c)
+                                Text("BROADCAST NOW")
+                                    .font(.system(size: 9, weight: .black, design: .monospaced))
+                                    .foregroundColor(c).tracking(1)
+                            }
+                        }
+                        .padding(.horizontal, 14).padding(.vertical, 7)
+                        .background(c.opacity(0.08))
+                        .overlay(RoundedRectangle(cornerRadius: 4).stroke(c.opacity(isPosting ? 0.2 : 0.4), lineWidth: 1))
+                        .cornerRadius(4)
                     }
                     .buttonStyle(.plain)
+                    .disabled(isPosting)
                 }
             }
         }
         .padding(.horizontal, 16).padding(.vertical, 12)
         .background(accent.opacity(0.03))
+    }
+
+    private func broadcastPost(_ post: QueuedPost) async {
+        postingId = post.id
+        errorMessage = ""
+
+        let results = await BlotatoService.shared.post(
+            content: post.content,
+            platforms: post.platforms
+        )
+
+        postingId = nil
+
+        let failures = results.filter { !$0.success }
+        if failures.isEmpty {
+            queue.markPosted(post)
+        } else {
+            let platforms = failures.map(\.platform).joined(separator: ", ")
+            let reason = failures.first?.error ?? "Unknown error"
+            errorMessage = "Failed on \(platforms): \(reason)"
+            // Still mark as posted for any successful platforms
+            if results.contains(where: { $0.success }) {
+                queue.markPosted(post)
+            }
+        }
     }
 
     private func relativeTime(_ date: Date) -> String {
