@@ -1,0 +1,343 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		17FF432A13C72367D1D4C042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39C2BFD64F1472AB8E548E9E /* Assets.xcassets */; };
+		45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF581196F074CC78EF6E49A /* PRISMApp.swift */; };
+		67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78577F32B524B5DB42C33D4A /* PRISMRootView.swift */; };
+		DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */; };
+		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		39C2BFD64F1472AB8E548E9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PRISM.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMState.swift; sourceTree = "<group>"; };
+		61119682068B87BF0DFD440E /* BrainConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainConnector.swift; sourceTree = "<group>"; };
+		78577F32B524B5DB42C33D4A /* PRISMRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMRootView.swift; sourceTree = "<group>"; };
+		BCF581196F074CC78EF6E49A /* PRISMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMApp.swift; sourceTree = "<group>"; };
+		E6596EFF9E2967BA5F98871F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		30914D318B7B1D383559AC66 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				61119682068B87BF0DFD440E /* BrainConnector.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		4E56F2BFEC11A665830CE0B7 /* PRISM */ = {
+			isa = PBXGroup;
+			children = (
+				39C2BFD64F1472AB8E548E9E /* Assets.xcassets */,
+				E6596EFF9E2967BA5F98871F /* Info.plist */,
+				BCF581196F074CC78EF6E49A /* PRISMApp.swift */,
+				E1E2E4CF8D659815CED3FC4A /* Models */,
+				30914D318B7B1D383559AC66 /* Services */,
+				7254A6AA29F3D3D5ACAFDB35 /* Views */,
+			);
+			path = PRISM;
+			sourceTree = "<group>";
+		};
+		7254A6AA29F3D3D5ACAFDB35 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				78577F32B524B5DB42C33D4A /* PRISMRootView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9ACB8EA292F0BE5D323F4DC2 = {
+			isa = PBXGroup;
+			children = (
+				4E56F2BFEC11A665830CE0B7 /* PRISM */,
+				9DFE55D93D71E8D607CD0AF1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9DFE55D93D71E8D607CD0AF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E1E2E4CF8D659815CED3FC4A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5CACE39891AF97458D8C72B9 /* PRISM */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81BC70D49DA35C9EB78F5847 /* Build configuration list for PBXNativeTarget "PRISM" */;
+			buildPhases = (
+				785A90982744341794619D09 /* Sources */,
+				C0393216D459C799F6A7BF5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PRISM;
+			packageProductDependencies = (
+			);
+			productName = PRISM;
+			productReference = 4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9437BA67D8E1EE3458871BC8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = F24101CEB1B906D95F30D585 /* Build configuration list for PBXProject "PRISM" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 9ACB8EA292F0BE5D323F4DC2;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 9DFE55D93D71E8D607CD0AF1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5CACE39891AF97458D8C72B9 /* PRISM */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C0393216D459C799F6A7BF5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				17FF432A13C72367D1D4C042 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		785A90982744341794619D09 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3B428250B1560910C037304 /* BrainConnector.swift in Sources */,
+				45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */,
+				67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */,
+				DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		114E3D1446BCE1CF1A16DC79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		6D60A57EECB8FB3ECEB73986 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				INFOPLIST_FILE = PRISM/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cortexnode.prism;
+				PRODUCT_NAME = PRISM;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		84F530EB732C2EFD27C4C04A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		D232A308ADC96A62CC36D8E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				INFOPLIST_FILE = PRISM/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cortexnode.prism;
+				PRODUCT_NAME = PRISM;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		81BC70D49DA35C9EB78F5847 /* Build configuration list for PBXNativeTarget "PRISM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D232A308ADC96A62CC36D8E0 /* Debug */,
+				6D60A57EECB8FB3ECEB73986 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F24101CEB1B906D95F30D585 /* Build configuration list for PBXProject "PRISM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84F530EB732C2EFD27C4C04A /* Debug */,
+				114E3D1446BCE1CF1A16DC79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9437BA67D8E1EE3458871BC8 /* Project object */;
+}
