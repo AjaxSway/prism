@@ -8,20 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		17FF432A13C72367D1D4C042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39C2BFD64F1472AB8E548E9E /* Assets.xcassets */; };
+		3B55FF59508C7993714B23D0 /* PostingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3E2FF5950159D187A254BD /* PostingQueue.swift */; };
 		45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF581196F074CC78EF6E49A /* PRISMApp.swift */; };
 		67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78577F32B524B5DB42C33D4A /* PRISMRootView.swift */; };
+		C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */; };
 		DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */; };
 		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
+		FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		39C2BFD64F1472AB8E548E9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PRISM.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B3E2FF5950159D187A254BD /* PostingQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingQueue.swift; sourceTree = "<group>"; };
 		5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMState.swift; sourceTree = "<group>"; };
 		61119682068B87BF0DFD440E /* BrainConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainConnector.swift; sourceTree = "<group>"; };
 		78577F32B524B5DB42C33D4A /* PRISMRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMRootView.swift; sourceTree = "<group>"; };
 		BCF581196F074CC78EF6E49A /* PRISMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMApp.swift; sourceTree = "<group>"; };
+		D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMSettingsView.swift; sourceTree = "<group>"; };
 		E6596EFF9E2967BA5F98871F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMQueueView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -49,7 +55,9 @@
 		7254A6AA29F3D3D5ACAFDB35 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */,
 				78577F32B524B5DB42C33D4A /* PRISMRootView.swift */,
+				D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -73,6 +81,7 @@
 		E1E2E4CF8D659815CED3FC4A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5B3E2FF5950159D187A254BD /* PostingQueue.swift */,
 				5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */,
 			);
 			path = Models;
@@ -147,8 +156,11 @@
 			files = (
 				F3B428250B1560910C037304 /* BrainConnector.swift in Sources */,
 				45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */,
+				C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */,
 				67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */,
+				FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */,
 				DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */,
+				3B55FF59508C7993714B23D0 /* PostingQueue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

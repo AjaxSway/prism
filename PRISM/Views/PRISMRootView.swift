@@ -24,11 +24,13 @@ struct PRISMRootView: View {
 enum PTab: String, CaseIterable {
     case reveal    = "REVEAL"
     case broadcast = "BROADCAST"
+    case queue     = "QUEUE"
     case network   = "NETWORK"
     var icon: String {
         switch self {
         case .reveal:    return "sparkles"
         case .broadcast: return "dot.radiowaves.left.and.right"
+        case .queue:     return "tray.full.fill"
         case .network:   return "network"
         }
     }
@@ -49,6 +51,7 @@ private struct PBrand {
 struct PRISMCockpitView: View {
     @Binding var selectedTab: PTab
     @State private var state = PRISMState.shared
+    @State private var showSettings = false
 
     var body: some View {
         ZStack {
@@ -74,21 +77,26 @@ struct PRISMCockpitView: View {
                             .foregroundColor(PBrand.violet).tracking(2)
                     }
                     Spacer()
-                    Text("CONTENT LAYER · v1.0")
-                        .font(.system(size: 9, weight: .bold, design: .monospaced))
-                        .foregroundColor(PBrand.violetSoft).tracking(2)
+                    Button { showSettings = true } label: {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(PBrand.violet.opacity(0.5))
+                    }
+                    .buttonStyle(.plain)
                 }
                 .padding(.horizontal, 20).padding(.top, 60).padding(.bottom, 10)
 
                 switch selectedTab {
                 case .reveal:    PRISMRevealView(state: state)
                 case .broadcast: PRISMBroadcastView(state: state)
+                case .queue:     PRISMQueueView()
                 case .network:   PRISMNetworkView(state: state)
                 }
 
                 PRISMTabBar(selectedTab: $selectedTab)
             }
         }
+        .sheet(isPresented: $showSettings) { PRISMSettingsView() }
     }
 }
 
@@ -154,17 +162,29 @@ struct PRISMRevealView: View {
                     .font(.system(size: 13, design: .monospaced)))
                 .font(.system(size: 13, design: .monospaced)).foregroundColor(.white)
                 .textFieldStyle(.plain).focused($focused)
-                .autocorrectionDisabled().textInputAutocapitalization(.never).onSubmit { send() }
+                .autocorrectionDisabled().onSubmit { send() }
 
                 if streaming { ProgressView().tint(PBrand.violet).scaleEffect(0.75) }
                 else {
-                    Button(action: send) {
-                        Image(systemName: "sparkle")
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(input.isEmpty ? PBrand.violetLine : PBrand.violet)
-                            .shadow(color: input.isEmpty ? .clear : PBrand.violet.opacity(0.6), radius: 8)
+                    // Queue last response if one exists
+                    let hasResponse = state.messages.last?.role == .assistant
+                    if hasResponse && input.isEmpty {
+                        Button(action: queueLastResponse) {
+                            Image(systemName: "tray.and.arrow.down.fill")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(PBrand.cyan)
+                                .shadow(color: PBrand.cyan.opacity(0.6), radius: 6)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Button(action: send) {
+                            Image(systemName: "sparkle")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(input.isEmpty ? PBrand.violetLine : PBrand.violet)
+                                .shadow(color: input.isEmpty ? .clear : PBrand.violet.opacity(0.6), radius: 8)
+                        }
+                        .disabled(input.isEmpty).buttonStyle(.plain)
                     }
-                    .disabled(input.isEmpty).buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 16).padding(.vertical, 14)
@@ -186,8 +206,9 @@ struct PRISMRevealView: View {
 
     private func send() {
         let q = input.trimmingCharacters(in: .whitespacesAndNewlines); guard !q.isEmpty else { return }
-        input = ""; state.addMessage(role: .user, content: q)
-        guard state.hasAPIKey else { state.addMessage(role: .system, content: "Neural link offline. Set key."); return }
+        let prompt = q
+        input = ""; state.addMessage(role: .user, content: prompt)
+        guard state.hasAPIKey else { state.addMessage(role: .system, content: "Neural link offline. Set key in Settings."); return }
         streaming = true; streamText = ""
         Task {
             var full = ""
@@ -196,8 +217,20 @@ struct PRISMRevealView: View {
                     .map { (role: $0.role == .user ? "user" : "assistant", content: $0.content) }
                 for try await chunk in BrainConnector.shared.stream(messages: Array(history)) { full += chunk; streamText = full }
             } catch { full = "Error: \(error.localizedDescription)" }
-            state.addMessage(role: .assistant, content: full); streamText = ""; streaming = false
+            state.addMessage(role: .assistant, content: full)
+            state.lastPrompt = prompt
+            streamText = ""; streaming = false
         }
+    }
+
+    private func queueLastResponse() {
+        guard let last = state.messages.last(where: { $0.role == .assistant }) else { return }
+        PostingQueue.shared.addDraft(
+            content: last.content,
+            platforms: [.x, .instagram, .bluesky],
+            sourcePrompt: state.lastPrompt
+        )
+        state.addMessage(role: .system, content: "Added to queue. Approve in QUEUE tab before posting.")
     }
 }
 

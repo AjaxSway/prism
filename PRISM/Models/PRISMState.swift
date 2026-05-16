@@ -5,6 +5,7 @@ import Foundation
 final class PRISMState {
     static let shared = PRISMState()
     var messages: [BrainMessage] = []
+    var lastPrompt: String = ""
     var sessionStart = Date()
     var hasAPIKey: Bool {
         !(UserDefaults.standard.string(forKey: "brain_api_key") ?? "").isEmpty
