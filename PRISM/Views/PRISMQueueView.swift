@@ -190,6 +190,20 @@ struct PRISMQueueView: View {
         }
         .padding(.horizontal, 16).padding(.vertical, 12)
         .background(accent.opacity(0.03))
+        .contextMenu {
+            Button {
+                UIPasteboard.general.string = post.content
+            } label: {
+                Label("Copy Caption", systemImage: "doc.on.doc")
+            }
+            if post.status == .posted {
+                Button(role: .destructive) {
+                    queue.remove(post)
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
+        }
     }
 
     private func broadcastPost(_ post: QueuedPost) async {

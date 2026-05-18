@@ -50,6 +50,13 @@ final class PostingQueue {
         save()
     }
 
+    func remove(_ post: QueuedPost) {
+        drafts.removeAll   { $0.id == post.id }
+        approved.removeAll { $0.id == post.id }
+        posted.removeAll   { $0.id == post.id }
+        save()
+    }
+
     var pendingCount: Int { drafts.count }
 
     private func save() {
@@ -103,6 +110,8 @@ enum Platform: String, Codable, CaseIterable {
     case linkedin = "LI"
     case bluesky = "BSKY"
     case threads = "THREADS"
+    case facebook = "FB"
+    case youtube = "YT"
 
     var icon: String {
         switch self {
@@ -112,6 +121,8 @@ enum Platform: String, Codable, CaseIterable {
         case .linkedin:  return "person.crop.circle.fill"
         case .bluesky:   return "cloud.circle.fill"
         case .threads:   return "bubble.circle.fill"
+        case .facebook:  return "f.circle.fill"
+        case .youtube:   return "play.rectangle.fill"
         }
     }
 }

@@ -13,15 +13,22 @@ final class BlotatoService {
         UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
     }
 
-    // CORTEXNODE brand account IDs (from Blotato workspace)
+    // CORTEXNODE brand account IDs (live from Blotato workspace — verified 2026-05-17)
     private let accountIds: [String: Int] = [
         "twitter":   15515,  // @CortexNodeAI
         "instagram": 38870,  // @cortexnode.ai
         "tiktok":    41309,  // @cortexnode
-        "linkedin":  16810,  // George Bayze / CORTEXNODE
+        "linkedin":  16810,  // George Bayze / CORTEXNODE page
         "bluesky":   31454,  // cortexnode.bsky.social
         "threads":   5625,   // @cortexnode.ai
+        "facebook":  25358,  // George Bayze → CORTEXNODE.ai page
+        "youtube":   32333,  // George Bayze (CORTEXNODE)
     ]
+
+    // Facebook requires a pageId to post to the company page (not personal profile)
+    private let facebookPageId = "1030995880100786"  // CORTEXNODE.ai page
+    // LinkedIn company page
+    private let linkedinPageId = "116464217"         // CORTEXNODE
 
     struct PostResult {
         let platform: String
@@ -59,6 +66,8 @@ final class BlotatoService {
         case .linkedin:  return "linkedin"
         case .bluesky:   return "bluesky"
         case .threads:   return "threads"
+        case .facebook:  return "facebook"
+        case .youtube:   return "youtube"
         }
     }
 
@@ -87,6 +96,20 @@ final class BlotatoService {
             body["isBrandedContent"] = false
             body["isYourBrand"] = false
             body["isAiGenerated"] = false
+        }
+
+        if platform == "facebook" {
+            body["pageId"] = facebookPageId
+        }
+
+        if platform == "linkedin" {
+            body["pageId"] = linkedinPageId
+        }
+
+        if platform == "youtube" {
+            body["title"] = text.prefix(100).description
+            body["privacyStatus"] = "public"
+            body["shouldNotifySubscribers"] = true
         }
 
         request.httpBody = try JSONSerialization.data(withJSONObject: body)

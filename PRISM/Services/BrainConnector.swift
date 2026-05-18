@@ -73,7 +73,7 @@ final class BrainConnector {
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(apiKey, forHTTPHeaderField: "x-api-key")
-        req.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        req.setValue("2024-06-01", forHTTPHeaderField: "anthropic-version")
         let body: [String: Any] = [
             "model": "claude-sonnet-4-6",
             "max_tokens": 2048,
