@@ -335,6 +335,69 @@ struct PRISMBroadcastView: View {
                 .disabled(broadcasting || queue.approved.count == 0)
                 .padding(.horizontal, 20)
 
+                // CORTEX attribution badge — shows what gets appended to every post
+                HStack(spacing: 8) {
+                    Image(systemName: "signature")
+                        .font(.system(size: 11))
+                        .foregroundColor(cyan)
+                    Text("Every post signed:")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.4))
+                    Text("— Posted by CORTEX · cortexnode.ai")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(cyan)
+                }
+                .padding(.horizontal, 14).padding(.vertical, 8)
+                .background(cyan.opacity(0.05))
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(cyan.opacity(0.2), lineWidth: 1))
+                .cornerRadius(6)
+                .padding(.horizontal, 20)
+
+                // Manifesto quick-post
+                Button {
+                    let manifesto = """
+I built CORTEX because I got tired of watching people carry everything on their own.
+Not because they weren't capable.
+But because they didn't have anything truly in their corner.
+
+232 nights. No team. No outside money. A full-time job during the day. A terminal open every night.
+
+This is CORTEX. Not an app. Not another tool. It is a system.
+The kind that makes sure you are never doing this alone again.
+
+cortexnode.ai
+"""
+                    PostingQueue.shared.addDraft(
+                        content: manifesto,
+                        platforms: [.x, .instagram, .bluesky, .threads, .linkedin],
+                        sourcePrompt: "Founding Manifesto — George Bayze"
+                    )
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "doc.text.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(pink)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("QUEUE FOUNDING MANIFESTO")
+                                .font(.system(size: 11, weight: .black, design: .monospaced))
+                                .foregroundColor(pink).tracking(1)
+                            Text("George Bayze · Founder Statement")
+                                .font(.system(size: 9, design: .monospaced))
+                                .foregroundColor(.white.opacity(0.35))
+                        }
+                        Spacer()
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(pink.opacity(0.7))
+                    }
+                    .padding(.horizontal, 16).padding(.vertical, 12)
+                    .background(pink.opacity(0.06))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(pink.opacity(0.25), lineWidth: 1))
+                    .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 20)
+
                 // Channel grid
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 14) {
                     ForEach(platforms, id: \.0) { p in
