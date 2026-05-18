@@ -127,6 +127,12 @@ struct PRISMQueueView: View {
                 .lineLimit(3)
                 .lineSpacing(3)
 
+            // Attribution preview — shows exactly what will be posted
+            Text("— Posted by CORTEX · cortexnode.ai")
+                .font(.system(size: 9, design: .monospaced))
+                .foregroundColor(accent.opacity(0.45))
+                .lineLimit(1)
+
             if post.status == .draft {
                 HStack(spacing: 10) {
                     Spacer()

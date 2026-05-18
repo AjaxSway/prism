@@ -36,10 +36,16 @@ final class BlotatoService {
         let error: String?
     }
 
+    /// CORTEX attribution appended to every post — signals the AI layer, builds brand identity.
+    private let cortexAttribution = "\n\n— Posted by CORTEX · cortexnode.ai"
+
     func post(content: String, platforms: [Platform]) async -> [PostResult] {
         guard !apiKey.isEmpty else {
             return platforms.map { PostResult(platform: blotatoKey($0), success: false, error: "No Blotato API key") }
         }
+
+        // Append "Posted by CORTEX" so every post signals the intelligence layer
+        let signedContent = content + cortexAttribution
 
         var results: [PostResult] = []
         for platform in platforms {
@@ -49,7 +55,7 @@ final class BlotatoService {
                 continue
             }
             do {
-                try await createPost(accountId: accountId, platform: key, text: content)
+                try await createPost(accountId: accountId, platform: key, text: signedContent)
                 results.append(PostResult(platform: key, success: true, error: nil))
             } catch {
                 results.append(PostResult(platform: key, success: false, error: error.localizedDescription))
