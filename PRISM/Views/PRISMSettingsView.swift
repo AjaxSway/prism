@@ -33,9 +33,30 @@ struct PRISMSettingsView: View {
                         label: "BLOTATO API KEY",
                         hint: "blt_...",
                         text: $blotatoKey,
-                        desc: "Override default key. Leave blank to use system default.",
+                        desc: "Your Blotato workspace API key. Leave blank to use the default CORTEXNODE key.",
                         color: c
                     )
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("CORTEX BRAIN")
+                            .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                            .foregroundColor(v.opacity(0.6)).tracking(2)
+                        HStack(spacing: 8) {
+                            Circle().fill(v).frame(width: 6, height: 6)
+                                .shadow(color: v.opacity(0.9), radius: 3)
+                            Text("api.cortexnode.ai — HARDWIRED")
+                                .font(.system(size: 12, design: .monospaced))
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(v.opacity(0.05))
+                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(v.opacity(0.35), lineWidth: 1))
+                        .cornerRadius(6)
+                        Text("The intelligence backbone is built in. No key required.")
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundColor(.white.opacity(0.3))
+                    }
                 }
                 .padding(.horizontal, 24)
 
@@ -44,7 +65,7 @@ struct PRISMSettingsView: View {
                     saved = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { saved = false }
                 } label: {
-                    Text(saved ? "SAVED ✓" : "SAVE KEYS")
+                    Text(saved ? "SAVED ✓" : "SAVE SETTINGS")
                         .font(.system(size: 11, weight: .black, design: .monospaced))
                         .foregroundColor(saved ? .green : v)
                         .tracking(2)

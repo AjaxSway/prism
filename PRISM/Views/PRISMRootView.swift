@@ -74,7 +74,7 @@ struct PRISMCockpitView: View {
                 HStack {
                     HStack(spacing: 6) {
                         PRISMDot()
-                        Text("BROADCASTING · ALL CHANNELS")
+                        Text("PRISM · CONTENT LAYER · LIVE")
                             .font(.system(size: 9, weight: .bold, design: .monospaced))
                             .foregroundColor(PBrand.violet).tracking(2)
                     }
@@ -114,7 +114,7 @@ struct PRISMRevealView: View {
         VStack(spacing: 0) {
             VStack(spacing: 4) {
                 PRISMShimmerTitle()
-                Text("THE INTERFACE · REVEALS")
+                Text("AI CONTENT INTELLIGENCE · READY")
                     .font(.system(size: 9, weight: .bold, design: .monospaced))
                     .foregroundColor(PBrand.violet.opacity(0.45)).tracking(3)
             }
@@ -127,7 +127,7 @@ struct PRISMRevealView: View {
 
             // Channel indicators
             HStack(spacing: 12) {
-                ForEach(["X", "IG", "TIKTOK", "LI", "SKY"], id: \.self) { ch in
+                ForEach(["X", "IG", "TKTK", "LI", "BSKY", "THREADS"], id: \.self) { ch in
                     channelChip(ch)
                 }
             }
@@ -342,17 +342,25 @@ struct PRISMBroadcastView: View {
                     Image(systemName: "signature")
                         .font(.system(size: 11))
                         .foregroundColor(cyan)
-                    Text("Every post signed:")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.4))
-                    Text("— Posted by CORTEX · cortexnode.ai")
-                        .font(.system(size: 10, weight: .bold, design: .monospaced))
-                        .foregroundColor(cyan)
+                    Text("SIGNATURE APPENDED TO EVERY POST:")
+                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.35))
+                        .tracking(1)
+                    Spacer()
                 }
-                .padding(.horizontal, 14).padding(.vertical, 8)
-                .background(cyan.opacity(0.05))
-                .overlay(RoundedRectangle(cornerRadius: 6).stroke(cyan.opacity(0.2), lineWidth: 1))
-                .cornerRadius(6)
+                .padding(.horizontal, 16).padding(.top, 10).padding(.bottom, 2)
+                .padding(.horizontal, 20)
+
+                HStack {
+                    Text("— Posted by CORTEX · cortexnode.ai")
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundColor(cyan)
+                        .padding(.horizontal, 14).padding(.vertical, 8)
+                        .background(cyan.opacity(0.06))
+                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(cyan.opacity(0.25), lineWidth: 1))
+                        .cornerRadius(6)
+                    Spacer()
+                }
                 .padding(.horizontal, 20)
 
                 // Manifesto quick-post
@@ -483,38 +491,111 @@ cortexnode.ai
 // MARK: - Network Tab
 struct PRISMNetworkView: View {
     let state: PRISMState
-    private let signals: [(String, String)] = [
-        ("SIGNAL RELAY",    "ARMED"),
-        ("CONTENT ENGINE",  "ACTIVE"),
-        ("CAPTION AI",      "LINKED"),
-        ("APPROVAL GATE",   "REQUIRED"),
-        ("SCHEDULER",       "STANDING BY"),
-        ("PRISM BRAIN",     "LINKED"),
+    @State private var brainPingOK: Bool? = nil
+    @State private var pingInProgress = false
+
+    private let rows: [(String, String, Color)] = [
+        ("SIGNAL RELAY",    "ARMED",        Color(red: 0.133, green: 0.827, blue: 0.933)),
+        ("CONTENT ENGINE",  "ACTIVE",       Color(red: 0.545, green: 0.361, blue: 0.965)),
+        ("CAPTION AI",      "LINKED",       Color(red: 0.545, green: 0.361, blue: 0.965)),
+        ("APPROVAL GATE",   "ENFORCED",     Color(red: 0.925, green: 0.286, blue: 0.600)),
+        ("BROADCAST ENGINE","STANDING BY",  Color(red: 0.133, green: 0.827, blue: 0.933)),
+        ("QUEUE STORE",     "PERSISTENT",   Color(red: 0.545, green: 0.361, blue: 0.965)),
     ]
+
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 20) {
                 VStack(spacing: 4) {
-                    Text("NETWORK").font(.system(size: 24, weight: .black, design: .monospaced)).foregroundColor(PBrand.violet).tracking(6)
-                    Text("INTELLIGENCE RELAY STATUS").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violet.opacity(0.4)).tracking(3)
+                    Text("NETWORK")
+                        .font(.system(size: 24, weight: .black, design: .monospaced))
+                        .foregroundColor(PBrand.violet).tracking(6)
+                    Text("INTELLIGENCE RELAY STATUS")
+                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .foregroundColor(PBrand.violet.opacity(0.4)).tracking(3)
                 }.padding(.top, 20)
 
-                VStack(spacing: 1) {
-                    ForEach(signals, id: \.0) { s in
-                        HStack {
-                            Circle().fill(PBrand.violet).frame(width: 5, height: 5).shadow(color: PBrand.violet.opacity(0.8), radius: 3)
-                            Text(s.0).font(.system(size: 11, weight: .bold, design: .monospaced)).foregroundColor(.white.opacity(0.7)).tracking(1)
-                            Spacer()
-                            Text(s.1).font(.system(size: 11, weight: .heavy, design: .monospaced)).foregroundColor(PBrand.violet).tracking(1)
+                // Brain connection status card
+                Button {
+                    guard !pingInProgress else { return }
+                    Task { await pingBrain() }
+                } label: {
+                    HStack(spacing: 12) {
+                        ZStack {
+                            Circle().fill(PBrand.violet.opacity(0.12)).frame(width: 40, height: 40)
+                            Image(systemName: brainPingOK == true ? "checkmark.circle.fill" : brainPingOK == false ? "exclamationmark.circle.fill" : "circle.dotted")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(brainPingOK == true ? .green : brainPingOK == false ? .red : PBrand.violet)
                         }
-                        .padding(.horizontal, 14).padding(.vertical, 12).background(Color.white.opacity(0.02))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("CORTEX BRAIN")
+                                .font(.system(size: 11, weight: .black, design: .monospaced))
+                                .foregroundColor(.white.opacity(0.85)).tracking(1)
+                            Text(brainPingOK == true ? "api.cortexnode.ai · CONNECTED" :
+                                 brainPingOK == false ? "api.cortexnode.ai · UNREACHABLE" :
+                                 pingInProgress ? "PINGING..." : "TAP TO TEST CONNECTION")
+                                .font(.system(size: 9, design: .monospaced))
+                                .foregroundColor(brainPingOK == true ? .green.opacity(0.8) :
+                                                 brainPingOK == false ? .red.opacity(0.8) :
+                                                 PBrand.violet.opacity(0.5))
+                        }
+                        Spacer()
+                        if pingInProgress {
+                            ProgressView().tint(PBrand.violet).scaleEffect(0.7)
+                        }
+                    }
+                    .padding(.horizontal, 16).padding(.vertical, 14)
+                    .background(PBrand.violet.opacity(0.05))
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(PBrand.violetLine, lineWidth: 1))
+                    .cornerRadius(10)
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 20)
+
+                // System status rows
+                VStack(spacing: 1) {
+                    ForEach(rows, id: \.0) { row in
+                        HStack {
+                            Circle().fill(row.2).frame(width: 5, height: 5)
+                                .shadow(color: row.2.opacity(0.9), radius: 3)
+                            Text(row.0)
+                                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                .foregroundColor(.white.opacity(0.7)).tracking(1)
+                            Spacer()
+                            Text(row.1)
+                                .font(.system(size: 11, weight: .heavy, design: .monospaced))
+                                .foregroundColor(row.2).tracking(1)
+                        }
+                        .padding(.horizontal, 14).padding(.vertical, 12)
+                        .background(Color.white.opacity(0.02))
                     }
                 }
                 .background(PBrand.violet.opacity(0.04))
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(PBrand.violetLine, lineWidth: 1))
                 .cornerRadius(8).padding(.horizontal, 20)
+
+                // Version footer
+                Text("PRISM · ONE SIGNAL IN · EVERY CHANNEL OUT")
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    .foregroundColor(PBrand.violet.opacity(0.2)).tracking(2)
+                    .padding(.top, 4)
+
             }.padding(.bottom, 100)
         }
+        .task { await pingBrain() }
+    }
+
+    private func pingBrain() async {
+        pingInProgress = true
+        do {
+            var req = URLRequest(url: URL(string: "https://api.cortexnode.ai/health")!)
+            req.timeoutInterval = 5
+            let (_, resp) = try await URLSession.shared.data(for: req)
+            brainPingOK = (resp as? HTTPURLResponse)?.statusCode == 200
+        } catch {
+            brainPingOK = false
+        }
+        pingInProgress = false
     }
 }
 
@@ -559,9 +640,9 @@ struct PRISMSplashView: View {
 
             VStack(spacing: 0) {
                 HStack {
-                    HStack(spacing: 6) { PRISMDot(); Text("BROADCASTING · ALL CHANNELS").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violet).tracking(2) }
+                    HStack(spacing: 6) { PRISMDot(); Text("SIGNAL ZERO CONTENT LAYER").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violet).tracking(2) }
                     Spacer()
-                    Text("CONTENT LAYER · v1.0").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violetSoft).tracking(2)
+                    Text("PRISM · v1.1").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violetSoft).tracking(2)
                 }.padding(.horizontal, 24).padding(.top, 60)
 
                 Spacer()
