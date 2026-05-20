@@ -54,15 +54,19 @@ final class BrainConnector {
                         continuation.finish(throwing: BrainError.badResponse)
                         return
                     }
-                    for try await line in bytes.lines {
-                        guard line.hasPrefix("data: ") else { continue }
-                        let data = String(line.dropFirst(6))
-                        if data == "[DONE]" { break }
-                        if let json = data.data(using: .utf8),
-                           let obj = try? JSONSerialization.jsonObject(with: json) as? [String: Any],
-                           let choices = obj["choices"] as? [[String: Any]],
-                           let delta = choices.first?["delta"] as? [String: Any],
-                           let text = delta["content"] as? String {
+                    var raw = ""
+                    for try await line in bytes.lines { raw += line }
+                    if let json = raw.data(using: .utf8),
+                       let obj = try? JSONSerialization.jsonObject(with: json) as? [String: Any] {
+                        if let text = obj["content"] as? String {
+                            continuation.yield(text)
+                        } else if let choices = obj["choices"] as? [[String: Any]],
+                                  let msg = choices.first?["message"] as? [String: Any],
+                                  let text = msg["content"] as? String {
+                            continuation.yield(text)
+                        } else if let choices = obj["choices"] as? [[String: Any]],
+                                  let delta = choices.first?["delta"] as? [String: Any],
+                                  let text = delta["content"] as? String {
                             continuation.yield(text)
                         }
                     }
