@@ -11,5 +11,7 @@
   <key>UILaunchScreen</key><dict/>
   <key>UISupportedInterfaceOrientations</key>
   <array><string>UIInterfaceOrientationPortrait</string></array>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>PRISM uses the microphone for audio playback routing.</string>
 </dict>
 </plist>
