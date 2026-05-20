@@ -10,7 +10,7 @@ final class BlotatoService {
     private init() {}
 
     // Hardcoded Blotato key — CORTEXNODE workspace (verified 2026-05-17)
-    private let defaultBlotatoKey = "blt_EokB9mdw9vADjB68s5EbYQM7Mu9Hu0Lt/SvyPXh4UVE="
+    private let defaultBlotatoKey = ""
 
     private var apiKey: String {
         let stored = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
