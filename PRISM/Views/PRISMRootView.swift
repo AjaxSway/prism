@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 // MARK: - PRISM Root — The Interface · Reveals
 
@@ -270,6 +271,7 @@ struct PRISMBroadcastView: View {
     @State private var broadcasting = false
     @State private var broadcastDone = false
     @State private var glowPulse: CGFloat = 1.0
+    @State private var voiceFired = false
 
     private let platforms: [(String, String, Color)] = [
         ("X",         "dot.radiowaves.left.and.right", .white),
@@ -428,6 +430,10 @@ cortexnode.ai
         }
         .onAppear {
             withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) { glowPulse = 1.5 }
+            if !voiceFired {
+                voiceFired = true
+                PVoice.speak("PRISM online. Broadcasting to all channels.")
+            }
         }
     }
 
@@ -696,8 +702,8 @@ struct PRISMSignalWave: View {
                 let steps = Int(w)
                 for i in 0...steps {
                     let x = CGFloat(i)
-                    let y = midY + sin((x / w * 4 * .pi) + CGFloat(t * 2)) * (h * 0.28)
-                         + sin((x / w * 7 * .pi) + CGFloat(t * 3.1)) * (h * 0.12)
+                    let y = midY + sin((x / w * 4 * CGFloat.pi) + CGFloat(t * 2)) * (h * 0.28)
+                         + sin((x / w * 7 * CGFloat.pi) + CGFloat(t * 3.1)) * (h * 0.12)
                     if i == 0 { path.move(to: CGPoint(x: x, y: y)) }
                     else       { path.addLine(to: CGPoint(x: x, y: y)) }
                 }
@@ -732,7 +738,7 @@ struct PRISMSignalBurst: View {
                 let colors = [violet, cyan, pink, violet, cyan, pink,
                               violet, cyan, pink, violet, cyan, pink]
                 for i in 0..<lineCount {
-                    let angle = CGFloat(i) * .pi * 2 / CGFloat(lineCount)
+                    let angle = CGFloat(i) * CGFloat.pi * 2 / CGFloat(lineCount)
                     let len = w * 0.40 * (0.7 + 0.3 * sin(t * 2 + Double(i) * 0.5))
                     let x2 = cx + cos(angle) * len
                     let y2 = cy + sin(angle) * len
@@ -740,8 +746,8 @@ struct PRISMSignalBurst: View {
                     var line = Path()
                     line.move(to: CGPoint(x: cx, y: cy))
                     let wave: CGFloat = CGFloat(sin(t * 3 + Double(i))) * 8
-                    let midX = cx + cos(angle) * len * 0.5 + sin(angle + .pi/2) * wave
-                    let midY = cy + sin(angle) * len * 0.5 - cos(angle + .pi/2) * wave
+                    let midX = cx + cos(angle) * len * 0.5 + sin(angle + CGFloat.pi/2) * wave
+                    let midY = cy + sin(angle) * len * 0.5 - cos(angle + CGFloat.pi/2) * wave
                     let mid = CGPoint(x: midX, y: midY)
                     line.addQuadCurve(to: CGPoint(x: x2, y: y2), control: mid)
 
@@ -811,6 +817,41 @@ struct PRISMParticleField: View {
         }
         .allowsHitTesting(false)
         .ignoresSafeArea()
+    }
+}
+
+// MARK: - Voice (Eric · cjVigY5qzO86Huf0OWal)
+enum PVoice {
+    static func speak(_ text: String) {
+        let elevenKey = UserDefaults.standard.string(forKey: "elevenlabs_api_key") ?? ""
+        guard !elevenKey.isEmpty else { return }
+        let voiceID = "cjVigY5qzO86Huf0OWal"
+        let url = URL(string: "https://api.elevenlabs.io/v1/text-to-speech/\(voiceID)")!
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(elevenKey, forHTTPHeaderField: "xi-api-key")
+        let body: [String: Any] = [
+            "text": text,
+            "model_id": "eleven_multilingual_v2",
+            "voice_settings": ["stability": 0.70, "similarity_boost": 0.80, "style": 0.35, "use_speaker_boost": true]
+        ]
+        req.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        URLSession.shared.dataTask(with: req) { data, _, _ in
+            guard let data else { return }
+            DispatchQueue.main.async { PAudioPlayer.shared.play(data) }
+        }.resume()
+    }
+}
+
+private final class PAudioPlayer: NSObject {
+    static let shared = PAudioPlayer()
+    private var player: AVAudioPlayer?
+    func play(_ data: Data) {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("p_voice_\(UUID().uuidString).mp3")
+        try? data.write(to: url)
+        player = try? AVAudioPlayer(contentsOf: url)
+        player?.play()
     }
 }
 

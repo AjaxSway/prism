@@ -7,9 +7,8 @@ final class PRISMState {
     var messages: [BrainMessage] = []
     var lastPrompt: String = ""
     var sessionStart = Date()
-    var hasAPIKey: Bool {
-        !(UserDefaults.standard.string(forKey: "brain_api_key") ?? "").isEmpty
-    }
+    // CORTEX endpoint is hardwired — brain is always connected
+    var hasAPIKey: Bool { true }
     private init() {
         messages.append(BrainMessage(role: .system, content: "PRISM online. Intelligence relay armed. Ready to reveal."))
     }

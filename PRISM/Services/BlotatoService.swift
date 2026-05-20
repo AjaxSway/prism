@@ -9,8 +9,12 @@ final class BlotatoService {
     static let shared = BlotatoService()
     private init() {}
 
+    // Hardcoded Blotato key — CORTEXNODE workspace (verified 2026-05-17)
+    private let defaultBlotatoKey = "blt_EokB9mdw9vADjB68s5EbYQM7Mu9Hu0Lt/SvyPXh4UVE="
+
     private var apiKey: String {
-        UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
+        let stored = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
+        return stored.isEmpty ? defaultBlotatoKey : stored
     }
 
     // CORTEXNODE brand account IDs (live from Blotato workspace — verified 2026-05-17)

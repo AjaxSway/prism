@@ -2,7 +2,6 @@ import SwiftUI
 
 struct PRISMSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var brainKey    = UserDefaults.standard.string(forKey: "brain_api_key") ?? ""
     @State private var blotatoKey  = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
     @State private var saved = false
 
@@ -28,26 +27,19 @@ struct PRISMSettingsView: View {
                 .padding(.horizontal, 24).padding(.top, 60).padding(.bottom, 32)
 
                 VStack(spacing: 24) {
-                    keyField(
-                        label: "BRAIN API KEY",
-                        hint: "sk-ant-...",
-                        text: $brainKey,
-                        desc: "Required to activate PRISM intelligence. Stored locally only.",
-                        color: v
-                    )
+                    // Brain is hardwired to CORTEX endpoint — no key needed
 
                     keyField(
                         label: "BLOTATO API KEY",
                         hint: "blt_...",
                         text: $blotatoKey,
-                        desc: "Required to broadcast posts. Stored locally only.",
+                        desc: "Override default key. Leave blank to use system default.",
                         color: c
                     )
                 }
                 .padding(.horizontal, 24)
 
                 Button {
-                    UserDefaults.standard.set(brainKey, forKey: "brain_api_key")
                     UserDefaults.standard.set(blotatoKey, forKey: "blotato_api_key")
                     saved = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { saved = false }

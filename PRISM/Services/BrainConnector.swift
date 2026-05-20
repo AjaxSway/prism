@@ -8,9 +8,9 @@ final class BrainConnector {
     static let shared = BrainConnector()
     private init() {}
 
-    private var apiKey: String {
-        UserDefaults.standard.string(forKey: "brain_api_key") ?? ""
-    }
+    // CORTEX endpoint — hardwired, no manual key required
+    private let cortexEndpoint = "https://api.cortexnode.ai/v1/chat"
+    private let cortexToken = "Bearer 1e6269c69d475d3153ee383135fcf865445cce452481af64ab8b93f6321340d5"
 
     private let systemPrompt = """
     You are PRISM — the distribution intelligence layer of the CORTEX universe.
@@ -37,10 +37,6 @@ final class BrainConnector {
     func stream(messages: [(role: String, content: String)]) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             Task {
-                guard !apiKey.isEmpty else {
-                    continuation.finish(throwing: BrainError.noAPIKey)
-                    return
-                }
                 do {
                     let request = try buildRequest(messages: messages)
                     let (bytes, response) = try await URLSession.shared.bytes(for: request)
@@ -69,11 +65,10 @@ final class BrainConnector {
     }
 
     private func buildRequest(messages: [(role: String, content: String)]) throws -> URLRequest {
-        var req = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
+        var req = URLRequest(url: URL(string: cortexEndpoint)!)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(apiKey, forHTTPHeaderField: "x-api-key")
-        req.setValue("2024-06-01", forHTTPHeaderField: "anthropic-version")
+        req.setValue(cortexToken, forHTTPHeaderField: "Authorization")
         let body: [String: Any] = [
             "model": "claude-sonnet-4-6",
             "max_tokens": 2048,
@@ -87,6 +82,5 @@ final class BrainConnector {
 }
 
 enum BrainError: Error {
-    case noAPIKey
     case badResponse
 }
