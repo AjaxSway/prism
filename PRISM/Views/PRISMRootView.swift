@@ -7,6 +7,15 @@ struct PRISMRootView: View {
     @State private var showSplash = true
     @State private var selectedTab: PTab = .broadcast
 
+    private static let introKey = "prism.introPlayed"
+    private static let introText = """
+PRISM initialization complete. Connection established. All channels ready. Distribution intelligence online. \
+Good evening. I'm PRISM. Your content distribution intelligence layer. Built to take one signal and broadcast \
+it everywhere it needs to be — with precision, with timing, with the right voice for every platform. I don't \
+just post content. I architect reach. But nothing leaves PRISM without your approval. Ever. This is your \
+distribution layer. Your publishing intelligence. Your sovereign signal. Ready to reveal. What would you like to create?
+"""
+
     var body: some View {
         ZStack {
             if showSplash {
@@ -18,6 +27,13 @@ struct PRISMRootView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onAppear {
+            guard !UserDefaults.standard.bool(forKey: Self.introKey) else { return }
+            UserDefaults.standard.set(true, forKey: Self.introKey)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                VoiceService.speak(Self.introText)
+            }
+        }
     }
 }
 
