@@ -30,10 +30,10 @@ struct PRISMSettingsView: View {
                     // Brain is hardwired to CORTEX endpoint — no key needed
 
                     keyField(
-                        label: "BLOTATO API KEY",
+                        label: "PUBLISHING API KEY",
                         hint: "blt_...",
                         text: $blotatoKey,
-                        desc: "Your Blotato workspace API key. Leave blank to use the default CORTEXNODE key.",
+                        desc: "Your workspace API key for the publishing layer. Leave blank to use the default CORTEXNODE key.",
                         color: c
                     )
 
@@ -81,10 +81,15 @@ struct PRISMSettingsView: View {
 
                 Spacer()
 
-                Text("PRISM · CONTENT LAYER · v1.1")
-                    .font(.system(size: 9, design: .monospaced))
-                    .foregroundColor(v.opacity(0.2)).tracking(2)
-                    .padding(.bottom, 40)
+                VStack(spacing: 4) {
+                    Text("© 2026 CORTEX Inc. All rights reserved.")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundColor(v.opacity(0.25)).tracking(1)
+                    Text("PRISM is a product of CORTEXNODE INC.")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundColor(v.opacity(0.18)).tracking(1)
+                }
+                .padding(.bottom, 40)
             }
         }
     }
