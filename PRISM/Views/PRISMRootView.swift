@@ -219,6 +219,9 @@ struct PRISMRevealView: View {
             state.addMessage(role: .assistant, content: full)
             state.lastPrompt = prompt
             streamText = ""; streaming = false
+            // Speak the first 300 chars of the brain response — ATLAS voice
+            let spoken = String(full.prefix(300))
+            VoiceService.speak(spoken)
         }
     }
 
