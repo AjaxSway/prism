@@ -16,6 +16,7 @@
 		C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */; };
 		DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */; };
 		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
+		AA11BB22CC33DD44EE55FF66 /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */; };
 		FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		5B3E2FF5950159D187A254BD /* PostingQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingQueue.swift; sourceTree = "<group>"; };
 		5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMState.swift; sourceTree = "<group>"; };
 		61119682068B87BF0DFD440E /* BrainConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainConnector.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
 		78577F32B524B5DB42C33D4A /* PRISMRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMRootView.swift; sourceTree = "<group>"; };
 		8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlotatoService.swift; sourceTree = "<group>"; };
 		B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceService.swift; sourceTree = "<group>"; };
@@ -40,6 +42,7 @@
 			children = (
 				8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */,
 				61119682068B87BF0DFD440E /* BrainConnector.swift */,
+				AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */,
 				B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */,
 			);
 			path = Services;
@@ -162,6 +165,7 @@
 			files = (
 				9CBC5475587B5C4419167E50 /* BlotatoService.swift in Sources */,
 				F3B428250B1560910C037304 /* BrainConnector.swift in Sources */,
+				AA11BB22CC33DD44EE55FF66 /* MemoryStore.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* VoiceService.swift in Sources */,
 				45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */,
 				C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */,
