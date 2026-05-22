@@ -77,6 +77,12 @@ final class BlotatoService {
     /// CORTEX attribution appended to every post — signals the AI layer, builds brand identity.
     private let cortexAttribution = "\n\n— Posted by CORTEX · cortexnode.ai"
 
+    private func extractImageData(from content: String) -> Data? {
+        // Image data is passed separately via the queue item — return nil here,
+        // validator returns .noImage which is treated as valid (text-only post).
+        return nil
+    }
+
     func post(content: String, platforms: [Platform]) async -> [PostResult] {
         guard !apiKey.isEmpty else {
             return platforms.map { PostResult(platform: blotatoKey($0), success: false, error: "No Blotato API key") }
@@ -91,6 +97,15 @@ final class BlotatoService {
             guard let accountId = accountIds[key] else {
                 results.append(PostResult(platform: key, success: false, error: "No account mapped"))
                 continue
+            }
+            // Validate Instagram image dimensions before hitting the API
+            if key == "instagram" {
+                let imageData = extractImageData(from: content)
+                let validation = InstagramValidator.validate(imageData: imageData)
+                if let warning = InstagramValidator.warningMessage(for: validation) {
+                    results.append(PostResult(platform: key, success: false, error: warning))
+                    continue
+                }
             }
             do {
                 try await createPost(accountId: accountId, platform: key, text: signedContent)

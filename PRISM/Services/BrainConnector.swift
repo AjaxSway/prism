@@ -53,44 +53,43 @@ final class BrainConnector {
 
         return AsyncThrowingStream { continuation in
             Task {
-                do {
-                    let request = try buildRequest(messages: fullMessages)
-                    let (bytes, response) = try await URLSession.shared.bytes(for: request)
-                    guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-                        continuation.finish(throwing: BrainError.badResponse)
-                        return
-                    }
-                    var raw = ""
-                    for try await line in bytes.lines { raw += line }
-                    var responseText = ""
-                    if let json = raw.data(using: .utf8),
-                       let obj = try? JSONSerialization.jsonObject(with: json) as? [String: Any] {
-                        if let text = obj["content"] as? String {
-                            responseText = text
-                            continuation.yield(text)
-                        } else if let choices = obj["choices"] as? [[String: Any]],
-                                  let msg = choices.first?["message"] as? [String: Any],
-                                  let text = msg["content"] as? String {
-                            responseText = text
-                            continuation.yield(text)
-                        } else if let choices = obj["choices"] as? [[String: Any]],
-                                  let delta = choices.first?["delta"] as? [String: Any],
-                                  let text = delta["content"] as? String {
-                            responseText = text
-                            continuation.yield(text)
+                var lastError: Error = BrainError.badResponse
+                for attempt in 0..<3 {
+                    if attempt > 0 { try? await Task.sleep(nanoseconds: 600_000_000) }
+                    do {
+                        let request = try buildRequest(messages: fullMessages)
+                        let (bytes, response) = try await URLSession.shared.bytes(for: request)
+                        guard let http = response as? HTTPURLResponse else { lastError = BrainError.badResponse; continue }
+                        if http.statusCode == 401 { continuation.finish(throwing: BrainError.badResponse); return }
+                        guard http.statusCode == 200 else { lastError = BrainError.badResponse; continue }
+                        var raw = ""
+                        for try await line in bytes.lines { raw += line }
+                        var responseText = ""
+                        if let json = raw.data(using: .utf8),
+                           let obj = try? JSONSerialization.jsonObject(with: json) as? [String: Any] {
+                            if let text = obj["content"] as? String {
+                                responseText = text
+                                continuation.yield(text)
+                            } else if let choices = obj["choices"] as? [[String: Any]],
+                                      let msg = choices.first?["message"] as? [String: Any],
+                                      let text = msg["content"] as? String {
+                                responseText = text
+                                continuation.yield(text)
+                            }
                         }
+                        if let userTurn = messages.last(where: { $0.role == "user" }) {
+                            MemoryStore.shared.append(role: "user", content: userTurn.content)
+                        }
+                        if !responseText.isEmpty {
+                            MemoryStore.shared.append(role: "assistant", content: responseText)
+                        }
+                        continuation.finish()
+                        return
+                    } catch {
+                        lastError = error
                     }
-                    // Persist this exchange for future sessions.
-                    if let userTurn = messages.last(where: { $0.role == "user" }) {
-                        MemoryStore.shared.append(role: "user", content: userTurn.content)
-                    }
-                    if !responseText.isEmpty {
-                        MemoryStore.shared.append(role: "assistant", content: responseText)
-                    }
-                    continuation.finish()
-                } catch {
-                    continuation.finish(throwing: error)
                 }
+                continuation.finish(throwing: lastError)
             }
         }
     }
@@ -103,7 +102,7 @@ final class BrainConnector {
         let body: [String: Any] = [
             "model": "claude-sonnet-4-6",
             "max_tokens": 2048,
-            "stream": true,
+            "stream": false,
             "system": systemPrompt,
             "messages": messages.map { ["role": $0.role, "content": $0.content] }
         ]
