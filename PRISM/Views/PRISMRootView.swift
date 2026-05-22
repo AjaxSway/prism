@@ -284,6 +284,15 @@ private struct PRISMStreamRow: View {
 }
 
 // MARK: - Broadcast Tab
+struct PlatformInfo: Identifiable {
+    let id: String      // internal key (twitter, instagram, etc.)
+    let label: String   // display label
+    let icon: String
+    let color: Color
+    let handle: String  // CORTEXNODE connected account
+    let blotatoURL: String
+}
+
 struct PRISMBroadcastView: View {
     let state: PRISMState
     @State private var queue = PostingQueue.shared
@@ -291,16 +300,17 @@ struct PRISMBroadcastView: View {
     @State private var broadcastDone = false
     @State private var glowPulse: CGFloat = 1.0
     @State private var voiceFired = false
+    @State private var selectedPlatform: PlatformInfo? = nil
 
-    private let platforms: [(String, String, Color)] = [
-        ("X",         "dot.radiowaves.left.and.right", .white),
-        ("INSTAGRAM", "camera.circle.fill",            Color(red:0.9,green:0.3,blue:0.6)),
-        ("TIKTOK",    "music.note.tv.fill",            .white),
-        ("LINKEDIN",  "person.crop.circle.fill",       Color(red:0.0,green:0.47,blue:0.71)),
-        ("BLUESKY",   "cloud.circle.fill",             Color(red:0.0,green:0.5,blue:1.0)),
-        ("THREADS",   "bubble.circle.fill",            .white),
-        ("FACEBOOK",  "f.circle.fill",                 Color(red:0.23,green:0.35,blue:0.60)),
-        ("YOUTUBE",   "play.rectangle.fill",           Color(red:1.0,green:0.0,blue:0.0)),
+    private let platforms: [PlatformInfo] = [
+        PlatformInfo(id: "twitter",   label: "X",         icon: "dot.radiowaves.left.and.right", color: .white,                                          handle: "@CortexNodeAI",           blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "instagram", label: "INSTAGRAM", icon: "camera.circle.fill",            color: Color(red:0.9,green:0.3,blue:0.6),               handle: "@cortexnode.ai",          blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "tiktok",    label: "TIKTOK",    icon: "music.note.tv.fill",            color: .white,                                          handle: "@cortexnode",             blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "linkedin",  label: "LINKEDIN",  icon: "person.crop.circle.fill",       color: Color(red:0.0,green:0.47,blue:0.71),             handle: "George Bayze / CORTEXNODE", blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "bluesky",   label: "BLUESKY",   icon: "cloud.circle.fill",             color: Color(red:0.0,green:0.5,blue:1.0),               handle: "cortexnode.bsky.social",  blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "threads",   label: "THREADS",   icon: "bubble.circle.fill",            color: .white,                                          handle: "@cortexnode.ai",          blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "facebook",  label: "FACEBOOK",  icon: "f.circle.fill",                 color: Color(red:0.23,green:0.35,blue:0.60),            handle: "CORTEXNODE.ai page",      blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "youtube",   label: "YOUTUBE",   icon: "play.rectangle.fill",           color: Color(red:1.0,green:0.0,blue:0.0),               handle: "George Bayze (CORTEXNODE)", blotatoURL: "https://app.blotato.com"),
     ]
 
     private let violet = Color(red:0.545,green:0.361,blue:0.965)
@@ -427,24 +437,37 @@ cortexnode.ai
                 .buttonStyle(.plain)
                 .padding(.horizontal, 20)
 
-                // Channel grid
+                // Channel grid — tap any platform to manage its connection
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 14) {
-                    ForEach(platforms, id: \.0) { p in
-                        VStack(spacing: 8) {
-                            ZStack {
-                                Circle().fill(p.2.opacity(0.12)).frame(width: 62, height: 62)
-                                Circle().stroke(p.2.opacity(0.5), lineWidth: 1.5).frame(width: 62, height: 62)
-                                Image(systemName: p.1)
-                                    .font(.system(size: 22, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .shadow(color: p.2.opacity(0.9), radius: 5)
-                            }.shadow(color: p.2.opacity(0.35), radius: 10)
-                            Text(p.0).font(.system(size: 9, weight: .bold, design: .monospaced))
-                                .foregroundColor(.white.opacity(0.7))
+                    ForEach(platforms) { p in
+                        let isConnected = !(UserDefaults.standard.string(forKey: "blotato_api_key") ?? "blt_").isEmpty
+                        Button { selectedPlatform = p } label: {
+                            VStack(spacing: 8) {
+                                ZStack {
+                                    Circle().fill(p.color.opacity(0.12)).frame(width: 62, height: 62)
+                                    Circle().stroke(p.color.opacity(isConnected ? 0.7 : 0.25), lineWidth: isConnected ? 2 : 1).frame(width: 62, height: 62)
+                                    Image(systemName: p.icon)
+                                        .font(.system(size: 22, weight: .semibold))
+                                        .foregroundColor(isConnected ? .white : .white.opacity(0.35))
+                                        .shadow(color: p.color.opacity(0.9), radius: 5)
+                                    // Connection dot
+                                    Circle()
+                                        .fill(isConnected ? Color.green : Color(red:0.9,green:0.6,blue:0.0))
+                                        .frame(width: 10, height: 10)
+                                        .shadow(color: isConnected ? Color.green.opacity(0.8) : Color.orange.opacity(0.6), radius: 4)
+                                        .offset(x: 22, y: -22)
+                                }.shadow(color: p.color.opacity(0.35), radius: 10)
+                                Text(p.label).font(.system(size: 9, weight: .bold, design: .monospaced))
+                                    .foregroundColor(isConnected ? .white.opacity(0.85) : .white.opacity(0.4))
+                            }
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 20)
+                .sheet(item: $selectedPlatform) { p in
+                    PRISMPlatformSheet(platform: p)
+                }
 
                 // Queue summary
                 HStack(spacing: 20) {
@@ -459,7 +482,7 @@ cortexnode.ai
             withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) { glowPulse = 1.5 }
             if !voiceFired {
                 voiceFired = true
-                PVoice.speak("PRISM online. Broadcasting to all channels.")
+                VoiceService.speak("PRISM online. Broadcasting to all channels.")
             }
         }
     }
@@ -504,6 +527,156 @@ cortexnode.ai
                 PRISMState.shared.addMessage(role: .system, content: "Broadcast complete. \(successCount) post\(successCount == 1 ? "" : "s") sent across all channels.")
             }
         }
+    }
+}
+
+// MARK: - Platform Connection Sheet
+
+struct PRISMPlatformSheet: View {
+    let platform: PlatformInfo
+    @Environment(\.dismiss) private var dismiss
+    @State private var blotatoKey = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
+    @State private var saved = false
+
+    private let v  = Color(red: 0.545, green: 0.361, blue: 0.965)
+    private let bg = Color(red: 0.008, green: 0.012, blue: 0.027)
+
+    private var isConnected: Bool { !blotatoKey.isEmpty }
+
+    var body: some View {
+        ZStack {
+            bg.ignoresSafeArea()
+            PRISMGrid()
+
+            VStack(spacing: 0) {
+                // Header
+                HStack {
+                    Spacer()
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 22))
+                            .foregroundColor(v.opacity(0.5))
+                    }.buttonStyle(.plain)
+                }
+                .padding(.horizontal, 24).padding(.top, 20)
+
+                Spacer().frame(height: 24)
+
+                // Platform icon + name
+                VStack(spacing: 12) {
+                    ZStack {
+                        Circle().fill(platform.color.opacity(0.12)).frame(width: 80, height: 80)
+                        Circle().stroke(platform.color.opacity(0.5), lineWidth: 2).frame(width: 80, height: 80)
+                        Image(systemName: platform.icon)
+                            .font(.system(size: 30, weight: .semibold))
+                            .foregroundColor(.white)
+                            .shadow(color: platform.color.opacity(0.9), radius: 8)
+                    }
+                    .shadow(color: platform.color.opacity(0.4), radius: 14)
+
+                    Text(platform.label)
+                        .font(.system(size: 20, weight: .black, design: .monospaced))
+                        .foregroundColor(.white).tracking(4)
+
+                    HStack(spacing: 6) {
+                        Circle()
+                            .fill(isConnected ? Color.green : Color(red:0.9,green:0.6,blue:0.0))
+                            .frame(width: 7, height: 7)
+                            .shadow(color: isConnected ? .green : .orange, radius: 4)
+                        Text(isConnected ? "CONNECTED" : "API KEY NEEDED")
+                            .font(.system(size: 10, weight: .bold, design: .monospaced))
+                            .foregroundColor(isConnected ? .green : Color(red:0.9,green:0.6,blue:0.0))
+                            .tracking(2)
+                    }
+                }
+                .padding(.bottom, 28)
+
+                // Account info
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("CONNECTED ACCOUNT")
+                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                        .foregroundColor(v.opacity(0.5)).tracking(2)
+                    HStack {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(isConnected ? .green : v.opacity(0.3))
+                        Text(platform.handle)
+                            .font(.system(size: 13, design: .monospaced))
+                            .foregroundColor(isConnected ? .white.opacity(0.85) : .white.opacity(0.35))
+                        Spacer()
+                    }
+                    .padding(14)
+                    .background(v.opacity(0.05))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(v.opacity(0.2), lineWidth: 1))
+                    .cornerRadius(8)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
+
+                // API key input
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("PUBLISHING API KEY")
+                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                        .foregroundColor(v.opacity(0.5)).tracking(2)
+                    SecureField("blt_...", text: $blotatoKey)
+                        .font(.system(size: 13, design: .monospaced))
+                        .foregroundColor(.white)
+                        .padding(14)
+                        .background(v.opacity(0.05))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(v.opacity(0.3), lineWidth: 1))
+                        .cornerRadius(8)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                    Text("Your Blotato workspace key. All platforms share the same key.")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.25)).lineSpacing(3)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
+
+                // Save + Manage buttons
+                VStack(spacing: 10) {
+                    Button {
+                        UserDefaults.standard.set(blotatoKey, forKey: "blotato_api_key")
+                        saved = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            saved = false
+                            dismiss()
+                        }
+                    } label: {
+                        Text(saved ? "SAVED ✓" : "SAVE & CONNECT")
+                            .font(.system(size: 11, weight: .black, design: .monospaced))
+                            .foregroundColor(saved ? .green : v).tracking(2)
+                            .frame(maxWidth: .infinity).padding(.vertical, 14)
+                            .background(v.opacity(0.08))
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(saved ? Color.green.opacity(0.5) : v.opacity(0.4), lineWidth: 1))
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+
+                    if let url = URL(string: platform.blotatoURL) {
+                        Link(destination: url) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.up.right.square")
+                                    .font(.system(size: 12))
+                                Text("MANAGE ON BLOTATO")
+                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                    .tracking(1)
+                            }
+                            .foregroundColor(.white.opacity(0.45))
+                            .frame(maxWidth: .infinity).padding(.vertical, 12)
+                            .background(Color.white.opacity(0.03))
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                            .cornerRadius(8)
+                        }
+                    }
+                }
+                .padding(.horizontal, 24)
+
+                Spacer()
+            }
+        }
+        .preferredColorScheme(.dark)
     }
 }
 
