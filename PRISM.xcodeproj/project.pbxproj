@@ -8,33 +8,57 @@
 
 /* Begin PBXBuildFile section */
 		17FF432A13C72367D1D4C042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39C2BFD64F1472AB8E548E9E /* Assets.xcassets */; };
+		2C952A41149D34DBECFF846B /* CortexLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CD810EEB65DB5F8EBEF0C9 /* CortexLogger.swift */; };
 		3B55FF59508C7993714B23D0 /* PostingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3E2FF5950159D187A254BD /* PostingQueue.swift */; };
 		45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF581196F074CC78EF6E49A /* PRISMApp.swift */; };
 		67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78577F32B524B5DB42C33D4A /* PRISMRootView.swift */; };
 		9CBC5475587B5C4419167E50 /* BlotatoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* VoiceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */; };
-		C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */; };
-		DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */; };
-		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
 		AA11BB22CC33DD44EE55FF66 /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */; };
+		C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */; };
+		CB8100A5CCC6FDB6DED4DE6D /* CortexStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D824246A43AE41C0EDDADE /* CortexStoreManager.swift */; };
+		D116C5FA433061BD839E5A17 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F190B8ED585270CFE51C6ECB /* GoogleService-Info.plist */; };
+		DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */; };
+		E4E278004012E01303E1AB94 /* AuthSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058523F5CEB01F2AA1E83347 /* AuthSessionStore.swift */; };
+		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
+		FBC00000000000000000005A /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
+		FBC00000000000000000006A /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
+		FBC00000000000000000007A /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		058523F5CEB01F2AA1E83347 /* AuthSessionStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthSessionStore.swift; sourceTree = "<group>"; };
+		24D824246A43AE41C0EDDADE /* CortexStoreManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CortexStoreManager.swift; sourceTree = "<group>"; };
 		39C2BFD64F1472AB8E548E9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PRISM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B3E2FF5950159D187A254BD /* PostingQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingQueue.swift; sourceTree = "<group>"; };
 		5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMState.swift; sourceTree = "<group>"; };
 		61119682068B87BF0DFD440E /* BrainConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainConnector.swift; sourceTree = "<group>"; };
-		AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
 		78577F32B524B5DB42C33D4A /* PRISMRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMRootView.swift; sourceTree = "<group>"; };
 		8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlotatoService.swift; sourceTree = "<group>"; };
+		95CD810EEB65DB5F8EBEF0C9 /* CortexLogger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CortexLogger.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
 		B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceService.swift; sourceTree = "<group>"; };
 		BCF581196F074CC78EF6E49A /* PRISMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMApp.swift; sourceTree = "<group>"; };
 		D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMSettingsView.swift; sourceTree = "<group>"; };
 		E6596EFF9E2967BA5F98871F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F190B8ED585270CFE51C6ECB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMQueueView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FBC00000000000000000008A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC00000000000000000005A /* BuildFile in Frameworks */,
+				FBC00000000000000000006A /* BuildFile in Frameworks */,
+				FBC00000000000000000007A /* BuildFile in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		30914D318B7B1D383559AC66 /* Services */ = {
@@ -44,6 +68,9 @@
 				61119682068B87BF0DFD440E /* BrainConnector.swift */,
 				AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */,
 				B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */,
+				058523F5CEB01F2AA1E83347 /* AuthSessionStore.swift */,
+				95CD810EEB65DB5F8EBEF0C9 /* CortexLogger.swift */,
+				24D824246A43AE41C0EDDADE /* CortexStoreManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -74,6 +101,7 @@
 		9ACB8EA292F0BE5D323F4DC2 = {
 			isa = PBXGroup;
 			children = (
+				F190B8ED585270CFE51C6ECB /* GoogleService-Info.plist */,
 				4E56F2BFEC11A665830CE0B7 /* PRISM */,
 				9DFE55D93D71E8D607CD0AF1 /* Products */,
 			);
@@ -103,6 +131,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 81BC70D49DA35C9EB78F5847 /* Build configuration list for PBXNativeTarget "PRISM" */;
 			buildPhases = (
+				FBC00000000000000000008A /* Frameworks */,
 				785A90982744341794619D09 /* Sources */,
 				C0393216D459C799F6A7BF5C /* Resources */,
 			);
@@ -111,8 +140,6 @@
 			dependencies = (
 			);
 			name = PRISM;
-			packageProductDependencies = (
-			);
 			productName = PRISM;
 			productReference = 4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */;
 			productType = "com.apple.product-type.application";
@@ -137,6 +164,9 @@
 			);
 			mainGroup = 9ACB8EA292F0BE5D323F4DC2;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				FBC00000000000000000001A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9DFE55D93D71E8D607CD0AF1 /* Products */;
 			projectDirPath = "";
@@ -152,6 +182,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D116C5FA433061BD839E5A17 /* GoogleService-Info.plist in Resources */,
 				17FF432A13C72367D1D4C042 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -173,6 +204,9 @@
 				FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */,
 				DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */,
 				3B55FF59508C7993714B23D0 /* PostingQueue.swift in Sources */,
+				E4E278004012E01303E1AB94 /* AuthSessionStore.swift in Sources */,
+				2C952A41149D34DBECFF846B /* CortexLogger.swift in Sources */,
+				CB8100A5CCC6FDB6DED4DE6D /* CortexStoreManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,6 +396,17 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FBC00000000000000000001A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.13.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 9437BA67D8E1EE3458871BC8 /* Project object */;
 }

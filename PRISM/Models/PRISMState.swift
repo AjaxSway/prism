@@ -7,8 +7,10 @@ final class PRISMState {
     var messages: [BrainMessage] = []
     var lastPrompt: String = ""
     var sessionStart = Date()
-    // CORTEX endpoint is hardwired — brain is always connected
-    var hasAPIKey: Bool { true }
+    // Gate on active PRISM subscription — prevents free access to the intelligence layer
+    var hasAPIKey: Bool {
+        CortexStoreManager.shared.hasPro || CortexStoreManager.shared.hasOperator
+    }
     private init() {
         messages.append(BrainMessage(role: .system, content: "PRISM online. Intelligence relay armed. Ready to reveal."))
     }
