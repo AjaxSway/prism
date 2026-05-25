@@ -780,7 +780,12 @@ struct PRISMNetworkView: View {
     private func pingBrain() async {
         pingInProgress = true
         do {
-            var req = URLRequest(url: URL(string: "https://api.cortexnode.ai/health")!)
+            guard let healthURL = URL(string: "https://api.cortexnode.ai/health") else {
+                brainPingOK = false
+                pingInProgress = false
+                return
+            }
+            var req = URLRequest(url: healthURL)
             req.timeoutInterval = 5
             let (_, resp) = try await URLSession.shared.data(for: req)
             brainPingOK = (resp as? HTTPURLResponse)?.statusCode == 200
@@ -818,54 +823,99 @@ private struct PRISMTabBar: View {
 // MARK: - Splash
 struct PRISMSplashView: View {
     let onEnter: () -> Void
-    @State private var appeared = false
+
+    @State private var imageOpacity: Double = 0.0
+    @State private var imageScale: CGFloat = 1.08
+    @State private var glowPulse = false
+    @State private var ringRotation: Double = 0
+    @State private var innerRingRotation: Double = 0
+    @State private var typedCount = 0
+    @State private var subtitleOpacity: Double = 0
+    @State private var coreGlow: Double = 0
+    @State private var scanLine: CGFloat = -0.1
+    @State private var fadeOut = false
+
+    private let accent = Color(red: 0.608, green: 0.188, blue: 1.0)
+    private let accentBright = Color(red: 0.784, green: 0.502, blue: 1.0)
+    private let titleLetters = Array("PRISM")
+    private let subtitle = "ONE SIGNAL. EVERY CHANNEL."
+    private let designator = "— PRISM —"
+    private let typeInterval: TimeInterval = 0.10
+
     var body: some View {
-        ZStack {
-            PBrand.bg.ignoresSafeArea()
-            PRISMGrid()
+        GeometryReader { geo in
             ZStack {
-                RadialGradient(colors: [Color(red:0.36,green:0.0,blue:0.6).opacity(0.35), .clear], center: .init(x:0.2,y:0.5), startRadius:0, endRadius:350).ignoresSafeArea()
-                RadialGradient(colors: [PBrand.cyan.opacity(0.15), .clear], center: .init(x:0.8,y:0.5), startRadius:0, endRadius:280).ignoresSafeArea()
-            }
-            PRISMScanLine()
-            PRISMCorners()
-
-            VStack(spacing: 0) {
-                HStack {
-                    HStack(spacing: 6) { PRISMDot(); Text("SIGNAL ZERO CONTENT LAYER").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violet).tracking(2) }
-                    Spacer()
-                    Text("PRISM · v1.1").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violetSoft).tracking(2)
-                }.padding(.horizontal, 24).padding(.top, 60)
-
-                Spacer()
-
-                ZStack {
-                    Circle().stroke(PBrand.violetLine, lineWidth: 1).frame(width: 280, height: 280).modifier(PVioletPulseMod())
-                    Circle().stroke(PBrand.cyan.opacity(0.15), lineWidth: 1).frame(width: 210, height: 210).modifier(PVioletPulseMod())
-                    PRISMSignalBurst()
-                        .frame(width: 200, height: 200)
-                        .scaleEffect(appeared ? 1.0 : 0.5)
-                }.opacity(appeared ? 1 : 0)
-
-                Spacer()
-
+                Color.black.ignoresSafeArea()
+                Image("PRISMIntroHero")
+                    .resizable().interpolation(.high).scaledToFit()
+                    .frame(width: geo.size.width)
+                    .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
+                    .offset(y: geo.size.height * 0.14)
+                    .scaleEffect(imageScale).opacity(imageOpacity).ignoresSafeArea()
                 VStack(spacing: 0) {
-                    Text("PRISM").font(.system(size: 44, weight: .black, design: .monospaced)).foregroundColor(PBrand.violet).tracking(8)
-                        .shadow(color: PBrand.violet.opacity(0.8), radius: 24).modifier(PVioletPulseMod())
-                    Text("THE INTELLIGENCE RELAY NETWORK").font(.system(size: 9, weight: .bold, design: .monospaced)).foregroundColor(PBrand.violet.opacity(0.5)).tracking(3).padding(.top, 8)
-                    Rectangle().fill(LinearGradient(colors: [.clear, PBrand.violet, PBrand.cyan, PBrand.pink, .clear], startPoint: .leading, endPoint: .trailing))
-                        .frame(width: 140, height: 1).opacity(0.5).padding(.vertical, 18)
-                    Text("One signal in.\nEvery channel out.\nZero noise.").font(.system(size: 12, weight: .medium, design: .monospaced)).foregroundColor(.white.opacity(0.3)).multilineTextAlignment(.center).lineSpacing(4)
-                    Button(action: onEnter) {
-                        Text("ACTIVATE PRISM").font(.system(size: 11, weight: .black, design: .monospaced)).foregroundColor(PBrand.violetSoft).tracking(3)
-                            .padding(.horizontal, 40).padding(.vertical, 14)
-                            .background(PBrand.violetDim)
-                            .overlay(RoundedRectangle(cornerRadius: 4).stroke(PBrand.violetLine, lineWidth: 1)).cornerRadius(4)
-                    }.buttonStyle(.plain).padding(.top, 24)
-                }.padding(.bottom, 60).opacity(appeared ? 1 : 0).offset(y: appeared ? 0 : 20)
-            }
+                    LinearGradient(colors: [Color.black.opacity(0.85), Color.black.opacity(0.3), Color.clear], startPoint: .top, endPoint: .bottom).frame(height: geo.size.height * 0.28)
+                    Spacer()
+                    LinearGradient(colors: [Color.clear, Color.black.opacity(0.5), Color.black.opacity(0.75)], startPoint: .top, endPoint: .bottom).frame(height: geo.size.height * 0.14)
+                }.ignoresSafeArea()
+                Rectangle()
+                    .fill(LinearGradient(colors: [.clear, accent.opacity(0.08), .clear], startPoint: .top, endPoint: .bottom))
+                    .frame(height: 60).offset(y: geo.size.height * scanLine).blendMode(.screen).allowsHitTesting(false)
+                Button { enterApp() } label: {
+                    ZStack {
+                        Circle().stroke(accent.opacity(0.22), style: StrokeStyle(lineWidth: 1, dash: [6, 4])).frame(width: 200, height: 200).rotationEffect(.degrees(ringRotation))
+                        Circle().stroke(accentBright.opacity(0.15), style: StrokeStyle(lineWidth: 0.8, dash: [3, 5])).frame(width: 140, height: 140).rotationEffect(.degrees(innerRingRotation))
+                        Circle().fill(accent.opacity(glowPulse ? 0.14 : 0.04)).frame(width: 120, height: 120)
+                        Text("ENTER").font(.system(size: 14, weight: .heavy, design: .monospaced)).foregroundColor(.white).tracking(5).shadow(color: accent, radius: 8).opacity(subtitleOpacity)
+                    }
+                }.buttonStyle(.plain).position(x: geo.size.width / 2, y: geo.size.height * 0.58).opacity(coreGlow)
+                VStack(spacing: 0) {
+                    Spacer().frame(height: 64)
+                    HStack(spacing: 2) {
+                        ForEach(0..<titleLetters.count, id: \.self) { i in
+                            Text(String(titleLetters[i])).font(.system(size: 60, weight: .black, design: .monospaced)).foregroundColor(.white)
+                                .opacity(i < typedCount ? 1 : 0).scaleEffect(i < typedCount ? 1 : 0.5)
+                                .animation(.spring(response: 0.25, dampingFraction: 0.7), value: typedCount)
+                        }
+                    }.frame(maxWidth: .infinity).minimumScaleFactor(0.6)
+                    .shadow(color: accent, radius: 30)
+                    .shadow(color: accent.opacity(0.8), radius: 60)
+                    .shadow(color: accent.opacity(0.5), radius: 90)
+                    Spacer().frame(height: 8)
+                    Text(subtitle).font(.system(size: 15, weight: .heavy, design: .monospaced)).foregroundColor(accentBright).tracking(3).multilineTextAlignment(.center).frame(maxWidth: .infinity).opacity(subtitleOpacity)
+                    .shadow(color: accent, radius: 12).shadow(color: accent.opacity(0.6), radius: 30)
+                    Spacer().frame(height: 6)
+                    Text(designator).font(.system(size: 13, weight: .bold, design: .monospaced)).foregroundColor(accentBright).tracking(6).multilineTextAlignment(.center).frame(maxWidth: .infinity).opacity(subtitleOpacity)
+                    .shadow(color: accent.opacity(0.8), radius: 10)
+                    Spacer()
+                    VStack(spacing: 6) {
+                        Rectangle().fill(LinearGradient(colors: [.clear, accent.opacity(0.6), .clear], startPoint: .leading, endPoint: .trailing)).frame(width: 240, height: 1)
+                        Text("BROADCAST READY").font(.system(size: 13, weight: .black, design: .monospaced)).foregroundColor(accent.opacity(0.85)).tracking(6)
+                    }.opacity(subtitleOpacity)
+                    Button { enterApp() } label: { Text("SKIP").font(.system(size: 13, weight: .bold, design: .monospaced)).foregroundColor(.white.opacity(0.4)).tracking(3).padding(.horizontal, 24).padding(.vertical, 10) }.buttonStyle(.plain).opacity(subtitleOpacity)
+                    Spacer().frame(height: 32)
+                }
+            }.opacity(fadeOut ? 0 : 1).onAppear { runBootSequence() }
         }
-        .onAppear { withAnimation(.easeOut(duration: 0.8)) { appeared = true } }
+    }
+
+    private func enterApp() {
+        withAnimation(.easeIn(duration: 0.3)) { fadeOut = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { onEnter() }
+    }
+
+    private func runBootSequence() {
+        withAnimation(.easeOut(duration: 1.2)) { imageOpacity = 1; imageScale = 1.0 }
+        withAnimation(.easeOut(duration: 1.5)) { coreGlow = 1 }
+        withAnimation(.linear(duration: 12).repeatForever(autoreverses: false)) { ringRotation = 360 }
+        withAnimation(.linear(duration: 8).repeatForever(autoreverses: false)) { innerRingRotation = -360 }
+        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) { glowPulse = true }
+        withAnimation(.easeInOut(duration: 2.2)) { scanLine = 1.1 }
+        for i in 0...titleLetters.count {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8 + Double(i) * typeInterval) { typedCount = i }
+        }
+        let end = 0.8 + Double(titleLetters.count) * typeInterval + 0.2
+        DispatchQueue.main.asyncAfter(deadline: .now() + end) { withAnimation(.easeIn(duration: 0.5)) { subtitleOpacity = 1 } }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 45) { guard !fadeOut else { return }; enterApp() }
     }
 }
 
@@ -884,21 +934,36 @@ struct PRISMGrid: View {
 
 struct PRISMDot: View {
     @State private var phase = 0
+    @State private var timer: Timer?
     private let colors: [Color] = [Color(red:0.545,green:0.361,blue:0.965), Color(red:0.133,green:0.827,blue:0.933), Color(red:0.925,green:0.286,blue:0.600)]
     var body: some View {
         Circle().fill(colors[phase % 3]).frame(width: 7, height: 7)
             .shadow(color: colors[phase % 3].opacity(0.8), radius: 4)
-            .onAppear { Timer.scheduledTimer(withTimeInterval: 0.7, repeats: true) { _ in withAnimation { phase += 1 } } }
+            .onAppear {
+                timer = Timer.scheduledTimer(withTimeInterval: 0.7, repeats: true) { _ in
+                    withAnimation { phase += 1 }
+                }
+            }
+            .onDisappear {
+                timer?.invalidate()
+                timer = nil
+            }
     }
 }
 
 struct PRISMScanLine: View {
-    @State private var offset: CGFloat = -UIScreen.main.bounds.height / 2
+    // Start off-screen using a negative fraction; GeometryReader provides the real height.
+    @State private var offset: CGFloat = -600
     var body: some View {
         GeometryReader { geo in
             Rectangle().fill(LinearGradient(colors: [.clear, Color(red:0.545,green:0.361,blue:0.965), Color(red:0.133,green:0.827,blue:0.933), .clear], startPoint: .leading, endPoint: .trailing))
                 .frame(height: 1).offset(y: offset).opacity(0.4)
-                .onAppear { withAnimation(.linear(duration: 5).repeatForever(autoreverses: false)) { offset = geo.size.height } }
+                .onAppear {
+                    offset = -geo.size.height / 2
+                    withAnimation(.linear(duration: 5).repeatForever(autoreverses: false)) {
+                        offset = geo.size.height
+                    }
+                }
         }.allowsHitTesting(false).ignoresSafeArea()
     }
 }
@@ -1099,7 +1164,7 @@ enum PVoice {
         let elevenKey = UserDefaults.standard.string(forKey: "elevenlabs_api_key") ?? ""
         guard !elevenKey.isEmpty else { return }
         let voiceID = "cjVigY5qzO86Huf0OWal"
-        let url = URL(string: "https://api.elevenlabs.io/v1/text-to-speech/\(voiceID)")!
+        guard let url = URL(string: "https://api.elevenlabs.io/v1/text-to-speech/\(voiceID)") else { return }
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -1111,20 +1176,39 @@ enum PVoice {
         ]
         req.httpBody = try? JSONSerialization.data(withJSONObject: body)
         URLSession.shared.dataTask(with: req) { data, _, _ in
-            guard let data else { return }
+            guard let data, !data.isEmpty else { return }
+            // ElevenLabs returns JSON starting with '{' on error — skip non-audio payloads.
+            if let first = data.first, first == 0x7B { return }
             DispatchQueue.main.async { PAudioPlayer.shared.play(data) }
         }.resume()
     }
 }
 
-private final class PAudioPlayer: NSObject {
+private final class PAudioPlayer: NSObject, AVAudioPlayerDelegate {
     static let shared = PAudioPlayer()
     private var player: AVAudioPlayer?
+    private var currentTempURL: URL?
+
     func play(_ data: Data) {
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("p_voice_\(UUID().uuidString).mp3")
-        try? data.write(to: url)
-        player = try? AVAudioPlayer(contentsOf: url)
-        player?.play()
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("p_voice_\(UUID().uuidString).mp3")
+        do {
+            try data.write(to: url)
+            currentTempURL = url
+            player = try AVAudioPlayer(contentsOf: url)
+            player?.delegate = self
+            player?.play()
+        } catch {
+            try? FileManager.default.removeItem(at: url)
+            currentTempURL = nil
+        }
+    }
+
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        if let url = currentTempURL {
+            try? FileManager.default.removeItem(at: url)
+            currentTempURL = nil
+        }
     }
 }
 

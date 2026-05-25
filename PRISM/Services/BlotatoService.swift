@@ -43,13 +43,13 @@ final class BlotatoService {
     static let shared = BlotatoService()
     private init() {}
 
-    // Hardcoded Blotato key — CORTEXNODE workspace (updated 2026-05-21)
-    private let defaultBlotatoKey = "blt_SfdWFrt5bysj1nRmTrSiwbrQmtyEmvU8ydU7C0P0XjM="
-
+    // API key is operator-supplied via Settings — never hardcoded in source.
+    // If the prior key was exposed in any build, rotate it at blotato.com immediately.
     private var apiKey: String {
-        let stored = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
-        return stored.isEmpty ? defaultBlotatoKey : stored
+        UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
     }
+
+    var isConfigured: Bool { !apiKey.isEmpty }
 
     // CORTEXNODE brand account IDs (live from Blotato workspace — verified 2026-05-17)
     private let accountIds: [String: Int] = [

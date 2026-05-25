@@ -3,7 +3,11 @@ import Foundation
 // MARK: - PRISM Memory Store
 // Persists conversation history across sessions via UserDefaults.
 // keyed separately from Signal Zero so each app owns its own memory lane.
+// @MainActor ensures all history mutations are serialized on the main actor —
+// BrainConnector calls append() from inside Task{} blocks which inherit the
+// caller's actor context, so this prevents concurrent array mutation.
 
+@MainActor
 final class MemoryStore {
     static let shared = MemoryStore(appKey: "prism.memory")
     private let key: String

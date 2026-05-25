@@ -1,4 +1,5 @@
 import Foundation
+import Security
 
 // MARK: - PRISM Brain Connector
 // Routes to CORTEX intelligence backbone.
@@ -6,11 +7,12 @@ import Foundation
 
 final class BrainConnector {
     static let shared = BrainConnector()
-    private init() { MemoryStore.shared.load() }
+    // MemoryStore.load() is deferred to first stream() call so it runs on MainActor safely.
+    private init() {}
 
-    // CORTEX endpoint — hardwired, no manual key required
     private let cortexEndpoint = "https://api.cortexnode.ai/v1/chat"
-    private let cortexToken = "Bearer 1e6269c69d475d3153ee383135fcf865445cce452481af64ab8b93f6321340d5"
+
+    private let authSession = AuthSessionStore.shared
 
     private let systemPrompt = """
     You are PRISM — the content distribution intelligence layer of the CORTEX universe. Your mandate: one signal in, every channel out, zero noise.
@@ -45,22 +47,32 @@ final class BrainConnector {
     """
 
     func stream(messages: [(role: String, content: String)]) -> AsyncThrowingStream<String, Error> {
-        // Prepend persisted cross-session history so the brain remembers past conversations.
-        // De-duplicate: skip persisted turns that are already present in the current window.
-        let currentContents = Set(messages.map { $0.content })
-        let persisted = MemoryStore.shared.contextMessages().filter { !currentContents.contains($0.content) }
-        let fullMessages = persisted + messages
-
         return AsyncThrowingStream { continuation in
             Task {
+                // Load MemoryStore on MainActor before building the message list.
+                let fullMessages: [(role: String, content: String)] = await MainActor.run {
+                    MemoryStore.shared.load()
+                    // Prepend persisted cross-session history so the brain remembers past conversations.
+                    // De-duplicate: skip persisted turns that are already present in the current window.
+                    let currentContents = Set(messages.map { $0.content })
+                    let persisted = MemoryStore.shared.contextMessages()
+                        .filter { !currentContents.contains($0.content) }
+                    return persisted + messages
+                }
+
                 var lastError: Error = BrainError.badResponse
                 for attempt in 0..<3 {
                     if attempt > 0 { try? await Task.sleep(nanoseconds: 600_000_000) }
                     do {
-                        let request = try buildRequest(messages: fullMessages)
+                        let bearerToken = try await authSession.validSessionToken()
+                        let request = try buildRequest(messages: fullMessages, bearerToken: bearerToken)
                         let (bytes, response) = try await URLSession.shared.bytes(for: request)
                         guard let http = response as? HTTPURLResponse else { lastError = BrainError.badResponse; continue }
-                        if http.statusCode == 401 { continuation.finish(throwing: BrainError.badResponse); return }
+                        if http.statusCode == 401 {
+                            await authSession.clearSessionToken()
+                            continuation.finish(throwing: BrainError.badResponse)
+                            return
+                        }
                         guard http.statusCode == 200 else { lastError = BrainError.badResponse; continue }
                         var raw = ""
                         for try await line in bytes.lines { raw += line }
@@ -77,11 +89,14 @@ final class BrainConnector {
                                 continuation.yield(text)
                             }
                         }
-                        if let userTurn = messages.last(where: { $0.role == "user" }) {
-                            MemoryStore.shared.append(role: "user", content: userTurn.content)
-                        }
-                        if !responseText.isEmpty {
-                            MemoryStore.shared.append(role: "assistant", content: responseText)
+                        // Persist both turns on MainActor to guard against concurrent mutation.
+                        await MainActor.run {
+                            if let userTurn = messages.last(where: { $0.role == "user" }) {
+                                MemoryStore.shared.append(role: "user", content: userTurn.content)
+                            }
+                            if !responseText.isEmpty {
+                                MemoryStore.shared.append(role: "assistant", content: responseText)
+                            }
                         }
                         continuation.finish()
                         return
@@ -94,11 +109,14 @@ final class BrainConnector {
         }
     }
 
-    private func buildRequest(messages: [(role: String, content: String)]) throws -> URLRequest {
-        var req = URLRequest(url: URL(string: cortexEndpoint)!)
+    private func buildRequest(messages: [(role: String, content: String)], bearerToken: String) throws -> URLRequest {
+        guard let endpointURL = URL(string: cortexEndpoint) else {
+            throw BrainError.badResponse
+        }
+        var req = URLRequest(url: endpointURL)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(cortexToken, forHTTPHeaderField: "Authorization")
+        req.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
         let body: [String: Any] = [
             "model": "claude-sonnet-4-6",
             "max_tokens": 2048,
