@@ -5,7 +5,7 @@ import AVFoundation
 
 struct PRISMRootView: View {
     @State private var showSplash = true
-    @State private var selectedTab: PTab = .broadcast
+    @State private var selectedTab: PTab = .signal
 
     private static let introKey = "prism.introPlayed"
     private static let introText = """
@@ -39,16 +39,20 @@ distribution layer. Your publishing intelligence. Your sovereign signal. Ready t
 
 // MARK: - Tabs
 enum PTab: String, CaseIterable {
-    case broadcast = "BROADCAST"
-    case reveal    = "REVEAL"
-    case queue     = "QUEUE"
-    case network   = "NETWORK"
+    case signal   = "SIGNAL"
+    case channels = "CHANNELS"
+    case queue    = "QUEUE"
+    case calendar = "CALENDAR"
+    case brain    = "BRAIN"
+    case settings = "SETTINGS"
     var icon: String {
         switch self {
-        case .reveal:    return "sparkles"
-        case .broadcast: return "dot.radiowaves.left.and.right"
-        case .queue:     return "tray.full.fill"
-        case .network:   return "network"
+        case .signal:   return "dot.radiowaves.left.and.right"
+        case .channels: return "sparkles"
+        case .queue:    return "tray.full.fill"
+        case .calendar: return "calendar.badge.clock"
+        case .brain:    return "brain.head.profile"
+        case .settings: return "gearshape.fill"
         }
     }
 }
@@ -90,7 +94,7 @@ struct PRISMCockpitView: View {
                 HStack {
                     HStack(spacing: 6) {
                         PRISMDot()
-                        Text("PRISM · CONTENT LAYER · LIVE")
+                        Text("PRISM · CONTENT LAYER · DEMO")
                             .font(.system(size: 9, weight: .bold, design: .monospaced))
                             .foregroundColor(PBrand.violet).tracking(2)
                     }
@@ -105,15 +109,18 @@ struct PRISMCockpitView: View {
                 .padding(.horizontal, 20).padding(.top, 60).padding(.bottom, 10)
 
                 switch selectedTab {
-                case .reveal:    PRISMRevealView(state: state)
-                case .broadcast: PRISMBroadcastView(state: state)
-                case .queue:     PRISMQueueView()
-                case .network:   PRISMNetworkView(state: state)
+                case .signal:   PRISMBroadcastView(state: state)
+                case .channels: PRISMRevealView(state: state)
+                case .queue:    PRISMQueueView()
+                case .calendar: PRISMCalendarStub()
+                case .brain:    CortexChatShell(theme: .app)
+                case .settings: PRISMSettingsView()
                 }
 
                 PRISMTabBar(selectedTab: $selectedTab)
             }
         }
+        .universePremiumChrome(accent: PBrand.violet)
         .sheet(isPresented: $showSettings) { PRISMSettingsView() }
     }
 }
@@ -306,11 +313,11 @@ struct PRISMBroadcastView: View {
         PlatformInfo(id: "twitter",   label: "X",         icon: "dot.radiowaves.left.and.right", color: .white,                                          handle: "@CortexNodeAI",           blotatoURL: "https://app.blotato.com"),
         PlatformInfo(id: "instagram", label: "INSTAGRAM", icon: "camera.circle.fill",            color: Color(red:0.9,green:0.3,blue:0.6),               handle: "@cortexnode.ai",          blotatoURL: "https://app.blotato.com"),
         PlatformInfo(id: "tiktok",    label: "TIKTOK",    icon: "music.note.tv.fill",            color: .white,                                          handle: "@cortexnode",             blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "linkedin",  label: "LINKEDIN",  icon: "person.crop.circle.fill",       color: Color(red:0.0,green:0.47,blue:0.71),             handle: "George Bayze / CORTEXNODE", blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "linkedin",  label: "LINKEDIN",  icon: "person.crop.circle.fill",       color: Color(red:0.0,green:0.47,blue:0.71),             handle: "Founder / CORTEXNODE", blotatoURL: "https://app.blotato.com"),
         PlatformInfo(id: "bluesky",   label: "BLUESKY",   icon: "cloud.circle.fill",             color: Color(red:0.0,green:0.5,blue:1.0),               handle: "cortexnode.bsky.social",  blotatoURL: "https://app.blotato.com"),
         PlatformInfo(id: "threads",   label: "THREADS",   icon: "bubble.circle.fill",            color: .white,                                          handle: "@cortexnode.ai",          blotatoURL: "https://app.blotato.com"),
         PlatformInfo(id: "facebook",  label: "FACEBOOK",  icon: "f.circle.fill",                 color: Color(red:0.23,green:0.35,blue:0.60),            handle: "CORTEXNODE.ai page",      blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "youtube",   label: "YOUTUBE",   icon: "play.rectangle.fill",           color: Color(red:1.0,green:0.0,blue:0.0),               handle: "George Bayze (CORTEXNODE)", blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "youtube",   label: "YOUTUBE",   icon: "play.rectangle.fill",           color: Color(red:1.0,green:0.0,blue:0.0),               handle: "Founder (CORTEXNODE)", blotatoURL: "https://app.blotato.com"),
     ]
 
     private let violet = Color(red:0.545,green:0.361,blue:0.965)
@@ -409,7 +416,7 @@ cortexnode.ai
                     PostingQueue.shared.addDraft(
                         content: manifesto,
                         platforms: [.x, .instagram, .bluesky, .threads, .linkedin],
-                        sourcePrompt: "Founding Manifesto — George Bayze"
+                        sourcePrompt: "Founding Manifesto — Founder"
                     )
                 } label: {
                     HStack(spacing: 10) {
@@ -420,7 +427,7 @@ cortexnode.ai
                             Text("QUEUE FOUNDING MANIFESTO")
                                 .font(.system(size: 11, weight: .black, design: .monospaced))
                                 .foregroundColor(pink).tracking(1)
-                            Text("George Bayze · Founder Statement")
+                            Text("Founder · Founder Statement")
                                 .font(.system(size: 9, design: .monospaced))
                                 .foregroundColor(.white.opacity(0.35))
                         }
@@ -583,7 +590,7 @@ struct PRISMPlatformSheet: View {
                             .fill(isConnected ? Color.green : Color(red:0.9,green:0.6,blue:0.0))
                             .frame(width: 7, height: 7)
                             .shadow(color: isConnected ? .green : .orange, radius: 4)
-                        Text(isConnected ? "CONNECTED" : "API KEY NEEDED")
+                        Text(isConnected ? "ACCOUNT LINKED" : "API KEY NEEDED")
                             .font(.system(size: 10, weight: .bold, design: .monospaced))
                             .foregroundColor(isConnected ? .green : Color(red:0.9,green:0.6,blue:0.0))
                             .tracking(2)
@@ -593,7 +600,7 @@ struct PRISMPlatformSheet: View {
 
                 // Account info
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("CONNECTED ACCOUNT")
+                    Text("LINKED ACCOUNT")
                         .font(.system(size: 9, weight: .heavy, design: .monospaced))
                         .foregroundColor(v.opacity(0.5)).tracking(2)
                     HStack {
@@ -723,7 +730,7 @@ struct PRISMNetworkView: View {
                             Text("CORTEX BRAIN")
                                 .font(.system(size: 11, weight: .black, design: .monospaced))
                                 .foregroundColor(.white.opacity(0.85)).tracking(1)
-                            Text(brainPingOK == true ? "api.cortexnode.ai · CONNECTED" :
+                            Text(brainPingOK == true ? "api.cortexnode.ai · REACHABLE" :
                                  brainPingOK == false ? "api.cortexnode.ai · UNREACHABLE" :
                                  pingInProgress ? "PINGING..." : "TAP TO TEST CONNECTION")
                                 .font(.system(size: 9, design: .monospaced))
@@ -796,6 +803,55 @@ struct PRISMNetworkView: View {
     }
 }
 
+// MARK: - Calendar Stub
+struct PRISMCalendarStub: View {
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 20) {
+                VStack(spacing: 4) {
+                    Image(systemName: "calendar.badge.clock")
+                        .font(.system(size: 36))
+                        .foregroundStyle(
+                            LinearGradient(colors: [PBrand.violet, PBrand.pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+                        )
+                    Text("PUBLISH CALENDAR")
+                        .font(.system(size: 13, weight: .black, design: .monospaced))
+                        .foregroundColor(.white)
+                    Text("Coming Soon")
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundColor(PBrand.violet.opacity(0.6))
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                        .background(PBrand.violetDim)
+                        .clipShape(Capsule())
+                }
+                .padding(.top, 24)
+
+                VStack(spacing: 1) {
+                    ForEach(["Scheduled Posts", "Optimal Times", "Platform Windows", "Content Queue"], id: \.self) { item in
+                        HStack {
+                            Circle().fill(PBrand.violet.opacity(0.4)).frame(width: 6, height: 6)
+                            Text(item)
+                                .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                                .foregroundColor(.white.opacity(0.7))
+                            Spacer()
+                            Text("PENDING")
+                                .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                .foregroundColor(PBrand.violet.opacity(0.5))
+                        }
+                        .padding(.horizontal, 16).padding(.vertical, 12)
+                        .background(PBrand.violetDim)
+                        .overlay(Rectangle().fill(PBrand.violetLine.opacity(0.3)).frame(height: 1), alignment: .bottom)
+                    }
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(PBrand.violetLine, lineWidth: 1))
+                .padding(.horizontal, 16)
+            }
+            .padding(.bottom, 100)
+        }
+    }
+}
+
 // MARK: - Tab Bar
 private struct PRISMTabBar: View {
     @Binding var selectedTab: PTab
@@ -817,105 +873,6 @@ private struct PRISMTabBar: View {
         }
         .background(Rectangle().fill(.ultraThinMaterial).overlay(Rectangle().fill(Color.black.opacity(0.5))).overlay(Rectangle().fill(PBrand.violetLine.opacity(0.5)).frame(height: 1), alignment: .top))
         .ignoresSafeArea(edges: .bottom)
-    }
-}
-
-// MARK: - Splash
-struct PRISMSplashView: View {
-    let onEnter: () -> Void
-
-    @State private var imageOpacity: Double = 0.0
-    @State private var imageScale: CGFloat = 1.08
-    @State private var glowPulse = false
-    @State private var ringRotation: Double = 0
-    @State private var innerRingRotation: Double = 0
-    @State private var typedCount = 0
-    @State private var subtitleOpacity: Double = 0
-    @State private var coreGlow: Double = 0
-    @State private var scanLine: CGFloat = -0.1
-    @State private var fadeOut = false
-
-    private let accent = Color(red: 0.608, green: 0.188, blue: 1.0)
-    private let accentBright = Color(red: 0.784, green: 0.502, blue: 1.0)
-    private let titleLetters = Array("PRISM")
-    private let subtitle = "ONE SIGNAL. EVERY CHANNEL."
-    private let designator = "— PRISM —"
-    private let typeInterval: TimeInterval = 0.10
-
-    var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                Color.black.ignoresSafeArea()
-                Image("PRISMIntroHero")
-                    .resizable().interpolation(.high).scaledToFit()
-                    .frame(width: geo.size.width)
-                    .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
-                    .offset(y: geo.size.height * 0.14)
-                    .scaleEffect(imageScale).opacity(imageOpacity).ignoresSafeArea()
-                VStack(spacing: 0) {
-                    LinearGradient(colors: [Color.black.opacity(0.85), Color.black.opacity(0.3), Color.clear], startPoint: .top, endPoint: .bottom).frame(height: geo.size.height * 0.28)
-                    Spacer()
-                    LinearGradient(colors: [Color.clear, Color.black.opacity(0.5), Color.black.opacity(0.75)], startPoint: .top, endPoint: .bottom).frame(height: geo.size.height * 0.14)
-                }.ignoresSafeArea()
-                Rectangle()
-                    .fill(LinearGradient(colors: [.clear, accent.opacity(0.08), .clear], startPoint: .top, endPoint: .bottom))
-                    .frame(height: 60).offset(y: geo.size.height * scanLine).blendMode(.screen).allowsHitTesting(false)
-                Button { enterApp() } label: {
-                    ZStack {
-                        Circle().stroke(accent.opacity(0.22), style: StrokeStyle(lineWidth: 1, dash: [6, 4])).frame(width: 200, height: 200).rotationEffect(.degrees(ringRotation))
-                        Circle().stroke(accentBright.opacity(0.15), style: StrokeStyle(lineWidth: 0.8, dash: [3, 5])).frame(width: 140, height: 140).rotationEffect(.degrees(innerRingRotation))
-                        Circle().fill(accent.opacity(glowPulse ? 0.14 : 0.04)).frame(width: 120, height: 120)
-                        Text("ENTER").font(.system(size: 14, weight: .heavy, design: .monospaced)).foregroundColor(.white).tracking(5).shadow(color: accent, radius: 8).opacity(subtitleOpacity)
-                    }
-                }.buttonStyle(.plain).position(x: geo.size.width / 2, y: geo.size.height * 0.58).opacity(coreGlow)
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 64)
-                    HStack(spacing: 2) {
-                        ForEach(0..<titleLetters.count, id: \.self) { i in
-                            Text(String(titleLetters[i])).font(.system(size: 60, weight: .black, design: .monospaced)).foregroundColor(.white)
-                                .opacity(i < typedCount ? 1 : 0).scaleEffect(i < typedCount ? 1 : 0.5)
-                                .animation(.spring(response: 0.25, dampingFraction: 0.7), value: typedCount)
-                        }
-                    }.frame(maxWidth: .infinity).minimumScaleFactor(0.6)
-                    .shadow(color: accent, radius: 30)
-                    .shadow(color: accent.opacity(0.8), radius: 60)
-                    .shadow(color: accent.opacity(0.5), radius: 90)
-                    Spacer().frame(height: 8)
-                    Text(subtitle).font(.system(size: 15, weight: .heavy, design: .monospaced)).foregroundColor(accentBright).tracking(3).multilineTextAlignment(.center).frame(maxWidth: .infinity).opacity(subtitleOpacity)
-                    .shadow(color: accent, radius: 12).shadow(color: accent.opacity(0.6), radius: 30)
-                    Spacer().frame(height: 6)
-                    Text(designator).font(.system(size: 13, weight: .bold, design: .monospaced)).foregroundColor(accentBright).tracking(6).multilineTextAlignment(.center).frame(maxWidth: .infinity).opacity(subtitleOpacity)
-                    .shadow(color: accent.opacity(0.8), radius: 10)
-                    Spacer()
-                    VStack(spacing: 6) {
-                        Rectangle().fill(LinearGradient(colors: [.clear, accent.opacity(0.6), .clear], startPoint: .leading, endPoint: .trailing)).frame(width: 240, height: 1)
-                        Text("BROADCAST READY").font(.system(size: 13, weight: .black, design: .monospaced)).foregroundColor(accent.opacity(0.85)).tracking(6)
-                    }.opacity(subtitleOpacity)
-                    Button { enterApp() } label: { Text("SKIP").font(.system(size: 13, weight: .bold, design: .monospaced)).foregroundColor(.white.opacity(0.4)).tracking(3).padding(.horizontal, 24).padding(.vertical, 10) }.buttonStyle(.plain).opacity(subtitleOpacity)
-                    Spacer().frame(height: 32)
-                }
-            }.opacity(fadeOut ? 0 : 1).onAppear { runBootSequence() }
-        }
-    }
-
-    private func enterApp() {
-        withAnimation(.easeIn(duration: 0.3)) { fadeOut = true }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { onEnter() }
-    }
-
-    private func runBootSequence() {
-        withAnimation(.easeOut(duration: 1.2)) { imageOpacity = 1; imageScale = 1.0 }
-        withAnimation(.easeOut(duration: 1.5)) { coreGlow = 1 }
-        withAnimation(.linear(duration: 12).repeatForever(autoreverses: false)) { ringRotation = 360 }
-        withAnimation(.linear(duration: 8).repeatForever(autoreverses: false)) { innerRingRotation = -360 }
-        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) { glowPulse = true }
-        withAnimation(.easeInOut(duration: 2.2)) { scanLine = 1.1 }
-        for i in 0...titleLetters.count {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8 + Double(i) * typeInterval) { typedCount = i }
-        }
-        let end = 0.8 + Double(titleLetters.count) * typeInterval + 0.2
-        DispatchQueue.main.asyncAfter(deadline: .now() + end) { withAnimation(.easeIn(duration: 0.5)) { subtitleOpacity = 1 } }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 45) { guard !fadeOut else { return }; enterApp() }
     }
 }
 
