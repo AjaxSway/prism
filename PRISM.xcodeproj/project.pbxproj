@@ -7,70 +7,203 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		049881EE25C829A1003A6B6A /* ShellActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAEFBF468F78DC3607D5D6D /* ShellActivityView.swift */; };
+		0AC5F87D4BE08790D3816C87 /* ShellBrainGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B1AE6033E78D133C69135 /* ShellBrainGateway.swift */; };
+		17B13D541AC7E5CFE53F024F /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E7E948083E9A004A3E0EFD /* MemoryStore.swift */; };
 		17FF432A13C72367D1D4C042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39C2BFD64F1472AB8E548E9E /* Assets.xcassets */; };
-		2C952A41149D34DBECFF846B /* CortexLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CD810EEB65DB5F8EBEF0C9 /* CortexLogger.swift */; };
+		1DEB9AD5C9FE84A78C971495 /* ShellAppHomes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69106DEEAB0FE574C19DD62C /* ShellAppHomes.swift */; };
+		BB11BB22CC33DD44EE556677 /* ShellAppCoreOrb.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE556677 /* ShellAppCoreOrb.swift */; };
+		DD11BB22CC33DD44EE556677 /* PrismModuleViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC11BB22CC33DD44EE556677 /* PrismModuleViews.swift */; };
+		N0D3M0DUL3V13W5N0D3M0DUL3 /* NodeModuleViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = N0D3M0DUL3V13W5N0D3M0DUL4 /* NodeModuleViews.swift */; };
+		20A2B4824C09BC1B33F42B9E /* ShellComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBFA402558BA5489B29A72B /* ShellComponents.swift */; };
+		24E8F170C24C1B553A1E8713 /* PremiumShellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D99BCC6A3B1F5118919825B7 /* PremiumShellConfig.swift */; };
+		33EE77F8DC765D48E53D2E8D /* ShellTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF40D98D8E722D00B6E59B3D /* ShellTheme.swift */; };
+		3491FB3EC2DB9594ED671077 /* ImageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCED12C2F4220DCADD1289C /* ImageGenerationView.swift */; };
+		371AD5AD4BF6C1A9CA030C0B /* ShellAmbientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3369467AE6F337FD21B8D5D0 /* ShellAmbientBackground.swift */; };
 		3B55FF59508C7993714B23D0 /* PostingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3E2FF5950159D187A254BD /* PostingQueue.swift */; };
+		3D6A321FE8F114EBB95F2F2E /* ShellFeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9E1534078F92C81A8D2E27 /* ShellFeatureFlags.swift */; };
+		3EBA3DE47CA481F2C9CF16CF /* CortexPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194296CE52875294936AA93 /* CortexPalette.swift */; };
 		45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF581196F074CC78EF6E49A /* PRISMApp.swift */; };
+		47212A93E6A9804CFBBFD02F /* PrismImageStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2BD3EB2D62F42021AF244 /* PrismImageStudioView.swift */; };
+		4CB4E86F7E0B1E85AEC4D208 /* ShellStoreKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C761EFAF6B9562A86AF2C32D /* ShellStoreKitBridge.swift */; };
+		4E3BCB2421D68E58755BD824 /* CortexChatThemes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E4B2CBFF5E0E8D5DCAB7EF /* CortexChatThemes.swift */; };
+		539A1505C27EF30F9CDE02C5 /* PremiumShellConfig+Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEA0031972F96E9EBD492C6 /* PremiumShellConfig+Prism.swift */; };
+		5622D3B89FDCDE9F435CEBB6 /* ShellLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B8A9A9F6B7F8D4C4E221A7 /* ShellLaunchView.swift */; };
 		67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78577F32B524B5DB42C33D4A /* PRISMRootView.swift */; };
+		6B832A2D648FFDAD92A6601B /* CortexPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF819035B645BDC5BCF99F1 /* CortexPaywallView.swift */; };
+		707972D1CD0D3B76F2B09DFE /* ShellBrainOrb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13230D9347FC0EDE87551B /* ShellBrainOrb.swift */; };
+		726892E50E8EB7C017A35728 /* ShellPremiumChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B9801BE4D7ED421BC6F425 /* ShellPremiumChrome.swift */; };
+		76B0ED6F57F0B33EEBC61922 /* MockImageGenerationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158AD1A6F24276B4449A5A95 /* MockImageGenerationService.swift */; };
+		83A66ED1DECCAEB277ABB216 /* ShellModulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E14B78DA404A5D11212D3AA /* ShellModulesView.swift */; };
+		872C9E5110D41462E8DA5F39 /* CortexUniverseBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA23792B5E7F20A5E01AECB6 /* CortexUniverseBrain.swift */; };
+		89171D12B4F53E3E72FDAEE7 /* ShellCommandCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26A668A2E33470CB6546D81 /* ShellCommandCenterView.swift */; };
+		8C5379A1B4BA2A0EAF809B1F /* CortexLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4B12F379F4C70FAAFF7BE5 /* CortexLogger.swift */; };
+		91631960F8F23C17F4D1696C /* ShellSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910D138DB1BC1E4A7FF64A61 /* ShellSettingsView.swift */; };
+		9206728789B042717465DC5A /* AuthSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1E2B6110E630E022C6A6 /* AuthSessionStore.swift */; };
+		92F63407A2EFA28E51F57460 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 835A16C9DED5BCF2FCD9FD8F /* GoogleService-Info.plist */; };
+		9658169674C684BEDADC5107 /* ShellCinematicIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1905573EE9DFF5AE7CA2F827 /* ShellCinematicIntroView.swift */; };
 		9CBC5475587B5C4419167E50 /* BlotatoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */; };
-		A1B2C3D4E5F6A7B8C9D0E1F2 /* VoiceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */; };
-		AA11BB22CC33DD44EE55FF66 /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */; };
+		9E68F006E3E57AF0A460D051 /* ImageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6B2261E296F6A6ABCFD436 /* ImageModels.swift */; };
+		A051B74ABE9F71D7716BD568 /* ImageHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249EAAC2FBF3BE459B0A93C7 /* ImageHistoryStore.swift */; };
+		A4F4A3234AB63B2C8719E5FF /* PrismRefractionStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF45ED7058B6962D44057C /* PrismRefractionStudioView.swift */; };
+		A6289B5BE39973366686A1CD /* SharedCortexBrainPulseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6082A76266D956EFCAEFDB /* SharedCortexBrainPulseView.swift */; };
+		B9BA717A1C9300C2C5EAC419 /* CortexChatShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00FF53A73458526FE2F95E1 /* CortexChatShell.swift */; };
+		BE98D46E5CE004690A69D985 /* UniversePremiumShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DEB5E3B860046F3C018A25 /* UniversePremiumShell.swift */; };
 		C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */; };
-		CB8100A5CCC6FDB6DED4DE6D /* CortexStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D824246A43AE41C0EDDADE /* CortexStoreManager.swift */; };
-		D116C5FA433061BD839E5A17 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F190B8ED585270CFE51C6ECB /* GoogleService-Info.plist */; };
+		C2A714B322E2643517210C90 /* CortexChatTheme+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407255B87385DD9F1E87607E /* CortexChatTheme+App.swift */; };
+		C521698B41644734DAC09491 /* PremiumShellRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154C148D975FCD7C6642E5F4 /* PremiumShellRouter.swift */; };
+		C78A5C249C122881409B7D28 /* ShellLegalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE600A8D5557D8408556318 /* ShellLegalLinks.swift */; };
+		C810811C4358DD9AF9B9260C /* ShellForgeVisuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA80ED571C2A92AA2E7FE236 /* ShellForgeVisuals.swift */; };
+		FORG3N1GHTPRM001BUILD /* ShellForgeNightDeck.swift in Sources */ = {isa = PBXBuildFile; fileRef = FORG3N1GHTPRM001FILE /* ShellForgeNightDeck.swift */; };
+		E5E5E5E5E5E5E5E5E5E5E5E5 /* ShellCanonVisuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F6F6F6F6F6F6F6F6F6F6F6 /* ShellCanonVisuals.swift */; };
+		C869660A227719572E786C9E /* FirstLaunchCinematicIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB95B9A11DCA5B22A5771C /* FirstLaunchCinematicIntroView.swift */; };
+		CA29B1E06877751B03BA88AD /* ShellEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B447BEEDC74653FFA07F55 /* ShellEnvironment.swift */; };
+		CBA35E0035ABD28F177428AA /* VoiceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C19B3A6E54987DE4257BD /* VoiceService.swift */; };
+		D324A98007783E389BE42439 /* CortexIntroPosterImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5B7D431A7DCF787960D942 /* CortexIntroPosterImage.swift */; };
+		D9F1CC1BE55F3B0B5F115857 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E421938AACBCBF791F4C76A8 /* PrivacyInfo.xcprivacy */; };
 		DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */; };
-		E4E278004012E01303E1AB94 /* AuthSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058523F5CEB01F2AA1E83347 /* AuthSessionStore.swift */; };
+		E2937073FC1D3C4062F1A12E /* ShellActivityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D4736F5B40DEF0D34BEA18 /* ShellActivityStore.swift */; };
+		E8350E82608CCA9DEA237E54 /* PRISMSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E6BFED429ACDF4ED0177BB /* PRISMSplashView.swift */; };
+		EA4997AEE49C13BBB86A7581 /* ShellCortexBrainPulse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BA6C7839846529AD7AB689 /* ShellCortexBrainPulse.swift */; };
 		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
-		FBC00000000000000000005A /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
-		FBC00000000000000000006A /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
-		FBC00000000000000000007A /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
+		FCB0F690A3FA4F627305E880 /* ShellOrbState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34EACF0BE87534F84E553B0 /* ShellOrbState.swift */; };
+		FCE8D6A74DD5D18D39E5BB78 /* ShellAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36672345C9856ED40DE2AC0A /* ShellAboutView.swift */; };
 		FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */; };
+		FFDBE61354E9AAA5F0AE5254 /* CortexStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63395E8A22AC6830570F36BA /* CortexStoreManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		058523F5CEB01F2AA1E83347 /* AuthSessionStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthSessionStore.swift; sourceTree = "<group>"; };
-		24D824246A43AE41C0EDDADE /* CortexStoreManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CortexStoreManager.swift; sourceTree = "<group>"; };
+		0571A6713B4A3058CD4745AC /* CLAUDE_BRAIN_WIRE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE_BRAIN_WIRE.md; sourceTree = "<group>"; };
+		0B13230D9347FC0EDE87551B /* ShellBrainOrb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellBrainOrb.swift; sourceTree = "<group>"; };
+		0BCED12C2F4220DCADD1289C /* ImageGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGenerationView.swift; sourceTree = "<group>"; };
+		0C4B12F379F4C70FAAFF7BE5 /* CortexLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexLogger.swift; sourceTree = "<group>"; };
+		0E6B2261E296F6A6ABCFD436 /* ImageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModels.swift; sourceTree = "<group>"; };
+		154C148D975FCD7C6642E5F4 /* PremiumShellRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumShellRouter.swift; sourceTree = "<group>"; };
+		158AD1A6F24276B4449A5A95 /* MockImageGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageGenerationService.swift; sourceTree = "<group>"; };
+		188B1AE6033E78D133C69135 /* ShellBrainGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellBrainGateway.swift; sourceTree = "<group>"; };
+		1905573EE9DFF5AE7CA2F827 /* ShellCinematicIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellCinematicIntroView.swift; sourceTree = "<group>"; };
+		249EAAC2FBF3BE459B0A93C7 /* ImageHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHistoryStore.swift; sourceTree = "<group>"; };
+		26AF1E2B6110E630E022C6A6 /* AuthSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionStore.swift; sourceTree = "<group>"; };
+		2E5B7D431A7DCF787960D942 /* CortexIntroPosterImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexIntroPosterImage.swift; sourceTree = "<group>"; };
+		3369467AE6F337FD21B8D5D0 /* ShellAmbientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellAmbientBackground.swift; sourceTree = "<group>"; };
+		36672345C9856ED40DE2AC0A /* ShellAboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellAboutView.swift; sourceTree = "<group>"; };
 		39C2BFD64F1472AB8E548E9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3BAEFBF468F78DC3607D5D6D /* ShellActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellActivityView.swift; sourceTree = "<group>"; };
+		407255B87385DD9F1E87607E /* CortexChatTheme+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CortexChatTheme+App.swift"; sourceTree = "<group>"; };
+		4194296CE52875294936AA93 /* CortexPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexPalette.swift; sourceTree = "<group>"; };
 		4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PRISM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B3E2FF5950159D187A254BD /* PostingQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingQueue.swift; sourceTree = "<group>"; };
 		5EA9BAB1AFBBD965453C43CB /* PRISMState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMState.swift; sourceTree = "<group>"; };
 		61119682068B87BF0DFD440E /* BrainConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainConnector.swift; sourceTree = "<group>"; };
+		63395E8A22AC6830570F36BA /* CortexStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexStoreManager.swift; sourceTree = "<group>"; };
+		69106DEEAB0FE574C19DD62C /* ShellAppHomes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellAppHomes.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE556677 /* ShellAppCoreOrb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellAppCoreOrb.swift; sourceTree = "<group>"; };
+		CC11BB22CC33DD44EE556677 /* PrismModuleViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismModuleViews.swift; sourceTree = "<group>"; };
+		N0D3M0DUL3V13W5N0D3M0DUL4 /* NodeModuleViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeModuleViews.swift; sourceTree = "<group>"; };
+		71B447BEEDC74653FFA07F55 /* ShellEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellEnvironment.swift; sourceTree = "<group>"; };
+		73BA6C7839846529AD7AB689 /* ShellCortexBrainPulse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellCortexBrainPulse.swift; sourceTree = "<group>"; };
+		74DEB5E3B860046F3C018A25 /* UniversePremiumShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversePremiumShell.swift; sourceTree = "<group>"; };
 		78577F32B524B5DB42C33D4A /* PRISMRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMRootView.swift; sourceTree = "<group>"; };
 		8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlotatoService.swift; sourceTree = "<group>"; };
-		95CD810EEB65DB5F8EBEF0C9 /* CortexLogger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CortexLogger.swift; sourceTree = "<group>"; };
-		AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
-		B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceService.swift; sourceTree = "<group>"; };
+		80B9801BE4D7ED421BC6F425 /* ShellPremiumChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellPremiumChrome.swift; sourceTree = "<group>"; };
+		835A16C9DED5BCF2FCD9FD8F /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		84E4B2CBFF5E0E8D5DCAB7EF /* CortexChatThemes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexChatThemes.swift; sourceTree = "<group>"; };
+		8E14B78DA404A5D11212D3AA /* ShellModulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellModulesView.swift; sourceTree = "<group>"; };
+		8FE600A8D5557D8408556318 /* ShellLegalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellLegalLinks.swift; sourceTree = "<group>"; };
+		910D138DB1BC1E4A7FF64A61 /* ShellSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellSettingsView.swift; sourceTree = "<group>"; };
+		A26A668A2E33470CB6546D81 /* ShellCommandCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellCommandCenterView.swift; sourceTree = "<group>"; };
+		A5E6BFED429ACDF4ED0177BB /* PRISMSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMSplashView.swift; sourceTree = "<group>"; };
+		A5F2BD3EB2D62F42021AF244 /* PrismImageStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismImageStudioView.swift; sourceTree = "<group>"; };
+		A9D4736F5B40DEF0D34BEA18 /* ShellActivityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellActivityStore.swift; sourceTree = "<group>"; };
+		BA23792B5E7F20A5E01AECB6 /* CortexUniverseBrain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexUniverseBrain.swift; sourceTree = "<group>"; };
+		BAF819035B645BDC5BCF99F1 /* CortexPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexPaywallView.swift; sourceTree = "<group>"; };
 		BCF581196F074CC78EF6E49A /* PRISMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMApp.swift; sourceTree = "<group>"; };
+		C34EACF0BE87534F84E553B0 /* ShellOrbState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellOrbState.swift; sourceTree = "<group>"; };
+		C761EFAF6B9562A86AF2C32D /* ShellStoreKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellStoreKitBridge.swift; sourceTree = "<group>"; };
+		CA80ED571C2A92AA2E7FE236 /* ShellForgeVisuals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellForgeVisuals.swift; sourceTree = "<group>"; };
+		FORG3N1GHTPRM001FILE /* ShellForgeNightDeck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellForgeNightDeck.swift; sourceTree = "<group>"; };
+		F6F6F6F6F6F6F6F6F6F6F6F6 /* ShellCanonVisuals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellCanonVisuals.swift; sourceTree = "<group>"; };
+		CAEA0031972F96E9EBD492C6 /* PremiumShellConfig+Prism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumShellConfig+Prism.swift"; sourceTree = "<group>"; };
+		CF40D98D8E722D00B6E59B3D /* ShellTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellTheme.swift; sourceTree = "<group>"; };
 		D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMSettingsView.swift; sourceTree = "<group>"; };
+		D99BCC6A3B1F5118919825B7 /* PremiumShellConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumShellConfig.swift; sourceTree = "<group>"; };
+		DB9E1534078F92C81A8D2E27 /* ShellFeatureFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellFeatureFlags.swift; sourceTree = "<group>"; };
+		DBBFA402558BA5489B29A72B /* ShellComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellComponents.swift; sourceTree = "<group>"; };
+		E00FF53A73458526FE2F95E1 /* CortexChatShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexChatShell.swift; sourceTree = "<group>"; };
+		E3E7E948083E9A004A3E0EFD /* MemoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
+		E421938AACBCBF791F4C76A8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6596EFF9E2967BA5F98871F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		F190B8ED585270CFE51C6ECB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E9EB95B9A11DCA5B22A5771C /* FirstLaunchCinematicIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLaunchCinematicIntroView.swift; sourceTree = "<group>"; };
+		EF7C19B3A6E54987DE4257BD /* VoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceService.swift; sourceTree = "<group>"; };
+		F4BF45ED7058B6962D44057C /* PrismRefractionStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismRefractionStudioView.swift; sourceTree = "<group>"; };
+		F7B8A9A9F6B7F8D4C4E221A7 /* ShellLaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellLaunchView.swift; sourceTree = "<group>"; };
 		F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMQueueView.swift; sourceTree = "<group>"; };
+		FD6082A76266D956EFCAEFDB /* SharedCortexBrainPulseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedCortexBrainPulseView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFrameworksBuildPhase section */
-		FBC00000000000000000008A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FBC00000000000000000005A /* BuildFile in Frameworks */,
-				FBC00000000000000000006A /* BuildFile in Frameworks */,
-				FBC00000000000000000007A /* BuildFile in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
 /* Begin PBXGroup section */
+		1B76898461568C2EF12DD0BA /* Shell */ = {
+			isa = PBXGroup;
+			children = (
+				0571A6713B4A3058CD4745AC /* CLAUDE_BRAIN_WIRE.md */,
+				D99BCC6A3B1F5118919825B7 /* PremiumShellConfig.swift */,
+				CAEA0031972F96E9EBD492C6 /* PremiumShellConfig+Prism.swift */,
+				154C148D975FCD7C6642E5F4 /* PremiumShellRouter.swift */,
+				A5F2BD3EB2D62F42021AF244 /* PrismImageStudioView.swift */,
+				F4BF45ED7058B6962D44057C /* PrismRefractionStudioView.swift */,
+				36672345C9856ED40DE2AC0A /* ShellAboutView.swift */,
+				A9D4736F5B40DEF0D34BEA18 /* ShellActivityStore.swift */,
+				3BAEFBF468F78DC3607D5D6D /* ShellActivityView.swift */,
+				3369467AE6F337FD21B8D5D0 /* ShellAmbientBackground.swift */,
+				69106DEEAB0FE574C19DD62C /* ShellAppHomes.swift */,
+				AA11BB22CC33DD44EE556677 /* ShellAppCoreOrb.swift */,
+				CC11BB22CC33DD44EE556677 /* PrismModuleViews.swift */,
+				N0D3M0DUL3V13W5N0D3M0DUL4 /* NodeModuleViews.swift */,
+				188B1AE6033E78D133C69135 /* ShellBrainGateway.swift */,
+				0B13230D9347FC0EDE87551B /* ShellBrainOrb.swift */,
+				1905573EE9DFF5AE7CA2F827 /* ShellCinematicIntroView.swift */,
+				A26A668A2E33470CB6546D81 /* ShellCommandCenterView.swift */,
+				DBBFA402558BA5489B29A72B /* ShellComponents.swift */,
+				73BA6C7839846529AD7AB689 /* ShellCortexBrainPulse.swift */,
+				71B447BEEDC74653FFA07F55 /* ShellEnvironment.swift */,
+				DB9E1534078F92C81A8D2E27 /* ShellFeatureFlags.swift */,
+				CA80ED571C2A92AA2E7FE236 /* ShellForgeVisuals.swift */,
+				FORG3N1GHTPRM001FILE /* ShellForgeNightDeck.swift */,
+				F6F6F6F6F6F6F6F6F6F6F6F6 /* ShellCanonVisuals.swift */,
+				F7B8A9A9F6B7F8D4C4E221A7 /* ShellLaunchView.swift */,
+				8FE600A8D5557D8408556318 /* ShellLegalLinks.swift */,
+				8E14B78DA404A5D11212D3AA /* ShellModulesView.swift */,
+				C34EACF0BE87534F84E553B0 /* ShellOrbState.swift */,
+				80B9801BE4D7ED421BC6F425 /* ShellPremiumChrome.swift */,
+				910D138DB1BC1E4A7FF64A61 /* ShellSettingsView.swift */,
+				C761EFAF6B9562A86AF2C32D /* ShellStoreKitBridge.swift */,
+				CF40D98D8E722D00B6E59B3D /* ShellTheme.swift */,
+				2A228161F346CD636A1591C0 /* ImageStudio */,
+			);
+			path = Shell;
+			sourceTree = "<group>";
+		};
+		2A228161F346CD636A1591C0 /* ImageStudio */ = {
+			isa = PBXGroup;
+			children = (
+				0BCED12C2F4220DCADD1289C /* ImageGenerationView.swift */,
+				249EAAC2FBF3BE459B0A93C7 /* ImageHistoryStore.swift */,
+				0E6B2261E296F6A6ABCFD436 /* ImageModels.swift */,
+				158AD1A6F24276B4449A5A95 /* MockImageGenerationService.swift */,
+			);
+			path = ImageStudio;
+			sourceTree = "<group>";
+		};
 		30914D318B7B1D383559AC66 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				26AF1E2B6110E630E022C6A6 /* AuthSessionStore.swift */,
 				8016BA6C7FFD51ABBA5C29D5 /* BlotatoService.swift */,
 				61119682068B87BF0DFD440E /* BrainConnector.swift */,
-				AA11BB22CC33DD44EE55FF67 /* MemoryStore.swift */,
-				B1C2D3E4F5A6B7C8D9E0F1A2 /* VoiceService.swift */,
-				058523F5CEB01F2AA1E83347 /* AuthSessionStore.swift */,
-				95CD810EEB65DB5F8EBEF0C9 /* CortexLogger.swift */,
-				24D824246A43AE41C0EDDADE /* CortexStoreManager.swift */,
+				0C4B12F379F4C70FAAFF7BE5 /* CortexLogger.swift */,
+				63395E8A22AC6830570F36BA /* CortexStoreManager.swift */,
+				E3E7E948083E9A004A3E0EFD /* MemoryStore.swift */,
+				EF7C19B3A6E54987DE4257BD /* VoiceService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -79,10 +212,15 @@
 			isa = PBXGroup;
 			children = (
 				39C2BFD64F1472AB8E548E9E /* Assets.xcassets */,
+				835A16C9DED5BCF2FCD9FD8F /* GoogleService-Info.plist */,
 				E6596EFF9E2967BA5F98871F /* Info.plist */,
 				BCF581196F074CC78EF6E49A /* PRISMApp.swift */,
+				E421938AACBCBF791F4C76A8 /* PrivacyInfo.xcprivacy */,
+				8A9913C19E77D499389602C2 /* Chat */,
 				E1E2E4CF8D659815CED3FC4A /* Models */,
 				30914D318B7B1D383559AC66 /* Services */,
+				1B76898461568C2EF12DD0BA /* Shell */,
+				99D1F1C4CD6F94239BEEB9F3 /* Theme */,
 				7254A6AA29F3D3D5ACAFDB35 /* Views */,
 			);
 			path = PRISM;
@@ -91,17 +229,41 @@
 		7254A6AA29F3D3D5ACAFDB35 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2E5B7D431A7DCF787960D942 /* CortexIntroPosterImage.swift */,
+				BAF819035B645BDC5BCF99F1 /* CortexPaywallView.swift */,
+				E9EB95B9A11DCA5B22A5771C /* FirstLaunchCinematicIntroView.swift */,
 				F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */,
 				78577F32B524B5DB42C33D4A /* PRISMRootView.swift */,
 				D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */,
+				A5E6BFED429ACDF4ED0177BB /* PRISMSplashView.swift */,
+				74DEB5E3B860046F3C018A25 /* UniversePremiumShell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8A9913C19E77D499389602C2 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				E00FF53A73458526FE2F95E1 /* CortexChatShell.swift */,
+				407255B87385DD9F1E87607E /* CortexChatTheme+App.swift */,
+				84E4B2CBFF5E0E8D5DCAB7EF /* CortexChatThemes.swift */,
+				BA23792B5E7F20A5E01AECB6 /* CortexUniverseBrain.swift */,
+				FD6082A76266D956EFCAEFDB /* SharedCortexBrainPulseView.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		99D1F1C4CD6F94239BEEB9F3 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				4194296CE52875294936AA93 /* CortexPalette.swift */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 		9ACB8EA292F0BE5D323F4DC2 = {
 			isa = PBXGroup;
 			children = (
-				F190B8ED585270CFE51C6ECB /* GoogleService-Info.plist */,
 				4E56F2BFEC11A665830CE0B7 /* PRISM */,
 				9DFE55D93D71E8D607CD0AF1 /* Products */,
 			);
@@ -131,7 +293,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 81BC70D49DA35C9EB78F5847 /* Build configuration list for PBXNativeTarget "PRISM" */;
 			buildPhases = (
-				FBC00000000000000000008A /* Frameworks */,
 				785A90982744341794619D09 /* Sources */,
 				C0393216D459C799F6A7BF5C /* Resources */,
 			);
@@ -140,6 +301,8 @@
 			dependencies = (
 			);
 			name = PRISM;
+			packageProductDependencies = (
+			);
 			productName = PRISM;
 			productReference = 4AD9E7D3A3FB939110C3FEF7 /* PRISM.app */;
 			productType = "com.apple.product-type.application";
@@ -153,6 +316,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
+					5CACE39891AF97458D8C72B9 = {
+						DevelopmentTeam = 72N4R2QL9Q;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = F24101CEB1B906D95F30D585 /* Build configuration list for PBXProject "PRISM" */;
@@ -164,9 +331,6 @@
 			);
 			mainGroup = 9ACB8EA292F0BE5D323F4DC2;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				FBC00000000000000000001A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9DFE55D93D71E8D607CD0AF1 /* Products */;
 			projectDirPath = "";
@@ -182,8 +346,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D116C5FA433061BD839E5A17 /* GoogleService-Info.plist in Resources */,
 				17FF432A13C72367D1D4C042 /* Assets.xcassets in Resources */,
+				92F63407A2EFA28E51F57460 /* GoogleService-Info.plist in Resources */,
+				D9F1CC1BE55F3B0B5F115857 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,19 +359,66 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9206728789B042717465DC5A /* AuthSessionStore.swift in Sources */,
 				9CBC5475587B5C4419167E50 /* BlotatoService.swift in Sources */,
 				F3B428250B1560910C037304 /* BrainConnector.swift in Sources */,
-				AA11BB22CC33DD44EE55FF66 /* MemoryStore.swift in Sources */,
-				A1B2C3D4E5F6A7B8C9D0E1F2 /* VoiceService.swift in Sources */,
+				B9BA717A1C9300C2C5EAC419 /* CortexChatShell.swift in Sources */,
+				C2A714B322E2643517210C90 /* CortexChatTheme+App.swift in Sources */,
+				4E3BCB2421D68E58755BD824 /* CortexChatThemes.swift in Sources */,
+				D324A98007783E389BE42439 /* CortexIntroPosterImage.swift in Sources */,
+				8C5379A1B4BA2A0EAF809B1F /* CortexLogger.swift in Sources */,
+				3EBA3DE47CA481F2C9CF16CF /* CortexPalette.swift in Sources */,
+				6B832A2D648FFDAD92A6601B /* CortexPaywallView.swift in Sources */,
+				FFDBE61354E9AAA5F0AE5254 /* CortexStoreManager.swift in Sources */,
+				872C9E5110D41462E8DA5F39 /* CortexUniverseBrain.swift in Sources */,
+				C869660A227719572E786C9E /* FirstLaunchCinematicIntroView.swift in Sources */,
+				3491FB3EC2DB9594ED671077 /* ImageGenerationView.swift in Sources */,
+				A051B74ABE9F71D7716BD568 /* ImageHistoryStore.swift in Sources */,
+				9E68F006E3E57AF0A460D051 /* ImageModels.swift in Sources */,
+				17B13D541AC7E5CFE53F024F /* MemoryStore.swift in Sources */,
+				76B0ED6F57F0B33EEBC61922 /* MockImageGenerationService.swift in Sources */,
 				45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */,
 				C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */,
 				67F697C4366B5577F677BC56 /* PRISMRootView.swift in Sources */,
 				FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */,
+				E8350E82608CCA9DEA237E54 /* PRISMSplashView.swift in Sources */,
 				DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */,
 				3B55FF59508C7993714B23D0 /* PostingQueue.swift in Sources */,
-				E4E278004012E01303E1AB94 /* AuthSessionStore.swift in Sources */,
-				2C952A41149D34DBECFF846B /* CortexLogger.swift in Sources */,
-				CB8100A5CCC6FDB6DED4DE6D /* CortexStoreManager.swift in Sources */,
+				539A1505C27EF30F9CDE02C5 /* PremiumShellConfig+Prism.swift in Sources */,
+				24E8F170C24C1B553A1E8713 /* PremiumShellConfig.swift in Sources */,
+				C521698B41644734DAC09491 /* PremiumShellRouter.swift in Sources */,
+				47212A93E6A9804CFBBFD02F /* PrismImageStudioView.swift in Sources */,
+				A4F4A3234AB63B2C8719E5FF /* PrismRefractionStudioView.swift in Sources */,
+				A6289B5BE39973366686A1CD /* SharedCortexBrainPulseView.swift in Sources */,
+				FCE8D6A74DD5D18D39E5BB78 /* ShellAboutView.swift in Sources */,
+				E2937073FC1D3C4062F1A12E /* ShellActivityStore.swift in Sources */,
+				049881EE25C829A1003A6B6A /* ShellActivityView.swift in Sources */,
+				371AD5AD4BF6C1A9CA030C0B /* ShellAmbientBackground.swift in Sources */,
+				1DEB9AD5C9FE84A78C971495 /* ShellAppHomes.swift in Sources */,
+				BB11BB22CC33DD44EE556677 /* ShellAppCoreOrb.swift in Sources */,
+				DD11BB22CC33DD44EE556677 /* PrismModuleViews.swift in Sources */,
+				N0D3M0DUL3V13W5N0D3M0DUL3 /* NodeModuleViews.swift in Sources */,
+				0AC5F87D4BE08790D3816C87 /* ShellBrainGateway.swift in Sources */,
+				707972D1CD0D3B76F2B09DFE /* ShellBrainOrb.swift in Sources */,
+				9658169674C684BEDADC5107 /* ShellCinematicIntroView.swift in Sources */,
+				89171D12B4F53E3E72FDAEE7 /* ShellCommandCenterView.swift in Sources */,
+				20A2B4824C09BC1B33F42B9E /* ShellComponents.swift in Sources */,
+				EA4997AEE49C13BBB86A7581 /* ShellCortexBrainPulse.swift in Sources */,
+				CA29B1E06877751B03BA88AD /* ShellEnvironment.swift in Sources */,
+				3D6A321FE8F114EBB95F2F2E /* ShellFeatureFlags.swift in Sources */,
+				C810811C4358DD9AF9B9260C /* ShellForgeVisuals.swift in Sources */,
+				FORG3N1GHTPRM001BUILD /* ShellForgeNightDeck.swift in Sources */,
+				E5E5E5E5E5E5E5E5E5E5E5E5 /* ShellCanonVisuals.swift in Sources */,
+				5622D3B89FDCDE9F435CEBB6 /* ShellLaunchView.swift in Sources */,
+				C78A5C249C122881409B7D28 /* ShellLegalLinks.swift in Sources */,
+				83A66ED1DECCAEB277ABB216 /* ShellModulesView.swift in Sources */,
+				FCB0F690A3FA4F627305E880 /* ShellOrbState.swift in Sources */,
+				726892E50E8EB7C017A35728 /* ShellPremiumChrome.swift in Sources */,
+				91631960F8F23C17F4D1696C /* ShellSettingsView.swift in Sources */,
+				4CB4E86F7E0B1E85AEC4D208 /* ShellStoreKitBridge.swift in Sources */,
+				33EE77F8DC765D48E53D2E8D /* ShellTheme.swift in Sources */,
+				BE98D46E5CE004690A69D985 /* UniversePremiumShell.swift in Sources */,
+				CBA35E0035ABD28F177428AA /* VoiceService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +487,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 72N4R2QL9Q;
@@ -359,6 +573,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 72N4R2QL9Q;
@@ -396,17 +612,6 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		FBC00000000000000000001A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.13.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 9437BA67D8E1EE3458871BC8 /* Project object */;
 }
