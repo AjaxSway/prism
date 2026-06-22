@@ -1,0 +1,71 @@
+import SwiftUI
+
+/// FORGE-style intro stack: every-launch poster splash + first-install cinematic overlay.
+struct ShellUniverseIntroGate<Content: View>: View {
+    let shellConfig: PremiumShellConfig
+    let introConfig: AppIntroConfig
+    @ViewBuilder var content: () -> Content
+
+    @AppStorage private var hasSeenCinematicIntro: Bool
+    @State private var showSplash = true
+
+    init(shellConfig: PremiumShellConfig, introConfig: AppIntroConfig, @ViewBuilder content: @escaping () -> Content) {
+        self.shellConfig = shellConfig
+        self.introConfig = introConfig
+        self.content = content
+        _hasSeenCinematicIntro = AppStorage(wrappedValue: false, introConfig.defaultsKey)
+    }
+
+    var body: some View {
+        ZStack {
+            if !showSplash {
+                content()
+                    .transition(.opacity)
+            } else {
+                Color.black.ignoresSafeArea()
+            }
+
+            if showSplash && hasSeenCinematicIntro {
+                ShellPosterSplashView(config: shellConfig) {
+                    withAnimation(.easeOut(duration: 0.55)) { showSplash = false }
+                }
+                .zIndex(100)
+            }
+
+            if !hasSeenCinematicIntro {
+                FirstLaunchCinematicIntroView(config: introConfig) {
+                    withAnimation(.easeIn(duration: 0.4)) {
+                        hasSeenCinematicIntro = true
+                        showSplash = false
+                    }
+                }
+                .zIndex(500)
+            }
+        }
+    }
+}
+
+extension AppIntroConfig {
+    static let aurion = AppIntroConfig(
+        appKey: "AURION",
+        title: "AURION",
+        subtitle: "LEGACY COMMAND\nINTELLIGENCE",
+        identity: "VICTORY PROTOCOL",
+        statusText: "SHELL PREVIEW",
+        accentColor: Color(red: 1.0, green: 0.0, blue: 0.25),
+        secondaryColor: Color(red: 1.0, green: 0.84, blue: 0.0),
+        imageName: "AurionIntroHero",
+        enterY: 0.625,
+        posterDownshift: 18,
+        posterHasEmbeddedUI: true,
+        fitMode: false
+    )
+
+    static func forShell(_ shell: PremiumShellConfig) -> AppIntroConfig {
+        switch shell.appKind {
+        case .cortexNode: return .cortexNode
+        case .jericho: return .jericho
+        case .prism: return .prism
+        }
+    }
+}
