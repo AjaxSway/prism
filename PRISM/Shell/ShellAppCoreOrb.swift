@@ -16,7 +16,7 @@ struct ShellAppCoreOrbView: View {
         case .jericho:
             ShellJerichoCoreOrb(primary: color, secondary: secondary, size: size, intensity: intensity, alert: orbState == .warning || orbState == .error)
         case .prism:
-            ShellPrismCoreOrb(violet: color, pink: secondary, size: size, intensity: intensity)
+            ShellPrismCoreOrb(violet: color, pink: secondary, size: size, intensity: intensity, orbState: orbState)
         }
     }
 }
@@ -101,12 +101,31 @@ struct ShellPrismCoreOrb: View {
     let pink: Color
     var size: CGFloat = 120
     var intensity: Double = 1.0
+    var orbState: ShellOrbState = .idle
+
+    private var pulseFrequency: Double {
+        switch orbState {
+        case .executing, .thinking: return 4.4
+        case .speaking, .listening: return 3.4
+        case .success: return 2.2
+        case .warning, .error: return 5.0
+        default: return 2.4
+        }
+    }
+
+    private var beamCount: Int {
+        switch orbState {
+        case .executing, .thinking, .speaking: return 5
+        case .listening: return 4
+        default: return 3
+        }
+    }
 
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { timeline in
             let t = timeline.date.timeIntervalSinceReferenceDate
-            let pulse = 0.9 + 0.1 * sin(t * 2.4)
-            let spin = t * 12
+            let pulse = 0.88 + 0.12 * sin(t * pulseFrequency)
+            let spin = t * (orbState == .executing ? 22 : 12)
 
             Canvas { ctx, canvasSize in
                 let center = CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
@@ -115,10 +134,31 @@ struct ShellPrismCoreOrb: View {
                 ctx.fill(
                     Path(ellipseIn: CGRect(x: center.x - maxR, y: center.y - maxR, width: maxR * 2, height: maxR * 2)),
                     with: .radialGradient(
-                        Gradient(colors: [violet.opacity(0.35 * pulse), pink.opacity(0.12), .clear]),
+                        Gradient(colors: [violet.opacity(0.38 * pulse * intensity), pink.opacity(0.14), .clear]),
                         center: center, startRadius: 0, endRadius: maxR
                     )
                 )
+
+                for ring in 1...3 {
+                    let r = maxR * (0.55 + CGFloat(ring) * 0.14) + CGFloat(sin(t * 1.8 + Double(ring))) * 2
+                    ctx.stroke(
+                        Path(ellipseIn: CGRect(x: center.x - r, y: center.y - r, width: r * 2, height: r * 2)),
+                        with: .color(violet.opacity(0.12 + 0.06 * pulse)),
+                        lineWidth: 0.7
+                    )
+                }
+
+                for i in 0..<beamCount {
+                    let angle = Double(i) * 2 * .pi / Double(beamCount) + spin * .pi / 180
+                    let inner = maxR * 0.18
+                    let outer = maxR * (0.72 + 0.08 * sin(t * 2 + Double(i)))
+                    let start = CGPoint(x: center.x + CGFloat(cos(angle)) * inner, y: center.y + CGFloat(sin(angle)) * inner)
+                    let end = CGPoint(x: center.x + CGFloat(cos(angle)) * outer, y: center.y + CGFloat(sin(angle)) * outer)
+                    var beam = Path()
+                    beam.move(to: start)
+                    beam.addLine(to: end)
+                    ctx.stroke(beam, with: .color(pink.opacity(0.35 + 0.25 * pulse)), lineWidth: 1)
+                }
 
                 // Refraction triangle beam
                 var tri = Path()
@@ -129,16 +169,16 @@ struct ShellPrismCoreOrb: View {
                     if i == 0 { tri.move(to: pt) } else { tri.addLine(to: pt) }
                 }
                 tri.closeSubpath()
-                ctx.stroke(tri, with: .color(violet.opacity(0.5)), lineWidth: 1.2)
+                ctx.stroke(tri, with: .color(violet.opacity(0.55)), lineWidth: 1.3)
 
                 for i in 0..<3 {
                     let inner = triR * 0.45
                     let a = Double(i) * 2 * .pi / 3 - .pi / 2 + spin * .pi / 180
                     let pt = CGPoint(x: center.x + CGFloat(cos(a)) * inner, y: center.y + CGFloat(sin(a)) * inner)
-                    ctx.fill(Path(ellipseIn: CGRect(x: pt.x - 3, y: pt.y - 3, width: 6, height: 6)), with: .color(pink.opacity(0.7)))
+                    ctx.fill(Path(ellipseIn: CGRect(x: pt.x - 3.5, y: pt.y - 3.5, width: 7, height: 7)), with: .color(pink.opacity(0.75 + 0.2 * pulse)))
                 }
 
-                let coreR = maxR * 0.14
+                let coreR = maxR * 0.15
                 ctx.fill(
                     Path(ellipseIn: CGRect(x: center.x - coreR, y: center.y - coreR, width: coreR * 2, height: coreR * 2)),
                     with: .radialGradient(

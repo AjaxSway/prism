@@ -9,10 +9,12 @@ import Foundation
 
 @MainActor
 final class MemoryStore {
-    static let shared = MemoryStore(appKey: "prism.memory")
-    private let key: String
+    static let shared = MemoryStore()
     private let maxMessages = 40
-    private init(appKey: String) { self.key = appKey }
+    private let fileURL: URL
+    private init() {
+        fileURL = PrismBrainMount.memoryFileURL()
+    }
 
     struct Message: Codable {
         let role: String
@@ -23,7 +25,7 @@ final class MemoryStore {
     private(set) var history: [Message] = []
 
     func load() {
-        guard let data = UserDefaults.standard.data(forKey: key),
+        guard let data = try? Data(contentsOf: fileURL),
               let messages = try? JSONDecoder().decode([Message].self, from: data) else { return }
         history = messages
     }
@@ -38,10 +40,13 @@ final class MemoryStore {
         history.map { (role: $0.role, content: $0.content) }
     }
 
-    func clear() { history = []; UserDefaults.standard.removeObject(forKey: key) }
+    func clear() {
+        history = []
+        try? FileManager.default.removeItem(at: fileURL)
+    }
 
     private func save() {
         guard let data = try? JSONEncoder().encode(history) else { return }
-        UserDefaults.standard.set(data, forKey: key)
+        try? data.write(to: fileURL, options: .atomic)
     }
 }

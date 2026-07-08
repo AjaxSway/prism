@@ -22,6 +22,7 @@ struct PremiumShellConfig {
     let refractionAccent: Color?
     let refractionPink: Color?
     let introHeroImageName: String
+    let introVideoResourceName: String?
     let introTaglineTop: String
     let introTaglineAlias: String
     let introTaglineBottom: String
@@ -74,11 +75,15 @@ struct ShellModuleDefinition: Identifiable, Hashable {
 enum ShellTab: String, CaseIterable, Identifiable {
     case home = "Home"
     case command = "Command"
+    case channels = "Channels"
     case modules = "Modules"
     case activity = "Activity"
     case studio = "Studio"
     case settings = "Settings"
     case about = "About"
+    case nexus = "Nexus"
+    case gaming = "Gaming"
+    case world = "World"
 
     var id: String { rawValue }
 
@@ -86,11 +91,15 @@ enum ShellTab: String, CaseIterable, Identifiable {
         switch self {
         case .home: return "house.fill"
         case .command: return "terminal.fill"
+        case .channels: return "link.circle.fill"
         case .modules: return "square.grid.2x2.fill"
         case .activity: return "clock.arrow.circlepath"
         case .studio: return "photo.on.rectangle.angled"
         case .settings: return "gearshape.fill"
         case .about: return "shield.checkered"
+        case .nexus: return "infinity"
+        case .gaming: return "gamecontroller.fill"
+        case .world: return "globe.americas.fill"
         }
     }
 }

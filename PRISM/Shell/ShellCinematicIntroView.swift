@@ -65,11 +65,22 @@ struct ShellCinematicIntroView: View {
                 }
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
+
+                VStack {
+                    HStack {
+                        Spacer()
+                        ShellIntroMusicToggle(accent: config.accent)
+                            .padding(.top, safeTop + 8)
+                            .padding(.trailing, 16)
+                    }
+                    Spacer()
+                }
             }
             .opacity(fadeOut ? 0 : 1)
             .onAppear {
                 safeTop = geo.safeAreaInsets.top > 0 ? geo.safeAreaInsets.top : 59
                 startMotion()
+                ShellIntroMusic.shared.playIfAvailable()
             }
         }
         .ignoresSafeArea()

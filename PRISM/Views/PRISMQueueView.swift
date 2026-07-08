@@ -64,7 +64,7 @@ struct PRISMQueueView: View {
                             }
                         }
                         if !queue.approved.isEmpty {
-                            sectionHeader("APPROVED · READY TO BROADCAST", color: c)
+                            sectionHeader("APPROVED · REVIEW BEFORE PUBLISH", color: c)
                             ForEach(queue.approved) { post in
                                 postRow(post, accent: c)
                             }
@@ -216,22 +216,19 @@ struct PRISMQueueView: View {
         postingId = post.id
         errorMessage = ""
 
-        let results = await BlotatoService.shared.post(
-            content: post.content,
-            platforms: post.platforms
-        )
+        let results = await NativePlatformDispatcher.shared.dispatch(post)
 
         postingId = nil
 
-        let failures = results.filter { !$0.success }
+        let failures = results.filter { !$0.value.isSuccess }
         if failures.isEmpty {
             queue.markPosted(post)
         } else {
-            let platforms = failures.map(\.platform).joined(separator: ", ")
-            let reason = failures.first?.error ?? "Unknown error"
-            errorMessage = "Failed on \(platforms): \(reason)"
-            // Still mark as posted for any successful platforms
-            if results.contains(where: { $0.success }) {
+            let platformNames = failures.keys.map(\.rawValue).joined(separator: ", ")
+            let reason = failures.values.first.map(\.label) ?? "Unknown error"
+            errorMessage = "Issues on \(platformNames): \(reason)"
+            // Mark as posted for any platforms that succeeded or are pending
+            if results.values.contains(where: { $0.isSuccess }) {
                 queue.markPosted(post)
             }
         }

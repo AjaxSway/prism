@@ -6,7 +6,10 @@ struct ImageGenerationView: View {
     @State private var negativePrompt = ""
     @State private var aspectRatio: ImageAspectRatio = .square
     @State private var style: ImageStylePreset = .cortexTech
-    @State private var statusMessage = "Generate disabled · Offline preview · Connect later · \(ImageGenerationEndpoint.futurePath)"
+    @State private var quality: ImageQuality = .high
+    @State private var statusMessage = "Local draft generator · approval required"
+    @State private var isGenerating = false
+    @State private var lastError: String?
 
     private let presets: [ImagePreset] = [
         ImagePreset(id: "tech", label: "Tech HUD", style: .cortexTech),
@@ -40,7 +43,11 @@ struct ImageGenerationView: View {
                     Spacer()
                 }
 
-                ShellStatusBadge(text: "Offline · \(ImageGenerationEndpoint.futurePath)", palette: palette, tone: .warning)
+                ShellStatusBadge(
+                    text: lastError != nil ? "Error · \(lastError!)" : "Draft-only · Not connected",
+                    palette: palette,
+                    tone: lastError != nil ? .warning : .neutral
+                )
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
@@ -63,34 +70,31 @@ struct ImageGenerationView: View {
                     negativePrompt: $negativePrompt,
                     aspectRatio: $aspectRatio,
                     style: $style,
+                    quality: $quality,
                     presets: presets
                 )
 
-                Button {} label: {
-                    Text("GENERATE (DISABLED)")
-                        .font(palette.captionFont)
-                        .tracking(2)
-                        .foregroundColor(palette.textSecondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(palette.backgroundElevated)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(palette.glassStroke, lineWidth: 1)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                Button {
+                    Task { await runGenerate() }
+                } label: {
+                    HStack(spacing: 8) {
+                        if isGenerating { ProgressView().tint(palette.background) }
+                        Text(isGenerating ? "GENERATING…" : "GENERATE")
+                            .font(palette.captionFont)
+                            .tracking(2)
+                    }
+                    .foregroundColor(palette.background)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(isGenerating ? palette.accent.opacity(0.6) : palette.accent)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .buttonStyle(.plain)
-                .disabled(true)
+                .buttonStyle(ShellPressableButtonStyle())
+                .disabled(isGenerating || prompt.isEmpty)
 
                 Text(statusMessage)
                     .font(palette.captionFont)
-                    .foregroundColor(palette.textSecondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Text("Safety: No provider keys in app. Generation remains disconnected until backend wiring.")
-                    .font(.system(size: 10))
-                    .foregroundColor(palette.textSecondary)
+                    .foregroundColor(lastError != nil ? .red.opacity(0.8) : palette.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 gallery(palette: palette)
@@ -103,9 +107,41 @@ struct ImageGenerationView: View {
             }
             .padding(.horizontal, 16)
             .padding(.top, 12)
-            .padding(.bottom, 120)
+            .padding(.bottom, 180)
         }
         .background(Color.black)
+    }
+
+    private func runGenerate() async {
+        guard !isGenerating, !prompt.isEmpty else { return }
+        isGenerating = true
+        lastError = nil
+        env.orbState = .thinking
+        statusMessage = "Sending to CORTEX Intelligence…"
+
+        let job = await env.imageHistory.generate(
+            prompt: prompt,
+            negativePrompt: negativePrompt,
+            aspectRatio: aspectRatio,
+            style: style,
+            quality: quality
+        )
+
+        isGenerating = false
+
+        if job.status == .completed {
+            statusMessage = "Generated · \(style.rawValue) · \(aspectRatio.rawValue)"
+            env.orbState = .success
+            env.showToast("Image ready", detail: "Tap gallery to view", tone: .success)
+        } else {
+            lastError = "Generation failed — check connection"
+            statusMessage = lastError!
+            env.orbState = .idle
+            env.showToast("Generation failed", detail: "Check your connection and try again", tone: .warning)
+        }
+
+        try? await Task.sleep(for: .milliseconds(1200))
+        env.orbState = .idle
     }
 
     private func gallery(palette: ShellThemePalette) -> some View {
@@ -115,24 +151,36 @@ struct ImageGenerationView: View {
                     .font(palette.bodyFont.weight(.semibold))
                     .foregroundColor(palette.textPrimary)
                 if env.imageHistory.results.isEmpty {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
-                        ForEach(0..<3, id: \.self) { _ in
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(palette.background)
-                                .frame(height: 72)
-                                .overlay(
-                                    Image(systemName: "photo")
-                                        .foregroundColor(palette.textSecondary.opacity(0.4))
-                                )
-                        }
-                    }
-                    Text("No generated images · Shell preview placeholders")
+                    Text("Generated images appear here.")
                         .font(palette.captionFont)
                         .foregroundColor(palette.textSecondary)
                 } else {
-                    Text("Results appear here after future wiring.")
-                        .font(palette.captionFont)
-                        .foregroundColor(palette.textSecondary)
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                        ForEach(env.imageHistory.results.prefix(9)) { result in
+                            Group {
+                                if let url = result.imageURL {
+                                    AsyncImage(url: url) { phase in
+                                        switch phase {
+                                        case .success(let img):
+                                            img.resizable().scaledToFill()
+                                        case .failure:
+                                            Image(systemName: "exclamationmark.triangle")
+                                                .foregroundColor(.red.opacity(0.6))
+                                        default:
+                                            ProgressView()
+                                        }
+                                    }
+                                } else {
+                                    Image(systemName: "photo").foregroundColor(palette.textSecondary.opacity(0.4))
+                                }
+                            }
+                            .frame(height: 80)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .background(palette.background.clipShape(RoundedRectangle(cornerRadius: 8)))
+                            .onTapGesture { env.imageHistory.selectedResult = result }
+                        }
+                    }
                 }
             }
         }
@@ -172,7 +220,9 @@ struct ImagePromptComposer: View {
     @Binding var negativePrompt: String
     @Binding var aspectRatio: ImageAspectRatio
     @Binding var style: ImageStylePreset
+    @Binding var quality: ImageQuality
     let presets: [ImagePreset]
+    var footerNote: String = "Local preset · Quality saved in draft metadata · No cloud keys"
 
     var body: some View {
         ShellGlassPanel(palette: palette) {
@@ -201,6 +251,19 @@ struct ImagePromptComposer: View {
                     }
                 }
                 .pickerStyle(.segmented)
+
+                Text("Quality")
+                    .font(palette.captionFont)
+                    .foregroundColor(palette.textSecondary)
+                Picker("Quality", selection: $quality) {
+                    ForEach(ImageQuality.allCases) { q in
+                        Text(q.rawValue).tag(q)
+                    }
+                }
+                .pickerStyle(.segmented)
+                Text(footerNote)
+                    .font(.system(size: 9))
+                    .foregroundColor(palette.textSecondary.opacity(0.7))
 
                 Text("Style")
                     .font(palette.captionFont)

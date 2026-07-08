@@ -5,25 +5,94 @@ options:
     iOS: "17.0"
   xcodeVersion: "16.3"
   generateEmptyDirectories: true
+  createIntermediateGroups: true
 
 settings:
   base:
     SWIFT_VERSION: "5.9"
     MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: 1
+    CURRENT_PROJECT_VERSION: 2026070220
+    DEVELOPMENT_TEAM: 72N4R2QL9Q
+    ENABLE_BITCODE: "NO"
+
+packages:
+  CortexEcosystemBrain:
+    path: ../CORTEX_SUPER_BRAIN
 
 targets:
   PRISM:
     type: application
     platform: iOS
     sources:
-      - PRISM
+      - path: PRISM
+        createIntermediateGroups: true
+        excludes:
+          - GoogleService-Info.plist
+          - "cortex-theme.mp3"
+          - Resources/HeroBrains/**
+          - "**/*.md"
+          - Views/PRISMRootView.swift
+          - Services/BlotatoService.swift
+          - Chat/**
+    resources:
+      - PRISM/cortex_intro_greeting.mp3
+      - path: PRISM/PrivacyInfo.xcprivacy
+      - path: PRISM/prism-intro-overlay.mp4
+      - path: PRISM/cortex-theme.mp3
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cortexnode.prism
-        PRODUCT_NAME: "PRISM"
+        PRODUCT_NAME: PRISM
         INFOPLIST_FILE: PRISM/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        CODE_SIGN_IDENTITY: "-"
-        CODE_SIGNING_REQUIRED: "NO"
-        CODE_SIGNING_ALLOWED: "NO"
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGNING_REQUIRED: "YES"
+        CODE_SIGNING_ALLOWED: "YES"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: "Apple Development"
+          DEBUG_INFORMATION_FORMAT: dwarf
+        Release:
+          DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+          CODE_SIGN_IDENTITY: "Apple Development"
+    dependencies:
+      - package: CortexEcosystemBrain
+
+  PRISMUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: PRISMUITests
+        createIntermediateGroups: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cortexnode.prism.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 72N4R2QL9Q
+    dependencies:
+      - target: PRISM
+
+schemes:
+  PRISM:
+    build:
+      targets:
+        PRISM: all
+    run:
+      config: Debug
+      askForAppToLaunch: false
+    test:
+      config: Debug
+      targets:
+        - PRISMUITests
+      environmentVariables:
+        PRISM_DISABLE_MUSIC: "1"
+        PRISM_SKIP_INTRO: "1"
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

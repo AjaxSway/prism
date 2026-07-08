@@ -2,8 +2,11 @@ import SwiftUI
 
 struct PRISMSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var blotatoKey  = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
-    @State private var saved = false
+    @State private var store = CortexStoreManager.shared
+    @State private var restoreStatus: RestoreStatus = .idle
+
+    enum RestoreStatus { case idle, working, done, failed }
+
 
     private let v  = Color(red: 0.545, green: 0.361, blue: 0.965)
     private let c  = Color(red: 0.133, green: 0.827, blue: 0.933)
@@ -27,15 +30,26 @@ struct PRISMSettingsView: View {
                 .padding(.horizontal, 24).padding(.top, 60).padding(.bottom, 32)
 
                 VStack(spacing: 24) {
-                    // Brain is hardwired to CORTEX endpoint — no key needed
-
-                    keyField(
-                        label: "PUBLISHING API KEY",
-                        hint: "blt_...",
-                        text: $blotatoKey,
-                        desc: "Your workspace API key for the publishing layer. Leave blank to use the default CORTEXNODE key.",
-                        color: c
-                    )
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("PLATFORM CHANNELS")
+                            .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                            .foregroundColor(c.opacity(0.6)).tracking(2)
+                        HStack(spacing: 8) {
+                            Circle().fill(c).frame(width: 6, height: 6)
+                                .shadow(color: c.opacity(0.9), radius: 3)
+                            Text("Connect platforms in the Channels tab")
+                                .font(.system(size: 12, design: .monospaced))
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(c.opacity(0.05))
+                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(c.opacity(0.35), lineWidth: 1))
+                        .cornerRadius(6)
+                        Text("PRISM posts directly to each platform. No third-party keys required.")
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundColor(.white.opacity(0.3))
+                    }
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("CORTEX BRAIN")
@@ -60,26 +74,57 @@ struct PRISMSettingsView: View {
                 }
                 .padding(.horizontal, 24)
 
+                Spacer()
+
+                // Restore Purchases — Apple requires this to be accessible outside the paywall
                 Button {
-                    UserDefaults.standard.set(blotatoKey, forKey: "blotato_api_key")
-                    saved = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { saved = false }
+                    restoreStatus = .working
+                    Task {
+                        await store.restorePurchases()
+                        restoreStatus = store.purchaseError == nil ? .done : .failed
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { restoreStatus = .idle }
+                    }
                 } label: {
-                    Text(saved ? "SAVED ✓" : "SAVE SETTINGS")
-                        .font(.system(size: 11, weight: .black, design: .monospaced))
-                        .foregroundColor(saved ? .green : v)
-                        .tracking(2)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(v.opacity(0.08))
-                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(saved ? Color.green.opacity(0.5) : v.opacity(0.4), lineWidth: 1))
-                        .cornerRadius(6)
+                    HStack(spacing: 10) {
+                        Image(systemName: restoreStatus == .done ? "checkmark.circle.fill" : "arrow.clockwise.circle.fill")
+                            .font(.system(size: 16))
+                        Text(restoreStatus == .working ? "RESTORING…" : restoreStatus == .done ? "RESTORED ✓" : restoreStatus == .failed ? "RESTORE FAILED" : "RESTORE PURCHASES")
+                            .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                            .tracking(2)
+                    }
+                    .foregroundColor(restoreStatus == .done ? .green : restoreStatus == .failed ? .red : v.opacity(0.7))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(v.opacity(0.06))
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(v.opacity(0.25), lineWidth: 1))
+                    .cornerRadius(6)
+                    .padding(.horizontal, 24)
                 }
                 .buttonStyle(.plain)
-                .padding(.horizontal, 24)
-                .padding(.top, 28)
+                .disabled(restoreStatus == .working)
+                .padding(.bottom, 8)
 
-                Spacer()
+                // Replay intro
+                Button {
+                    UserDefaults.standard.set(false, forKey: "hasSeenIntro_PRISM")
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "play.circle.fill")
+                            .font(.system(size: 16))
+                        Text("REPLAY SYSTEM INTRO")
+                            .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                            .tracking(2)
+                    }
+                    .foregroundColor(v.opacity(0.7))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(v.opacity(0.06))
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(v.opacity(0.25), lineWidth: 1))
+                    .cornerRadius(6)
+                    .padding(.horizontal, 24)
+                }
+                .buttonStyle(.plain)
+                .padding(.bottom, 16)
 
                 VStack(spacing: 4) {
                     Text("© 2026 CORTEX Inc. All rights reserved.")
@@ -94,25 +139,4 @@ struct PRISMSettingsView: View {
         }
     }
 
-    private func keyField(label: String, hint: String, text: Binding<String>, desc: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(label)
-                .font(.system(size: 10, weight: .heavy, design: .monospaced))
-                .foregroundColor(color.opacity(0.6)).tracking(2)
-
-            SecureField(hint, text: text)
-                .font(.system(size: 13, design: .monospaced))
-                .foregroundColor(.white)
-                .padding(14)
-                .background(color.opacity(0.05))
-                .overlay(RoundedRectangle(cornerRadius: 6).stroke(color.opacity(0.3), lineWidth: 1))
-                .cornerRadius(6)
-                .autocorrectionDisabled()
-
-            Text(desc)
-                .font(.system(size: 10, design: .monospaced))
-                .foregroundColor(.white.opacity(0.3))
-                .lineSpacing(3)
-        }
-    }
 }

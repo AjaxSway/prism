@@ -7,6 +7,7 @@ struct ShellAmbientBackground: View {
     var intensity: Double = 1.0
 
     var theme: ShellVisualTheme = .futuristic
+    var appKind: ShellAppKind? = nil
 
     @State private var drift = false
 
@@ -15,6 +16,11 @@ struct ShellAmbientBackground: View {
     var body: some View {
         ZStack {
             palette.background.ignoresSafeArea()
+
+            if let appKind {
+                ShellAppAmbientLayer(appKind: appKind, accent: glowColor, theme: theme)
+                    .ignoresSafeArea()
+            }
 
             RadialGradient(
                 colors: [

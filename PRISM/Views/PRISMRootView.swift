@@ -9,11 +9,10 @@ struct PRISMRootView: View {
 
     private static let introKey = "prism.introPlayed"
     private static let introText = """
-PRISM initialization complete. Connection established. All channels ready. Distribution intelligence online. \
-Good evening. I'm PRISM. Your content distribution intelligence layer. Built to take one signal and broadcast \
-it everywhere it needs to be — with precision, with timing, with the right voice for every platform. I don't \
-just post content. I architect reach. But nothing leaves PRISM without your approval. Ever. This is your \
-distribution layer. Your publishing intelligence. Your sovereign signal. Ready to reveal. What would you like to create?
+PRISM online. One signal in. Every channel out. \
+I am your distribution layer — I take what you create and get it in front of the right people, \
+on every platform, with the right voice. Nothing leaves without your approval. \
+What are we creating today?
 """
 
     var body: some View {
@@ -42,7 +41,7 @@ enum PTab: String, CaseIterable {
     case signal   = "SIGNAL"
     case channels = "CHANNELS"
     case queue    = "QUEUE"
-    case calendar = "CALENDAR"
+    case studio   = "STUDIO"
     case brain    = "BRAIN"
     case settings = "SETTINGS"
     var icon: String {
@@ -50,7 +49,7 @@ enum PTab: String, CaseIterable {
         case .signal:   return "dot.radiowaves.left.and.right"
         case .channels: return "sparkles"
         case .queue:    return "tray.full.fill"
-        case .calendar: return "calendar.badge.clock"
+        case .studio:   return "photo.stack.fill"
         case .brain:    return "brain.head.profile"
         case .settings: return "gearshape.fill"
         }
@@ -112,7 +111,7 @@ struct PRISMCockpitView: View {
                 case .signal:   PRISMBroadcastView(state: state)
                 case .channels: PRISMRevealView(state: state)
                 case .queue:    PRISMQueueView()
-                case .calendar: PRISMCalendarStub()
+                case .studio:   PRISMStudioView()
                 case .brain:    CortexChatShell(theme: .app)
                 case .settings: PRISMSettingsView()
                 }
@@ -137,7 +136,7 @@ struct PRISMRevealView: View {
         VStack(spacing: 0) {
             VStack(spacing: 4) {
                 PRISMShimmerTitle()
-                Text("AI CONTENT INTELLIGENCE · READY")
+                Text("AI CONTENT INTELLIGENCE · PREVIEW")
                     .font(.system(size: 9, weight: .bold, design: .monospaced))
                     .foregroundColor(PBrand.violet.opacity(0.45)).tracking(3)
             }
@@ -297,7 +296,7 @@ struct PlatformInfo: Identifiable {
     let icon: String
     let color: Color
     let handle: String  // CORTEXNODE connected account
-    let blotatoURL: String
+    var platform: Platform?
 }
 
 struct PRISMBroadcastView: View {
@@ -310,14 +309,14 @@ struct PRISMBroadcastView: View {
     @State private var selectedPlatform: PlatformInfo? = nil
 
     private let platforms: [PlatformInfo] = [
-        PlatformInfo(id: "twitter",   label: "X",         icon: "dot.radiowaves.left.and.right", color: .white,                                          handle: "@CortexNodeAI",           blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "instagram", label: "INSTAGRAM", icon: "camera.circle.fill",            color: Color(red:0.9,green:0.3,blue:0.6),               handle: "@cortexnode.ai",          blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "tiktok",    label: "TIKTOK",    icon: "music.note.tv.fill",            color: .white,                                          handle: "@cortexnode",             blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "linkedin",  label: "LINKEDIN",  icon: "person.crop.circle.fill",       color: Color(red:0.0,green:0.47,blue:0.71),             handle: "Founder / CORTEXNODE", blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "bluesky",   label: "BLUESKY",   icon: "cloud.circle.fill",             color: Color(red:0.0,green:0.5,blue:1.0),               handle: "cortexnode.bsky.social",  blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "threads",   label: "THREADS",   icon: "bubble.circle.fill",            color: .white,                                          handle: "@cortexnode.ai",          blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "facebook",  label: "FACEBOOK",  icon: "f.circle.fill",                 color: Color(red:0.23,green:0.35,blue:0.60),            handle: "CORTEXNODE.ai page",      blotatoURL: "https://app.blotato.com"),
-        PlatformInfo(id: "youtube",   label: "YOUTUBE",   icon: "play.rectangle.fill",           color: Color(red:1.0,green:0.0,blue:0.0),               handle: "Founder (CORTEXNODE)", blotatoURL: "https://app.blotato.com"),
+        PlatformInfo(id: "twitter",   label: "X",         icon: "dot.radiowaves.left.and.right", color: .white,                                          handle: "@CortexNodeAI",           platform: .x),
+        PlatformInfo(id: "instagram", label: "INSTAGRAM", icon: "camera.circle.fill",            color: Color(red:0.9,green:0.3,blue:0.6),               handle: "@cortexnode.ai",          platform: .instagram),
+        PlatformInfo(id: "tiktok",    label: "TIKTOK",    icon: "music.note.tv.fill",            color: .white,                                          handle: "@cortexnode",             platform: .tiktok),
+        PlatformInfo(id: "linkedin",  label: "LINKEDIN",  icon: "person.crop.circle.fill",       color: Color(red:0.0,green:0.47,blue:0.71),             handle: "CORTEXNODE",              platform: .linkedin),
+        PlatformInfo(id: "bluesky",   label: "BLUESKY",   icon: "cloud.circle.fill",             color: Color(red:0.0,green:0.5,blue:1.0),               handle: "cortexnode.bsky.social",  platform: .bluesky),
+        PlatformInfo(id: "threads",   label: "THREADS",   icon: "bubble.circle.fill",            color: .white,                                          handle: "@cortexnode.ai",          platform: .threads),
+        PlatformInfo(id: "facebook",  label: "FACEBOOK",  icon: "f.circle.fill",                 color: Color(red:0.23,green:0.35,blue:0.60),            handle: "CORTEXNODE.ai page",      platform: .facebook),
+        PlatformInfo(id: "youtube",   label: "YOUTUBE",   icon: "play.rectangle.fill",           color: Color(red:1.0,green:0.0,blue:0.0),               handle: "CORTEXNODE",              platform: .youtube),
     ]
 
     private let violet = Color(red:0.545,green:0.361,blue:0.965)
@@ -345,11 +344,11 @@ struct PRISMBroadcastView: View {
                         Image(systemName: broadcastDone ? "checkmark.circle.fill" : "dot.radiowaves.right")
                             .font(.system(size: 20, weight: .bold))
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(broadcastDone ? "BROADCAST COMPLETE" : "BROADCAST NOW")
+                            Text(broadcastDone ? "BROADCAST COMPLETE" : "REVIEW FOR BROADCAST")
                                 .font(.system(size: 15, weight: .black, design: .monospaced))
                                 .tracking(3)
                             Text(queue.approved.count > 0
-                                 ? "\(queue.approved.count) POST\(queue.approved.count == 1 ? "" : "S") APPROVED · READY"
+                                 ? "\(queue.approved.count) POST\(queue.approved.count == 1 ? "" : "S") APPROVED · REVIEW REQUIRED"
                                  : "NO APPROVED POSTS IN QUEUE")
                                 .font(.system(size: 9, design: .monospaced))
                                 .opacity(0.65)
@@ -416,7 +415,7 @@ cortexnode.ai
                     PostingQueue.shared.addDraft(
                         content: manifesto,
                         platforms: [.x, .instagram, .bluesky, .threads, .linkedin],
-                        sourcePrompt: "Founding Manifesto — Founder"
+                        sourcePrompt: "Brand Manifesto"
                     )
                 } label: {
                     HStack(spacing: 10) {
@@ -424,10 +423,10 @@ cortexnode.ai
                             .font(.system(size: 14))
                             .foregroundColor(pink)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("QUEUE FOUNDING MANIFESTO")
+                            Text("QUEUE BRAND MANIFESTO")
                                 .font(.system(size: 11, weight: .black, design: .monospaced))
                                 .foregroundColor(pink).tracking(1)
-                            Text("Founder · Founder Statement")
+                            Text("Brand voice · Public statement")
                                 .font(.system(size: 9, design: .monospaced))
                                 .foregroundColor(.white.opacity(0.35))
                         }
@@ -447,7 +446,7 @@ cortexnode.ai
                 // Channel grid — tap any platform to manage its connection
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 14) {
                     ForEach(platforms) { p in
-                        let isConnected = !(UserDefaults.standard.string(forKey: "blotato_api_key") ?? "blt_").isEmpty
+                        let isConnected = p.platform.map { PlatformChannelManager.shared.isConnected($0) } ?? false
                         Button { selectedPlatform = p } label: {
                             VStack(spacing: 8) {
                                 ZStack {
@@ -515,23 +514,28 @@ cortexnode.ai
         let toPost = queue.approved
         Task {
             var successCount = 0
-            var failCount = 0
             for post in toPost {
-                let results = await BlotatoService.shared.post(content: post.content, platforms: post.platforms)
-                let allOk = results.allSatisfy { $0.success }
-                if allOk {
+                let results = await NativePlatformDispatcher.shared.dispatch(post)
+                let anySuccess = results.values.contains { $0.isSuccess }
+                let anyFailed = results.values.contains {
+                    if case .failed = $0 { return true }
+                    return false
+                }
+                if anySuccess || !anyFailed {
                     PostingQueue.shared.markPosted(post)
                     successCount += 1
                 } else {
-                    failCount += 1
-                    let failed = results.filter { !$0.success }.compactMap { $0.error }.joined(separator: ", ")
-                    PRISMState.shared.addMessage(role: .system, content: "Broadcast failed for \(post.platforms.count) platform(s): \(failed)")
+                    let failMsgs = results.values.compactMap { (r: DispatchResult) -> String? in
+                        if case .failed(let m) = r { return m }
+                        return nil
+                    }.joined(separator: ", ")
+                    PRISMState.shared.addMessage(role: .system, content: "Broadcast failed: \(failMsgs)")
                 }
             }
             broadcasting = false
             broadcastDone = true
             if successCount > 0 {
-                PRISMState.shared.addMessage(role: .system, content: "Broadcast complete. \(successCount) post\(successCount == 1 ? "" : "s") sent across all channels.")
+                PRISMState.shared.addMessage(role: .system, content: "Broadcast complete. \(successCount) post\(successCount == 1 ? "" : "s") dispatched natively.")
             }
         }
     }
@@ -542,21 +546,39 @@ cortexnode.ai
 struct PRISMPlatformSheet: View {
     let platform: PlatformInfo
     @Environment(\.dismiss) private var dismiss
-    @State private var blotatoKey = UserDefaults.standard.string(forKey: "blotato_api_key") ?? ""
-    @State private var saved = false
+    @State private var channelManager = PlatformChannelManager.shared
+    @State private var fields: [ConnectField: String] = [:]
+    @State private var isSaving = false
+    @State private var isConnectingOAuth = false
+    @State private var error: String?
 
     private let v  = Color(red: 0.545, green: 0.361, blue: 0.965)
     private let bg = Color(red: 0.008, green: 0.012, blue: 0.027)
 
-    private var isConnected: Bool { !blotatoKey.isEmpty }
+    private var nativePlatform: Platform? { platform.platform }
+    private var gatewayAccounts: [GatewaySocialAccount] {
+        guard let p = nativePlatform else { return [] }
+        return channelManager.gatewayAccounts(for: p)
+    }
+    private var isConnected: Bool {
+        guard let p = nativePlatform else { return false }
+        return channelManager.isConnected(p)
+    }
+    private var instructions: PlatformConnectInstructions? { nativePlatform?.connectInstructions }
+    private var hasRequiredFields: Bool {
+        guard let instr = instructions else { return false }
+        if instr.authType == .gatewayOAuth { return true }
+        return instr.fields.allSatisfy { !(fields[$0] ?? "").isEmpty }
+    }
+    private var usesGateway: Bool {
+        nativePlatform?.usesGatewayOAuth == true && nativePlatform != .bluesky
+    }
 
     var body: some View {
         ZStack {
             bg.ignoresSafeArea()
             PRISMGrid()
-
             VStack(spacing: 0) {
-                // Header
                 HStack {
                     Spacer()
                     Button { dismiss() } label: {
@@ -567,123 +589,274 @@ struct PRISMPlatformSheet: View {
                 }
                 .padding(.horizontal, 24).padding(.top, 20)
 
-                Spacer().frame(height: 24)
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 24) {
+                        // Platform icon + status
+                        VStack(spacing: 12) {
+                            ZStack {
+                                Circle().fill(platform.color.opacity(0.12)).frame(width: 80, height: 80)
+                                Circle().stroke(platform.color.opacity(0.5), lineWidth: 2).frame(width: 80, height: 80)
+                                Image(systemName: platform.icon)
+                                    .font(.system(size: 30, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .shadow(color: platform.color.opacity(0.9), radius: 8)
+                            }
+                            .shadow(color: platform.color.opacity(0.4), radius: 14)
+                            Text(platform.label)
+                                .font(.system(size: 20, weight: .black, design: .monospaced))
+                                .foregroundColor(.white).tracking(4)
+                            HStack(spacing: 6) {
+                                Circle()
+                                    .fill(isConnected ? Color.green : Color(red: 0.9, green: 0.6, blue: 0.0))
+                                    .frame(width: 7, height: 7)
+                                    .shadow(color: isConnected ? .green : .orange, radius: 4)
+                                Text(isConnected ? "AUTHORIZED" : "NOT CONNECTED")
+                                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                    .foregroundColor(isConnected ? .green : Color(red: 0.9, green: 0.6, blue: 0.0))
+                                    .tracking(2)
+                            }
+                        }
+                        .padding(.top, 16)
 
-                // Platform icon + name
-                VStack(spacing: 12) {
-                    ZStack {
-                        Circle().fill(platform.color.opacity(0.12)).frame(width: 80, height: 80)
-                        Circle().stroke(platform.color.opacity(0.5), lineWidth: 2).frame(width: 80, height: 80)
-                        Image(systemName: platform.icon)
-                            .font(.system(size: 30, weight: .semibold))
-                            .foregroundColor(.white)
-                            .shadow(color: platform.color.opacity(0.9), radius: 8)
+                        if isConnected {
+                            connectedAccountsPanel
+                        } else if usesGateway, let instr = instructions {
+                            gatewayConnectPanel(instr)
+                        } else if let instr = instructions {
+                            blueskyConnectPanel(instr)
+                        }
                     }
-                    .shadow(color: platform.color.opacity(0.4), radius: 14)
-
-                    Text(platform.label)
-                        .font(.system(size: 20, weight: .black, design: .monospaced))
-                        .foregroundColor(.white).tracking(4)
-
-                    HStack(spacing: 6) {
-                        Circle()
-                            .fill(isConnected ? Color.green : Color(red:0.9,green:0.6,blue:0.0))
-                            .frame(width: 7, height: 7)
-                            .shadow(color: isConnected ? .green : .orange, radius: 4)
-                        Text(isConnected ? "ACCOUNT LINKED" : "API KEY NEEDED")
-                            .font(.system(size: 10, weight: .bold, design: .monospaced))
-                            .foregroundColor(isConnected ? .green : Color(red:0.9,green:0.6,blue:0.0))
-                            .tracking(2)
-                    }
+                    .padding(.horizontal, 24).padding(.bottom, 40)
                 }
-                .padding(.bottom, 28)
+            }
+        }
+        .preferredColorScheme(.dark)
+        .task { await channelManager.refreshGatewayAccounts() }
+    }
 
-                // Account info
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("LINKED ACCOUNT")
-                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
-                        .foregroundColor(v.opacity(0.5)).tracking(2)
+    @ViewBuilder
+    private var connectedAccountsPanel: some View {
+        if usesGateway {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("AUTHORIZED ACCOUNTS")
+                    .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                    .foregroundColor(v.opacity(0.5)).tracking(2)
+                ForEach(gatewayAccounts) { account in
                     HStack {
-                        Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 14))
-                            .foregroundColor(isConnected ? .green : v.opacity(0.3))
-                        Text(platform.handle)
-                            .font(.system(size: 13, design: .monospaced))
-                            .foregroundColor(isConnected ? .white.opacity(0.85) : .white.opacity(0.35))
+                        Text(account.handle.map { "@\($0)" } ?? account.accountId)
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundColor(.white.opacity(0.85))
                         Spacer()
+                        Button {
+                            Task {
+                                try? await channelManager.disconnectGatewayAccount(account)
+                            }
+                        } label: {
+                            Text("REMOVE")
+                                .font(.system(size: 9, weight: .black, design: .monospaced))
+                                .foregroundColor(.red.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .padding(14)
+                    .padding(12)
                     .background(v.opacity(0.05))
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(v.opacity(0.2), lineWidth: 1))
                     .cornerRadius(8)
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 20)
+            }
 
-                // API key input
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("PUBLISHING API KEY")
-                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
-                        .foregroundColor(v.opacity(0.5)).tracking(2)
-                    SecureField("blt_...", text: $blotatoKey)
-                        .font(.system(size: 13, design: .monospaced))
-                        .foregroundColor(.white)
-                        .padding(14)
-                        .background(v.opacity(0.05))
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(v.opacity(0.3), lineWidth: 1))
-                        .cornerRadius(8)
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                    Text("Your Blotato workspace key. All platforms share the same key.")
-                        .font(.system(size: 9, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.25)).lineSpacing(3)
+            Button { Task { await startGatewayOAuth() } } label: {
+                HStack {
+                    if isConnectingOAuth { ProgressView().tint(.black) }
+                    Text(isConnectingOAuth ? "Opening OAuth…" : "Add Account")
+                        .font(.system(size: 13, weight: .black, design: .monospaced)).tracking(1)
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 20)
+                .foregroundColor(.black).frame(maxWidth: .infinity).padding(.vertical, 14)
+                .background(v).clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .buttonStyle(.plain)
+            .disabled(isConnectingOAuth || nativePlatform == .facebook || nativePlatform == .tiktok)
+        } else if let handle = nativePlatform.flatMap({ channelManager.connection(for: $0).handle }) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("AUTHORIZED AS")
+                    .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                    .foregroundColor(v.opacity(0.5)).tracking(2)
+                Text(handle)
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.85))
+                    .padding(12).frame(maxWidth: .infinity, alignment: .leading)
+                    .background(v.opacity(0.05))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(v.opacity(0.2), lineWidth: 1))
+                    .cornerRadius(8)
+            }
+            Button {
+                if let p = nativePlatform { channelManager.disconnect(p) }
+                dismiss()
+            } label: {
+                Text("DISCONNECT")
+                    .font(.system(size: 11, weight: .black, design: .monospaced))
+                    .foregroundColor(.red).tracking(2)
+                    .frame(maxWidth: .infinity).padding(.vertical, 14)
+                    .background(Color.red.opacity(0.08))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.red.opacity(0.4), lineWidth: 1))
+                    .cornerRadius(8)
+            }.buttonStyle(.plain)
+        }
 
-                // Save + Manage buttons
-                VStack(spacing: 10) {
-                    Button {
-                        UserDefaults.standard.set(blotatoKey, forKey: "blotato_api_key")
-                        saved = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            saved = false
-                            dismiss()
-                        }
-                    } label: {
-                        Text(saved ? "SAVED ✓" : "SAVE & CONNECT")
-                            .font(.system(size: 11, weight: .black, design: .monospaced))
-                            .foregroundColor(saved ? .green : v).tracking(2)
-                            .frame(maxWidth: .infinity).padding(.vertical, 14)
-                            .background(v.opacity(0.08))
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(saved ? Color.green.opacity(0.5) : v.opacity(0.4), lineWidth: 1))
-                            .cornerRadius(8)
-                    }
-                    .buttonStyle(.plain)
+        if let error {
+            Text(error).font(.system(size: 11)).foregroundColor(.red.opacity(0.8))
+        }
+    }
 
-                    if let url = URL(string: platform.blotatoURL) {
-                        Link(destination: url) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "arrow.up.right.square")
-                                    .font(.system(size: 12))
-                                Text("MANAGE ON BLOTATO")
-                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
-                                    .tracking(1)
-                            }
-                            .foregroundColor(.white.opacity(0.45))
-                            .frame(maxWidth: .infinity).padding(.vertical, 12)
-                            .background(Color.white.opacity(0.03))
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.white.opacity(0.1), lineWidth: 1))
-                            .cornerRadius(8)
-                        }
-                    }
+    @ViewBuilder
+    private func gatewayConnectPanel(_ instr: PlatformConnectInstructions) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("GATEWAY OAUTH")
+                .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                .foregroundColor(v.opacity(0.5)).tracking(2)
+            ForEach(Array(instr.steps.enumerated()), id: \.offset) { idx, step in
+                HStack(alignment: .top, spacing: 10) {
+                    Text("\(idx + 1)")
+                        .font(.system(size: 10, weight: .black, design: .monospaced))
+                        .foregroundColor(v).frame(width: 18)
+                    Text(step)
+                        .font(.system(size: 12)).foregroundColor(.white.opacity(0.8))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.horizontal, 24)
-
-                Spacer()
             }
         }
-        .preferredColorScheme(.dark)
+        .padding(14).background(v.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+
+        if let error {
+            Text(error).font(.system(size: 11)).foregroundColor(.red.opacity(0.8))
+        }
+
+        Button { Task { await startGatewayOAuth() } } label: {
+            HStack {
+                if isConnectingOAuth { ProgressView().tint(.black) }
+                Text(isConnectingOAuth ? "Opening OAuth…" : "Connect with Gateway")
+                    .font(.system(size: 13, weight: .black, design: .monospaced)).tracking(1)
+            }
+            .foregroundColor(.black).frame(maxWidth: .infinity).padding(.vertical, 14)
+            .background(v).clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+        .disabled(isConnectingOAuth || nativePlatform == .facebook || nativePlatform == .tiktok)
+    }
+
+    @ViewBuilder
+    private func blueskyConnectPanel(_ instr: PlatformConnectInstructions) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("HOW TO CONNECT")
+                .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                .foregroundColor(v.opacity(0.5)).tracking(2)
+            ForEach(Array(instr.steps.enumerated()), id: \.offset) { idx, step in
+                HStack(alignment: .top, spacing: 10) {
+                    Text("\(idx + 1)")
+                        .font(.system(size: 10, weight: .black, design: .monospaced))
+                        .foregroundColor(v).frame(width: 18)
+                    Text(step)
+                        .font(.system(size: 12)).foregroundColor(.white.opacity(0.8))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+        .padding(14).background(v.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+
+        VStack(alignment: .leading, spacing: 14) {
+            Text("CREDENTIALS")
+                .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                .foregroundColor(v.opacity(0.5)).tracking(2)
+            ForEach(instr.fields, id: \.self) { field in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(field.label)
+                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.6))
+                    let binding = Binding(
+                        get: { fields[field] ?? "" },
+                        set: { fields[field] = $0 }
+                    )
+                    if field.isSecure {
+                        SecureField("Enter \(field.label.lowercased())…", text: binding)
+                            .font(.system(size: 13, design: .monospaced)).foregroundColor(.white)
+                            .padding(10).background(Color.white.opacity(0.06))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    } else {
+                        TextField("Enter \(field.label.lowercased())…", text: binding)
+                            .font(.system(size: 13, design: .monospaced)).foregroundColor(.white)
+                            .autocorrectionDisabled().textInputAutocapitalization(.never)
+                            .padding(10).background(Color.white.opacity(0.06))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                }
+            }
+        }
+
+        if let error {
+            Text(error).font(.system(size: 11)).foregroundColor(.red.opacity(0.8))
+        }
+
+        Button { Task { await save() } } label: {
+            HStack {
+                if isSaving { ProgressView().tint(.black) }
+                Text(isSaving ? "Saving…" : "Save Connection")
+                    .font(.system(size: 13, weight: .black, design: .monospaced)).tracking(1)
+            }
+            .foregroundColor(.black).frame(maxWidth: .infinity).padding(.vertical, 14)
+            .background(v).clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+        .disabled(isSaving || !hasRequiredFields)
+    }
+
+    private func startGatewayOAuth() async {
+        guard let p = nativePlatform else { return }
+        isConnectingOAuth = true
+        error = nil
+        do {
+            try await PrismGatewayOAuthService.shared.connect(platform: p)
+            await channelManager.refreshGatewayAccounts()
+        } catch {
+            self.error = error.localizedDescription
+        }
+        isConnectingOAuth = false
+    }
+
+    private func save() async {
+        guard let p = nativePlatform else { return }
+        isSaving = true; error = nil
+
+        if p == .bluesky {
+            let handle = fields[.handle] ?? ""
+            let appPwd = fields[.appPassword] ?? ""
+            do {
+                _ = try await blueskySessionTest(handle: handle, appPassword: appPwd)
+                await MainActor.run {
+                    channelManager.saveConnection(PlatformConnection(platform: p, handle: handle, accessToken: appPwd, isConnected: true))
+                    isSaving = false; dismiss()
+                }
+            } catch {
+                await MainActor.run { self.error = "Auth failed: \(error.localizedDescription)"; isSaving = false }
+            }
+            return
+        }
+
+        await MainActor.run {
+            self.error = "Use Connect with Gateway for this platform."
+            isSaving = false
+        }
+    }
+
+    private func blueskySessionTest(handle: String, appPassword: String) async throws -> Bool {
+        guard let url = URL(string: "https://bsky.social/xrpc/com.atproto.server.createSession") else { throw URLError(.badURL) }
+        var req = URLRequest(url: url); req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = try JSONSerialization.data(withJSONObject: ["identifier": handle, "password": appPassword])
+        let (_, response) = try await URLSession.shared.data(for: req)
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else { throw URLError(.userAuthenticationRequired) }
+        return true
     }
 }
 
@@ -803,6 +976,93 @@ struct PRISMNetworkView: View {
     }
 }
 
+// MARK: - Studio Tab
+struct PRISMStudioView: View {
+    private let violet = Color(red: 0.545, green: 0.361, blue: 0.965)
+    private let pink   = Color(red: 0.925, green: 0.286, blue: 0.600)
+    private let cyan   = Color(red: 0.133, green: 0.827, blue: 0.933)
+
+    private let tools: [(name: String, icon: String, desc: String, color: Color)] = [
+        ("Sora 2",       "film.stack.fill",           "AI video generation",          Color(red: 0.133, green: 0.827, blue: 0.933)),
+        ("Runway ML",    "sparkles.rectangle.stack",  "Cinematic video effects",      Color(red: 0.925, green: 0.286, blue: 0.600)),
+        ("Opus Clips",   "scissors.badge.ellipsis",   "Auto-clip long-form video",    Color(red: 0.545, green: 0.361, blue: 0.965)),
+        ("Canva",        "photo.artframe",             "Visual design & templates",    Color(red: 0.0,   green: 0.75,  blue: 0.55)),
+        ("CapCut",       "video.badge.waveform.fill",  "Mobile video editing & AI caps",Color(red: 0.133, green: 0.827, blue: 0.933)),
+        ("Final Cut Pro","play.laptopcomputer",        "Pro video editing on Mac",     Color(red: 0.925, green: 0.286, blue: 0.600)),
+        ("ElevenLabs",   "waveform.and.mic",           "AI voice synthesis",           Color(red: 0.545, green: 0.361, blue: 0.965)),
+    ]
+
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 20) {
+                VStack(spacing: 4) {
+                    Text("STUDIO")
+                        .font(.system(size: 24, weight: .black, design: .monospaced))
+                        .foregroundColor(violet).tracking(6)
+                    Text("YOUR CREATIVE PRODUCTION STACK")
+                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .foregroundColor(violet.opacity(0.4)).tracking(3)
+                }.padding(.top, 20)
+
+                PRISMSignalWave()
+                    .frame(height: 18)
+                    .padding(.horizontal, 40)
+                    .padding(.bottom, 8)
+
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 2), spacing: 12) {
+                    ForEach(tools, id: \.name) { tool in
+                        studioToolCard(tool)
+                    }
+                }
+                .padding(.horizontal, 16)
+
+                HStack(spacing: 8) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 11))
+                        .foregroundColor(cyan)
+                    Text("Ask PRISM how to use any of these in your workflow")
+                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.45))
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 4)
+            }
+            .padding(.bottom, 100)
+        }
+    }
+
+    private func studioToolCard(_ tool: (name: String, icon: String, desc: String, color: Color)) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                ZStack {
+                    Circle().fill(tool.color.opacity(0.12)).frame(width: 36, height: 36)
+                    Image(systemName: tool.icon)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(tool.color)
+                }
+                Spacer()
+                Circle()
+                    .fill(Color.white.opacity(0.07))
+                    .frame(width: 6, height: 6)
+            }
+            Text(tool.name)
+                .font(.system(size: 13, weight: .black, design: .monospaced))
+                .foregroundColor(.white).tracking(1)
+            Text(tool.desc)
+                .font(.system(size: 9, weight: .medium, design: .monospaced))
+                .foregroundColor(.white.opacity(0.4))
+                .fixedSize(horizontal: false, vertical: true)
+                .lineLimit(nil)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(tool.color.opacity(0.05))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(tool.color.opacity(0.25), lineWidth: 1))
+        .cornerRadius(12)
+    }
+}
+
 // MARK: - Calendar Stub
 struct PRISMCalendarStub: View {
     var body: some View {
@@ -817,7 +1077,7 @@ struct PRISMCalendarStub: View {
                     Text("PUBLISH CALENDAR")
                         .font(.system(size: 13, weight: .black, design: .monospaced))
                         .foregroundColor(.white)
-                    Text("Coming Soon")
+                    Text("Local draft calendar")
                         .font(.system(size: 9, weight: .semibold, design: .monospaced))
                         .foregroundColor(PBrand.violet.opacity(0.6))
                         .padding(.horizontal, 10).padding(.vertical, 4)
@@ -1112,60 +1372,6 @@ struct PRISMParticleField: View {
         }
         .allowsHitTesting(false)
         .ignoresSafeArea()
-    }
-}
-
-// MARK: - Voice (Eric · cjVigY5qzO86Huf0OWal)
-enum PVoice {
-    static func speak(_ text: String) {
-        let elevenKey = UserDefaults.standard.string(forKey: "elevenlabs_api_key") ?? ""
-        guard !elevenKey.isEmpty else { return }
-        let voiceID = "cjVigY5qzO86Huf0OWal"
-        guard let url = URL(string: "https://api.elevenlabs.io/v1/text-to-speech/\(voiceID)") else { return }
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(elevenKey, forHTTPHeaderField: "xi-api-key")
-        let body: [String: Any] = [
-            "text": text,
-            "model_id": "eleven_multilingual_v2",
-            "voice_settings": ["stability": 0.70, "similarity_boost": 0.80, "style": 0.35, "use_speaker_boost": true]
-        ]
-        req.httpBody = try? JSONSerialization.data(withJSONObject: body)
-        URLSession.shared.dataTask(with: req) { data, _, _ in
-            guard let data, !data.isEmpty else { return }
-            // ElevenLabs returns JSON starting with '{' on error — skip non-audio payloads.
-            if let first = data.first, first == 0x7B { return }
-            DispatchQueue.main.async { PAudioPlayer.shared.play(data) }
-        }.resume()
-    }
-}
-
-private final class PAudioPlayer: NSObject, AVAudioPlayerDelegate {
-    static let shared = PAudioPlayer()
-    private var player: AVAudioPlayer?
-    private var currentTempURL: URL?
-
-    func play(_ data: Data) {
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent("p_voice_\(UUID().uuidString).mp3")
-        do {
-            try data.write(to: url)
-            currentTempURL = url
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.delegate = self
-            player?.play()
-        } catch {
-            try? FileManager.default.removeItem(at: url)
-            currentTempURL = nil
-        }
-    }
-
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        if let url = currentTempURL {
-            try? FileManager.default.removeItem(at: url)
-            currentTempURL = nil
-        }
     }
 }
 

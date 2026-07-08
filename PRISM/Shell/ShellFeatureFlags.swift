@@ -4,6 +4,6 @@ import Foundation
 enum ShellFeatureFlags {
     static let shellV1Active = true
     static let legacyRoutesEnabled = false
-    /// Claude sets true when api.cortexnode.ai + auth verified. Until then: honest preview labels.
+    /// Flip to true only when Firebase session + CORTEX backbone are verified on device.
     static let brainConnected = false
 }

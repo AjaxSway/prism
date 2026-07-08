@@ -6,13 +6,10 @@ struct ShellHomeView: View {
     @Bindable var env: ShellEnvironment
 
     var body: some View {
-        switch env.config.appKind {
-        case .cortexNode:
-            NodeControlCenterHome(env: env)
-        case .jericho:
-            JerichoShieldHome(env: env)
-        case .prism:
+        if env.config.appKind == .prism {
             PrismRefractionHome(env: env)
+        } else {
+            ShellRadialHomeView(env: env)
         }
     }
 }
@@ -32,7 +29,7 @@ struct NodeControlCenterHome: View {
             Color.black.ignoresSafeArea()
             if env.palette.usesNeuralMesh { ShellNeuralMeshBackground(accent: cyan) }
             if env.palette.usesScanlines { ShellScanlineOverlay(accent: cyan, opacity: 0.045) }
-            ShellAmbientBackground(palette: palette, accentOverride: cyan, intensity: 0.55, theme: env.theme)
+            ShellAmbientBackground(palette: palette, accentOverride: cyan, intensity: 0.55, theme: env.theme, appKind: .cortexNode)
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 18) {
@@ -59,6 +56,15 @@ struct NodeControlCenterHome: View {
                         env.openPrimaryModule()
                     }
 
+                    nodeHealthPreview(palette: palette, accent: cyan, graphite: graphite)
+
+                    ShellCanonSectionHeader(
+                        title: "Living Ecosystem Map",
+                        subtitle: "CORTEX · Signal Zero · JERICHO · PRISM · FORGE · ATLAS · mock topology",
+                        accent: cyan
+                    )
+                    ShellLivingEcosystemMapView(accent: cyan, height: 340)
+
                     ShellCanonSectionHeader(
                         title: "Data Flow Lanes",
                         subtitle: "Inputs → NODE → outputs · mock topology only",
@@ -74,17 +80,17 @@ struct NodeControlCenterHome: View {
                     nodePlatformSurfacesStrip(env: env, palette: palette, accent: cyan)
 
                     ShellCanonSectionHeader(
-                        title: "Five Layers · One System",
-                        subtitle: "CORTEXNODE connects the stack · offline preview",
+                        title: "Seven Layers · One Universe",
+                        subtitle: "CORTEX ecosystem stack · offline preview",
                         accent: cyan
                     )
-                    ShellCanonFiveLayersView(accent: cyan)
+                    ShellCanonSevenLayersView(accent: cyan)
 
                     ShellAuditStrip(palette: palette, line: "Mock topology · Not connected · Connect later · Mock data only")
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
-                .padding(.bottom, 120)
+                .padding(.bottom, 180)
             }
         }
     }
@@ -123,7 +129,7 @@ struct JerichoShieldHome: View {
         ZStack {
             Color.black.ignoresSafeArea()
             if env.palette.usesScanlines { ShellScanlineOverlay(accent: red, opacity: 0.05) }
-            ShellAmbientBackground(palette: palette, accentOverride: red, intensity: 0.52, theme: env.theme)
+            ShellAmbientBackground(palette: palette, accentOverride: red, intensity: 0.52, theme: env.theme, appKind: .jericho)
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 18) {
@@ -165,7 +171,7 @@ struct JerichoShieldHome: View {
                         jerichoTile("Audit Trail", "Offline preview", "list.bullet.rectangle.fill", steel.opacity(0.9), palette) { openJerichoModule("audit_trail", env: env) }
                         jerichoTile("Risk Review", "Advisory scoring", "eye.trianglebadge.exclamationmark.fill", amber, palette) { openJerichoModule("risk_review", env: env) }
                         jerichoTile("Integrity Scan", "Mock checklist only", "shield.lefthalf.filled", red, palette) { openJerichoModule("integrity_scan", env: env) }
-                        jerichoTile("Policy Guardrail", "Connect later", "doc.text.fill", steel, palette) { openJerichoModule("policy_guardrail", env: env) }
+                        jerichoTile("Policy Review", "Guardrail cards · Preview", "doc.text.fill", steel, palette) { openJerichoModule("policy_guardrail", env: env) }
                         jerichoTile("Alert Review", "Not connected", "bell.badge.fill", red.opacity(0.75), palette) { openJerichoModule("alert_review", env: env) }
                     }
 
@@ -173,7 +179,7 @@ struct JerichoShieldHome: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
-                .padding(.bottom, 120)
+                .padding(.bottom, 180)
             }
         }
     }
@@ -188,6 +194,51 @@ struct JerichoShieldHome: View {
 struct PrismRefractionHome: View {
     @Bindable var env: ShellEnvironment
     var body: some View { PrismRefractionStudioView(env: env) }
+}
+
+// MARK: - CORTEXNODE health + topology (mock-only)
+
+private struct nodeHealthPreview: View {
+    let palette: ShellThemePalette
+    let accent: Color
+    let graphite: Color
+
+    var body: some View {
+        ShellGlassPanel(palette: palette) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("NODE HEALTH")
+                        .font(.system(size: 10, weight: .black, design: .monospaced))
+                        .foregroundColor(accent.opacity(0.85))
+                    Spacer()
+                    ShellStatusBadge(text: "Offline preview", palette: palette)
+                }
+                HStack(spacing: 0) {
+                    healthCell("Sync", "—", accent: accent)
+                    healthCell("Latency", "—", accent: graphite)
+                    healthCell("Registry", "Mock", accent: accent)
+                }
+                Text("No live telemetry · No fake health pings · Connect later")
+                    .font(.system(size: 9, design: .monospaced))
+                    .foregroundColor(palette.textSecondary)
+            }
+        }
+    }
+
+    private func healthCell(_ label: String, _ value: String, accent: Color) -> some View {
+        VStack(spacing: 4) {
+            Text(value)
+                .font(.system(size: 18, weight: .black, design: .monospaced))
+                .foregroundColor(accent.opacity(0.75))
+            Text(label)
+                .font(.system(size: 8, weight: .bold, design: .monospaced))
+                .foregroundColor(palette.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .background(accent.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
 }
 
 // MARK: - Shared helpers

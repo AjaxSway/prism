@@ -3,14 +3,20 @@ import SwiftUI
 struct ShellAboutView: View {
     let config: PremiumShellConfig
     let palette: ShellThemePalette
+    var brain: ShellBrainGateway?
 
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 16) {
+                if config.appKind == .prism {
+                    PrismTrustHeroBanner(config: config, palette: palette, orbState: .idle)
+                }
+
                 Text("About & Trust")
                     .font(palette.titleFont)
                     .foregroundColor(palette.textPrimary)
                     .padding(.top, 12)
+                    .accessibilityIdentifier("prism-about-title")
 
                 ShellHUDBracketPanel(accent: palette.accent) {
                     VStack(alignment: .leading, spacing: 8) {
@@ -40,9 +46,25 @@ struct ShellAboutView: View {
                 )
 
                 trustBlock(
-                    title: "Brain wiring (Claude / Adam)",
-                    bullets: brainWireBullets
+                    title: "Connectivity & services",
+                    bullets: connectivityBullets
                 )
+
+                if config.appKind == .prism, let brain {
+                    ShellGlassPanel(palette: palette) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("CORTEX Super Brain").font(palette.bodyFont.weight(.semibold)).foregroundColor(palette.textPrimary)
+                            ShellStatusBadge(
+                                text: ShellFeatureFlags.brainConnected ? brain.statusDetail : "Shell preview · connect later",
+                                palette: palette,
+                                tone: brain.state == .connected ? .success : .warning
+                            )
+                            Text("PRISM lens · draft-only · operator approval required before publish.")
+                                .font(.system(size: 10))
+                                .foregroundColor(palette.textSecondary)
+                        }
+                    }
+                }
 
                 trustBlock(
                     title: "AI & professional use",
@@ -67,9 +89,9 @@ struct ShellAboutView: View {
                 ShellAuditStrip(palette: palette, line: "CORTEXNODE Inc. · \(config.supportEmailPlaceholder)")
             }
             .padding(.horizontal, 20)
-            .padding(.bottom, 24)
+            .padding(.bottom, 180)
         }
-        .background(ShellScreenBackground(palette: palette))
+        .background(ShellScreenBackground(palette: palette, appKind: config.appKind == .prism ? .prism : nil))
     }
 
     private var capabilityBullets: [String] {
@@ -90,37 +112,34 @@ struct ShellAboutView: View {
             ]
         case .prism:
             return [
-                "Draft-only signal composer and refraction preview.",
-                "Platform outputs staged per channel — no live publishing.",
-                "Brand voice, campaign calendar, and approval gate mock.",
-                "Image Studio UI — generate disabled until brain connects.",
+                "Signal composer with local save and refraction across social channels.",
+                "Draft queue, approval gate, campaign calendar, and audit trail on device.",
+                "Image Studio with preset gallery, share export, and proof attach.",
+                "DRAFT ONLY · APPROVAL REQUIRED · no live platform publish today.",
             ]
         }
     }
 
-    private var brainWireBullets: [String] {
-        let gate = ShellFeatureFlags.brainConnected ? "brainConnected = true" : "brainConnected = false (preview)"
+    private var connectivityBullets: [String] {
         switch config.appKind {
         case .cortexNode:
             return [
-                "Flip \(gate) in ShellFeatureFlags.swift after api.cortexnode.ai verified.",
-                "Wire ShellBrainGateway.connect() + node registry routes.",
-                "Populate System Map / Node Health from /v1/nodes (create route).",
-                "See CLAUDE_BRAIN_WIRE.md in repo (not bundled).",
+                "System map, node health, and registry populate when CORTEX backbone connects.",
+                "Device links and sync status remain offline in this shell preview.",
+                "No live telemetry or fake connected labels in preview builds.",
             ]
         case .jericho:
             return [
-                "Flip \(gate) · wire trust events to JerichoAuditLogger bridge.",
-                "Permission gate + policy guardrails from governance OS.",
-                "Risk review scoring — advisory API, no fake LIVE labels.",
-                "See CLAUDE_BRAIN_WIRE.md in repo (not bundled).",
+                "Trust checks, audit trail, and policy guardrails connect later.",
+                "Advisory previews only — not antivirus or device-wide protection.",
+                "Permission gates require operator approval before risky actions go live.",
             ]
         case .prism:
             return [
-                "Flip \(gate) · wire draft queue + OAuth per platform (server-side).",
-                "Image Studio: ShellImageGenerationService.generate() route.",
-                "Approval gate must block publish until operator sign-off.",
-                "See CLAUDE_BRAIN_WIRE.md in repo (not bundled).",
+                "All drafts, images, and audit events persist locally on your iPhone.",
+                "Super Brain routes through api.cortexnode.ai when session is available.",
+                "Share and export use the system share sheet — no cloud publish without approval.",
+                "Nothing posts to social platforms without your explicit sign-off.",
             ]
         }
     }
@@ -147,5 +166,6 @@ struct ShellAboutView: View {
                 Image(systemName: "arrow.up.right").font(.system(size: 10))
             }
         }
+        .accessibilityIdentifier(config.appKind == .prism ? "prism-about-\(title.lowercased().replacingOccurrences(of: " ", with: "-"))" : "about-link")
     }
 }

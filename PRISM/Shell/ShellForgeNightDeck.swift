@@ -77,37 +77,28 @@ struct ShellNervousSystemDeck: View {
                 }
             }
 
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
                 Text("NERVOUS SYSTEM · MOCK TOPOLOGY")
                     .font(.system(size: 8, weight: .black, design: .monospaced))
                     .foregroundColor(accent.opacity(0.55))
                     .tracking(2)
 
-                ZStack {
-                    ShellCoreEngine(color: accent, size: 56, intensity: 0.85, geometry: .network, showTriangle: false)
-                        .opacity(0.35)
-                    ShellCortexBrainPulseView(
-                        color: accent,
-                        visual: pulseVisual,
-                        appKind: .cortexNode,
-                        secondaryColor: secondary,
-                        size: 118,
-                        showGlyph: true
-                    )
-                }
-                .onTapGesture { onOrbTap?() }
+                ShellHeroBrainView(
+                    config: .node,
+                    size: 312,
+                    orbState: orbState,
+                    subtitle: "Not connected · Connect later · Offline preview",
+                    onTap: { onOrbTap?() }
+                )
 
-                Text("NODE CORE · \(orbState.label.uppercased()) · SHELL PREVIEW")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundColor(.white.opacity(0.42))
-
-                Text("Not connected · Connect later · Offline preview")
+                Text("Platform nervous system · Seven-layer map · Shell preview")
                     .font(.system(size: 8, weight: .medium, design: .monospaced))
                     .foregroundColor(secondary.opacity(0.65))
+                    .multilineTextAlignment(.center)
             }
-            .padding(.vertical, 18)
+            .padding(.vertical, 20)
         }
-        .frame(height: 320)
+        .frame(minHeight: 470)
         .shadow(color: accent.opacity(0.12), radius: 24, y: 8)
     }
 }
@@ -163,29 +154,24 @@ struct ShellImmuneVaultDeck: View {
                     .foregroundColor(red.opacity(0.7))
                     .tracking(2)
 
-                ShellCortexBrainPulseView(
-                    color: red,
-                    visual: ShellBrainPulseVisual.from(orbState: orbState),
-                    appKind: .jericho,
-                    secondaryColor: steel,
-                    size: 124,
-                    showGlyph: true
+                ShellHeroBrainView(
+                    config: .jericho,
+                    size: 312,
+                    orbState: orbState,
+                    subtitle: "Trust gate · Advisory only · Connect later",
+                    onTap: { onOrbTap?() }
                 )
-                .onTapGesture { onOrbTap?() }
 
-                Text("JERICHO CORE · \(orbState.label.uppercased()) · SHELL PREVIEW")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundColor(.white.opacity(0.45))
-
-                HStack(spacing: 16) {
-                    vaultChip("Trust Gate", red)
-                    vaultChip("Audit Preview", steel)
-                    vaultChip("Not connected", .white.opacity(0.35))
+                HStack(spacing: 12) {
+                    vaultChip("Shield", red)
+                    vaultChip("Policy Gate", steel)
+                    vaultChip("Boundary", red.opacity(0.8))
+                    vaultChip("Connect later", .white.opacity(0.35))
                 }
             }
-            .padding(.vertical, 16)
+            .padding(.vertical, 20)
         }
-        .frame(height: 300)
+        .frame(minHeight: 470)
     }
 
     private func vaultChip(_ label: String, _ color: Color) -> some View {
@@ -242,6 +228,14 @@ struct ShellRefractionBeamDeck: View {
                             ),
                             lineWidth: 1.2
                         )
+
+                        let travel = CGFloat((t * 0.45 + Double(i) * 0.18).truncatingRemainder(dividingBy: 1.0))
+                        let bx = center.x + (size.width * 0.55 - center.x) * travel
+                        let by = center.y + (size.height * (0.22 + spread * 2) - center.y) * travel
+                        ctx.fill(
+                            Path(ellipseIn: CGRect(x: bx - 3, y: by - 3, width: 6, height: 6)),
+                            with: .color(pink.opacity(0.55 + 0.35 * sin(t * 3 + Double(i))))
+                        )
                     }
 
                     let shimmer = 0.35 + 0.25 * sin(t * 2.4)
@@ -257,48 +251,49 @@ struct ShellRefractionBeamDeck: View {
                 }
             }
 
-            HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("ONE SIGNAL IN")
-                        .font(.system(size: 8, weight: .black, design: .monospaced))
-                        .foregroundColor(violet.opacity(0.75))
-                    ShellCortexBrainPulseView(
-                        color: violet,
-                        visual: ShellBrainPulseVisual.from(orbState: orbState),
-                        appKind: .prism,
-                        secondaryColor: pink,
-                        size: 96,
-                        showGlyph: true
-                    )
-                    .onTapGesture { onOrbTap?() }
-                    Text("PRISM CORE · DRAFT ONLY")
-                        .font(.system(size: 8, weight: .bold, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.4))
-                }
-                .padding(.leading, 20)
+            VStack(spacing: 14) {
+                Text("REFRACTION · ONE SIGNAL IN · EVERY CHANNEL OUT")
+                    .font(.system(size: 8, weight: .black, design: .monospaced))
+                    .foregroundColor(violet.opacity(0.75))
+                    .tracking(1.5)
 
-                Spacer()
+                ShellHeroBrainView(
+                    config: .prism,
+                    size: 280,
+                    orbState: orbState,
+                    subtitle: "Draft-only · Approval required · Not connected",
+                    onTap: { onOrbTap?() }
+                )
 
-                VStack(alignment: .trailing, spacing: 6) {
-                    Text("EVERY CHANNEL OUT")
-                        .font(.system(size: 8, weight: .black, design: .monospaced))
-                        .foregroundColor(cyan.opacity(0.7))
-                    ForEach(["Email", "X", "LinkedIn", "Studio"], id: \.self) { ch in
-                        HStack(spacing: 6) {
-                            Text(ch.uppercased())
-                                .font(.system(size: 7, weight: .bold, design: .monospaced))
-                                .foregroundColor(.white.opacity(0.55))
-                            Circle().fill(pink.opacity(0.4)).frame(width: 5, height: 5)
+                TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { timeline in
+                    let t = timeline.date.timeIntervalSinceReferenceDate
+                    HStack(spacing: 16) {
+                        ForEach(Array(["Email", "X", "LinkedIn", "Studio"].enumerated()), id: \.offset) { index, ch in
+                            VStack(spacing: 4) {
+                                Text(ch.uppercased())
+                                    .font(.system(size: 7, weight: .bold, design: .monospaced))
+                                    .foregroundColor(.white.opacity(0.55))
+                                Circle()
+                                    .fill(
+                                        RadialGradient(
+                                            colors: [pink.opacity(0.55 + 0.35 * sin(t * 2.8 + Double(index))), violet.opacity(0.35), .clear],
+                                            center: .center,
+                                            startRadius: 0,
+                                            endRadius: 6
+                                        )
+                                    )
+                                    .frame(width: 7, height: 7)
+                                Text("Draft")
+                                    .font(.system(size: 6, design: .monospaced))
+                                    .foregroundColor(cyan.opacity(0.5 + 0.35 * sin(t * 2.2 + Double(index))))
+                            }
                         }
                     }
-                    Text("Not connected · Approval required")
-                        .font(.system(size: 7, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.32))
                 }
-                .padding(.trailing, 18)
             }
+            .padding(.vertical, 18)
         }
-        .frame(height: 200)
+        .frame(minHeight: 450)
     }
 }
 
@@ -343,46 +338,303 @@ struct ShellForgeModuleTile: View {
     let icon: String
     let accent: Color
     let palette: ShellThemePalette
+    var moduleId: String? = nil
+    var livingMotion: Bool = false
+    var isLocked: Bool = false
     var action: () -> Void
 
+    private var effectiveAccent: Color { isLocked ? accent.opacity(0.45) : accent }
+
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            action()
+        }) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Image(systemName: icon)
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(
-                            LinearGradient(colors: [accent, accent.opacity(0.55)], startPoint: .top, endPoint: .bottom)
-                        )
+                    if livingMotion, let moduleId {
+                        ZStack {
+                            PrismPulseRing(color: effectiveAccent, diameter: 34, lineWidth: 0.7, speed: isLocked ? 0.45 : 1.05)
+                            PrismModuleGlyphView(moduleId: moduleId, accent: effectiveAccent, size: 28)
+                        }
+                        .frame(width: 32, height: 32)
+                        .opacity(isLocked ? 0.62 : 1.0)
+                    } else {
+                        Image(systemName: icon)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(
+                                LinearGradient(colors: [effectiveAccent, effectiveAccent.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                            )
+                    }
                     Spacer()
-                    Circle()
-                        .fill(palette.offline)
-                        .frame(width: 6, height: 6)
+                    if isLocked {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 8, weight: .bold))
+                            .foregroundColor(palette.textSecondary.opacity(0.65))
+                    } else if livingMotion {
+                        PrismLivingStatusDot(color: accent, active: true, size: 5)
+                    } else {
+                        Circle()
+                            .fill(palette.offline)
+                            .frame(width: 6, height: 6)
+                    }
                 }
                 Text(title.uppercased())
                     .font(.system(size: 10, weight: .black, design: .monospaced))
-                    .foregroundColor(.white)
+                    .foregroundColor(isLocked ? .white.opacity(0.55) : .white)
                     .lineLimit(1)
                 Text(subtitle)
                     .font(.system(size: 9))
-                    .foregroundColor(palette.textSecondary)
+                    .foregroundColor(isLocked ? palette.textSecondary.opacity(0.65) : palette.textSecondary)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                 RoundedRectangle(cornerRadius: 1)
-                    .fill(LinearGradient(colors: [accent, accent.opacity(0.2)], startPoint: .leading, endPoint: .trailing))
+                    .fill(LinearGradient(colors: [effectiveAccent, effectiveAccent.opacity(0.2)], startPoint: .leading, endPoint: .trailing))
                     .frame(height: 2)
             }
             .frame(maxWidth: .infinity, minHeight: 108, alignment: .leading)
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.white.opacity(0.035))
+                    .fill(isLocked ? Color.white.opacity(0.02) : Color.white.opacity(0.055))
                     .overlay(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(accent.opacity(0.22), lineWidth: 1)
+                            .stroke(effectiveAccent.opacity(livingMotion ? 0.48 : 0.22), lineWidth: 1)
                     )
+                    .shadow(color: effectiveAccent.opacity(livingMotion && !isLocked ? 0.22 : 0.06), radius: livingMotion ? 10 : 4, y: 2)
             )
+            .overlay {
+                if livingMotion && !isLocked {
+                    PrismLivingBorder(accent: accent, cornerRadius: 12, lineWidth: 0.9)
+                }
+            }
+            .shellShimmer(accent: effectiveAccent.opacity(livingMotion ? 0.75 : 0.6))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ShellPressableButtonStyle())
+    }
+}
+
+// MARK: - Role-specific ambient layers (SwiftUI-native · no bundled video)
+
+struct ShellAppAmbientLayer: View {
+    let appKind: ShellAppKind
+    let accent: Color
+    let theme: ShellVisualTheme
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 24.0)) { timeline in
+            let t = timeline.date.timeIntervalSinceReferenceDate
+            Canvas { ctx, size in
+                switch appKind {
+                case .cortexNode:
+                    drawNetworkMesh(ctx: ctx, size: size, t: t)
+                case .jericho:
+                    drawVaultGrid(ctx: ctx, size: size, t: t)
+                case .prism:
+                    drawRefractionBeams(ctx: ctx, size: size, t: t)
+                }
+            }
+        }
+        .opacity(theme == .futuristic ? 0.55 : 0.22)
+        .allowsHitTesting(false)
+    }
+
+    private func drawNetworkMesh(ctx: GraphicsContext, size: CGSize, t: Double) {
+        let center = CGPoint(x: size.width * 0.5, y: size.height * 0.35)
+        for i in 0..<8 {
+            let angle = Double(i) * .pi / 4 + t * 0.08
+            let r = min(size.width, size.height) * 0.42
+            let pt = CGPoint(x: center.x + cos(angle) * r, y: center.y + sin(angle) * r * 0.55)
+            var line = Path()
+            line.move(to: center)
+            line.addLine(to: pt)
+            ctx.stroke(line, with: .color(accent.opacity(0.07)), lineWidth: 0.6)
+        }
+    }
+
+    private func drawVaultGrid(ctx: GraphicsContext, size: CGSize, t: Double) {
+        var y: CGFloat = 0
+        while y < size.height {
+            var line = Path()
+            line.move(to: CGPoint(x: 0, y: y))
+            line.addLine(to: CGPoint(x: size.width, y: y))
+            ctx.stroke(line, with: .color(accent.opacity(0.04 + 0.02 * sin(t + Double(y) * 0.01))), lineWidth: 0.5)
+            y += 48
+        }
+    }
+
+    private func drawRefractionBeams(ctx: GraphicsContext, size: CGSize, t: Double) {
+        let origin = CGPoint(x: size.width * 0.18, y: size.height * 0.38)
+        for i in 0..<7 {
+            let spread = CGFloat(i) * 0.09
+            let wave = 0.05 + 0.04 * sin(t * 1.6 + Double(i))
+            var beam = Path()
+            beam.move(to: origin)
+            beam.addLine(to: CGPoint(x: size.width, y: size.height * (0.12 + spread + CGFloat(sin(t * 0.9 + Double(i)) * 0.04))))
+            ctx.stroke(beam, with: .color(accent.opacity(wave)), lineWidth: i == 0 ? 1.1 : 0.7)
+        }
+        let pulse = 0.12 + 0.08 * sin(t * 2.1)
+        ctx.fill(
+            Path(ellipseIn: CGRect(x: origin.x - 40, y: origin.y - 40, width: 80, height: 80)),
+            with: .radialGradient(
+                Gradient(colors: [accent.opacity(pulse), accent.opacity(0.04), .clear]),
+                center: origin,
+                startRadius: 0,
+                endRadius: 48
+            )
+        )
+    }
+}
+
+/// Compact command-strip heroes for COMMAND tab.
+struct ShellNetworkCommandStrip: View {
+    let accent: Color
+    let secondary: Color
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.white.opacity(0.03))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(accent.opacity(0.25), lineWidth: 1))
+            HStack(spacing: 14) {
+                ShellCoreEngine(color: accent, size: 52, intensity: 0.9, geometry: .network, showTriangle: false)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("NETWORK COMMAND")
+                        .font(.system(size: 10, weight: .black, design: .monospaced))
+                        .foregroundStyle(LinearGradient(colors: [.white, accent], startPoint: .leading, endPoint: .trailing))
+                    Text("Nervous system · Mock topology · Not connected")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundColor(secondary.opacity(0.75))
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+        }
+        .frame(height: 88)
+    }
+}
+
+struct ShellVaultCommandStrip: View {
+    let red: Color
+    let steel: Color
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.white.opacity(0.03))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(red.opacity(0.3), lineWidth: 1))
+            HStack(spacing: 14) {
+                ShellJerichoCoreOrb(primary: red, secondary: steel, size: 48, intensity: 0.85)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("TRUST COMMAND")
+                        .font(.system(size: 10, weight: .black, design: .monospaced))
+                        .foregroundStyle(LinearGradient(colors: [.white, red], startPoint: .leading, endPoint: .trailing))
+                    Text("Immune vault · Advisory only · Approval required")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.42))
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+        }
+        .frame(height: 88)
+    }
+}
+
+struct ShellRefractionCommandStrip: View {
+    let violet: Color
+    let pink: Color
+    var orbState: ShellOrbState = .idle
+
+    var body: some View {
+        ZStack {
+            TimelineView(.animation(minimumInterval: 1.0 / 24.0)) { timeline in
+                let t = timeline.date.timeIntervalSinceReferenceDate
+                let pulse = 0.4 + 0.6 * (sin(t * 1.8) + 1) / 2
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [violet.opacity(0.12 + 0.08 * pulse), pink.opacity(0.04), .clear],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+            }
+
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(violet.opacity(0.28), lineWidth: 1)
+
+            HStack(spacing: 14) {
+                ShellPrismCoreOrb(violet: violet, pink: pink, size: 48, intensity: 0.9, orbState: orbState)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("REFRACTION COMMAND")
+                        .font(.system(size: 10, weight: .black, design: .monospaced))
+                        .foregroundStyle(LinearGradient(colors: [violet, pink], startPoint: .leading, endPoint: .trailing))
+                    Text("One signal in · Draft-only · Not connected")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.42))
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+        }
+        .frame(height: 88)
+    }
+}
+
+/// System Map module focal — animated topology ring.
+struct ShellNetworkTopologyRing: View {
+    let accent: Color
+    let config: PremiumShellConfig
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.black.opacity(0.45))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(accent.opacity(0.2), lineWidth: 1))
+
+            TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { timeline in
+                let t = timeline.date.timeIntervalSinceReferenceDate
+                Canvas { ctx, size in
+                    let center = CGPoint(x: size.width / 2, y: size.height / 2)
+                    let spin = t * 12
+                    for ring in 1...3 {
+                        let r = min(size.width, size.height) * (0.12 + CGFloat(ring) * 0.1)
+                        ctx.stroke(
+                            Path(ellipseIn: CGRect(x: center.x - r, y: center.y - r, width: r * 2, height: r * 2)),
+                            with: .color(accent.opacity(0.1 + Double(ring) * 0.05)),
+                            lineWidth: 0.8
+                        )
+                    }
+                    ctx.fill(
+                        Path(ellipseIn: CGRect(x: center.x - 8, y: center.y - 8, width: 16, height: 16)),
+                        with: .color(accent.opacity(0.35))
+                    )
+                    for node in config.topologyNodes {
+                        let pt = CGPoint(x: center.x + node.offsetX * 0.55, y: center.y + node.offsetY * 0.55)
+                        var line = Path()
+                        line.move(to: center)
+                        line.addLine(to: pt)
+                        ctx.stroke(line, with: .color(accent.opacity(0.15)), lineWidth: 0.6)
+                        ctx.fill(
+                            Path(ellipseIn: CGRect(x: pt.x - 4, y: pt.y - 4, width: 8, height: 8)),
+                            with: .color(Color.gray.opacity(0.55))
+                        )
+                    }
+                    var arc = Path()
+                    arc.addArc(center: center, radius: min(size.width, size.height) * 0.38, startAngle: .degrees(spin), endAngle: .degrees(spin + 70), clockwise: false)
+                    ctx.stroke(arc, with: .color(accent.opacity(0.35)), style: StrokeStyle(lineWidth: 1.2, dash: [4, 6]))
+                }
+            }
+
+            VStack {
+                Spacer()
+                Text("\(config.topologyHubLabel) · OFFLINE PREVIEW")
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    .foregroundColor(accent.opacity(0.55))
+                    .padding(.bottom, 8)
+            }
+        }
+        .frame(height: 200)
     }
 }

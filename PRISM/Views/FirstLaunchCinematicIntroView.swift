@@ -9,12 +9,13 @@ struct AppIntroConfig {
     let accentColor: Color
     let secondaryColor: Color
     let imageName: String
+    let videoResourceName: String?
     let enterY: Double
     let posterDownshift: CGFloat
     let posterHasEmbeddedUI: Bool
     let fitMode: Bool
 
-    var defaultsKey: String { "hasSeenIntro_\(appKey)_v3" }
+    var defaultsKey: String { "hasSeenIntro_\(appKey)_v4" }
 
     static let cortex = AppIntroConfig(
         appKey: "CORTEX",
@@ -64,12 +65,13 @@ struct AppIntroConfig {
     static let prism = AppIntroConfig(
         appKey: "PRISM",
         title: "PRISM",
-        subtitle: "ONE SIGNAL.\nEVERY CHANNEL.",
-        identity: "BROADCAST LAYER",
-        statusText: "SHELL PREVIEW",
+        subtitle: "THE INTERFACE",
+        identity: "CORTEX UNIVERSE",
+        statusText: "DRAFT STUDIO",
         accentColor: Color(red: 0.72, green: 0.25, blue: 1.0),
         secondaryColor: Color(red: 0.50, green: 0.12, blue: 0.85),
         imageName: "PRISMIntroHero",
+        videoResourceName: "prism-intro-overlay",
         enterY: 0.50,
     posterDownshift: 18,
     posterHasEmbeddedUI: true,
@@ -100,6 +102,7 @@ struct AppIntroConfig {
         accentColor: Color,
         secondaryColor: Color,
         imageName: String,
+        videoResourceName: String? = nil,
         enterY: Double,
         posterDownshift: CGFloat = 18,
         posterHasEmbeddedUI: Bool = true,
@@ -113,6 +116,7 @@ struct AppIntroConfig {
         self.accentColor = accentColor
         self.secondaryColor = secondaryColor
         self.imageName = imageName
+        self.videoResourceName = videoResourceName
         self.enterY = enterY
         self.posterDownshift = posterDownshift
         self.posterHasEmbeddedUI = posterHasEmbeddedUI
@@ -127,7 +131,7 @@ struct FirstLaunchCinematicIntroView: View {
     var onComplete: () -> Void
 
     // Image + depth
-    @State private var imageOpacity: Double = 0
+    @State private var imageOpacity: Double = 1
     @State private var imageScale: CGFloat = 1.10
     @State private var floatOffset: CGFloat = 0
     @State private var flickerOpacity: Double = 1.0
@@ -177,12 +181,10 @@ struct FirstLaunchCinematicIntroView: View {
             Color.black.ignoresSafeArea()
 
             // ── Layer 1: Hero image — fit preserves baked-in title below Dynamic Island ──
-            CortexIntroPosterImage(
+            CortexIntroHeroStack(
                 imageName: config.imageName,
+                videoResourceName: config.videoResourceName,
                 fitMode: config.fitMode,
-                scale: imageScale,
-                opacity: imageOpacity * flickerOpacity,
-                verticalNudge: config.fitMode ? 0.02 : 0,
                 posterDownshift: config.posterDownshift
             )
             .offset(y: floatOffset)
@@ -311,7 +313,10 @@ struct FirstLaunchCinematicIntroView: View {
             }
         }
         .opacity(fadeOut ? 0 : 1)
-        .onAppear { startAnimations() }
+        .onAppear {
+            ShellIntroMusic.shared.playIfAvailable()
+            startAnimations()
+        }
     }
 
     // MARK: - Name Glow Bloom
@@ -486,6 +491,7 @@ struct FirstLaunchCinematicIntroView: View {
                         .tracking(5)
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("intro-skip")
                 .opacity(statusOpacity)
             }
         }
@@ -495,7 +501,6 @@ struct FirstLaunchCinematicIntroView: View {
 
     private func startAnimations() {
         // Image reveal + Ken Burns zoom out
-        withAnimation(.easeOut(duration: 1.6)) { imageOpacity = 1.0 }
         withAnimation(.easeOut(duration: 8.5)) { imageScale = 1.0 }
 
         // Floating depth — subtle vertical drift

@@ -8,13 +8,14 @@ import UIKit
 // Manages short-lived server-issued session tokens for CORTEX API calls.
 //
 // Flow:
-//   1. On first request → exchange static bearer (Keychain) for session JWT via /v1/auth/session-token
+//   1. On first request -> request a device-scoped session JWT via /v1/auth/session-token
 //   2. Cache session JWT in Keychain with expiry timestamp
 //   3. On subsequent requests → return cached token if not near expiry
 //   4. Auto-refresh when < 60s remain on current session
 //   5. On 401 from API → clear session, next call triggers fresh exchange
 //
-// The static bearer is a bootstrap-only credential. Session JWTs are the runtime credential.
+// No static bearer is sent by the client. Session issuance is governed server-side
+// by bundle allowlists, device allowlists, and future App Attest validation.
 
 actor AuthSessionStore {
     static let shared = AuthSessionStore()
@@ -24,8 +25,7 @@ actor AuthSessionStore {
     private let sessionService  = "ai.cortexnode.session"
     private let sessionAccount  = "session.token"
     private let expiryAccount   = "session.expiry"
-    private let staticService   = "ai.cortexnode.server"
-    private let staticAccount   = "api.token"
+    private let deviceAccount   = "device.id"
 
     // MARK: - Public API
 
@@ -44,7 +44,8 @@ actor AuthSessionStore {
     // MARK: - Refresh
 
     private func refreshSessionToken() async throws -> String {
-        guard let static_ = staticBearerToken(), !static_.isEmpty else {
+        let deviceId = stableDeviceId()
+        guard !deviceId.isEmpty else {
             throw AuthSessionError.noBearerToken
         }
         guard let url = URL(string: sessionEndpoint) else {
@@ -55,26 +56,20 @@ actor AuthSessionStore {
         req.httpMethod = "POST"
         req.timeoutInterval = 15
         req.setValue("application/json",    forHTTPHeaderField: "Content-Type")
-        req.setValue("Bearer \(static_)",   forHTTPHeaderField: "Authorization")
+        req.setValue(deviceId,              forHTTPHeaderField: "X-Cortex-Device-Id")
+        req.setValue(deviceDisplayName(),   forHTTPHeaderField: "X-Cortex-Device-Name")
+        req.setValue("ios_app",             forHTTPHeaderField: "X-Cortex-Device-Role")
 
         let bundleId  = Bundle.main.bundleIdentifier ?? ""
         let version   = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
         let build     = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-        let deviceId: String = {
-            #if canImport(UIKit)
-            return UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
-            #else
-            return "mac-\(Host.current().localizedName ?? "unknown")"
-            #endif
-        }()
 
         let body: [String: Any] = [
             "platform":       "ios",
             "bundle_id":      bundleId,
             "device_id":      deviceId,
             "app_version":    version,
-            "build_number":   build,
-            "exchange_token": static_,
+            "build_number":   build
         ]
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
@@ -108,8 +103,18 @@ actor AuthSessionStore {
         return Date().timeIntervalSince1970 > exp - 60
     }
 
-    private func staticBearerToken() -> String? {
-        keychainRead(service: staticService, account: staticAccount)
+    private func stableDeviceId() -> String {
+        if let existing = keychainRead(service: sessionService, account: deviceAccount),
+           !existing.isEmpty {
+            return existing
+        }
+        let id = UUID().uuidString
+        keychainWrite(value: id, service: sessionService, account: deviceAccount)
+        return id
+    }
+
+    private func deviceDisplayName() -> String {
+        "PRISM iOS"
     }
 
     // MARK: - Keychain
@@ -137,6 +142,7 @@ actor AuthSessionStore {
         ]
         SecItemDelete(base as CFDictionary)
         var attrs = base
+        attrs[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
         attrs[kSecValueData as String] = data
         SecItemAdd(attrs as CFDictionary, nil)
     }
@@ -161,7 +167,7 @@ enum AuthSessionError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .noBearerToken:      return "No static bearer token found. Configure app credentials."
+        case .noBearerToken:      return "Device identity is unavailable. Reinstall or re-authenticate this app."
         case .invalidEndpoint:    return "Session endpoint URL is invalid."
         case .issuanceFailed:     return "Could not establish a secure session. Check connectivity."
         case .malformedResponse:  return "Session response could not be parsed."

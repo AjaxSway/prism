@@ -1,5 +1,13 @@
 import Foundation
 
+enum ImageQuality: String, CaseIterable, Identifiable {
+    case standard = "Standard"
+    case high = "High"
+    case ultra = "Ultra"
+
+    var id: String { rawValue }
+}
+
 enum ImageAspectRatio: String, CaseIterable, Identifiable {
     case square = "1:1"
     case landscape = "16:9"
@@ -33,7 +41,7 @@ struct ImageJob: Identifiable, Equatable {
     var status: Status
 
     enum Status: String {
-        case queued, blocked, completed
+        case queued, generating, completed, failed, blocked
     }
 }
 
@@ -41,11 +49,12 @@ struct ImageResult: Identifiable, Equatable {
     let id: UUID
     let jobID: UUID
     let prompt: String
-    let placeholderSymbol: String
+    let imageURL: URL?
     let createdAt: Date
-    let modelPlaceholder: String
+    let model: String
 }
 
 enum ImageGenerationEndpoint {
-    static let futurePath = "/api/image/generate"
+    static let path = "/generate-image"
+    static let base = "https://api.cortexnode.ai"
 }

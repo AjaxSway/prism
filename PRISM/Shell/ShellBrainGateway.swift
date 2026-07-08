@@ -1,7 +1,6 @@
 import Foundation
 
-/// Single integration point for Claude to flip live brain routing.
-/// Set `ShellFeatureFlags.brainConnected = true` after backend + auth verified.
+/// Single integration point for CORTEX Super Brain routing (Signal Zero CLI relay pattern).
 @MainActor
 @Observable
 final class ShellBrainGateway {
@@ -11,12 +10,12 @@ final class ShellBrainGateway {
         case offline = "Not connected"
         case preview = "Shell preview"
         case connecting = "Connecting"
-        case connected = "Connected"
-        case error = "Error"
+        case connected = "Brain connected"
+        case error = "Super Brain route unavailable"
     }
 
     private(set) var state: ConnectionState = .preview
-    private(set) var statusDetail = "Mock preview · Set brainConnected when wiring live."
+    private(set) var statusDetail = "Super Brain route · first prompt establishes session."
     private(set) var lastError: String?
 
     var isLive: Bool {
@@ -30,11 +29,11 @@ final class ShellBrainGateway {
     func refreshState() {
         if !ShellFeatureFlags.brainConnected {
             state = .preview
-            statusDetail = "Shell preview · Claude wires BrainConnector next."
+            statusDetail = "Shell preview · Super Brain route requires setup."
             return
         }
         state = .offline
-        statusDetail = "Tap Connect to reach api.cortexnode.ai."
+        statusDetail = "Super Brain enabled · first prompt establishes session."
     }
 
     func connect(appKind: ShellAppKind) async {
@@ -48,11 +47,11 @@ final class ShellBrainGateway {
         do {
             _ = try await AuthSessionStore.shared.validSessionToken()
             state = .connected
-            statusDetail = "CORTEX backbone reachable · \(appKindLabel(appKind))"
+            statusDetail = "Brain connected · \(appKindLabel(appKind)) lens"
         } catch {
             state = .error
-            lastError = error.localizedDescription
-            statusDetail = lastError ?? "Connection failed."
+            lastError = sanitized(error)
+            statusDetail = lastError ?? "Super Brain route unavailable."
         }
     }
 
@@ -63,22 +62,70 @@ final class ShellBrainGateway {
         }
     }
 
-    /// Text command / chat — routes to app BrainConnector when live.
+    /// Text command / chat — routes through CortexSuperBrainClient with app specialty lens.
     func stream(prompt: String, appKind: ShellAppKind) async -> AsyncThrowingStream<String, Error> {
-        guard ShellFeatureFlags.brainConnected, state == .connected else {
-            return mockStream(prompt: prompt, appKind: appKind)
+        guard ShellFeatureFlags.brainConnected else {
+            return unavailableStream("Shell preview · Super Brain route disabled for this build.")
         }
-        return await BrainConnector.shared.shellStream(prompt: prompt)
+
+        let lens = CortexSpecialtyLens(shellAppKind: appKind)
+        state = .connecting
+        statusDetail = "Routing through Super Brain · \(appKindLabel(appKind)) lens…"
+
+        return AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    var full = ""
+                    for try await chunk in CortexSuperBrainClient.shared.stream(prompt: prompt, lens: lens) {
+                        full += chunk
+                        continuation.yield(chunk)
+                    }
+                    guard !full.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                        throw CortexSuperBrainError.empty
+                    }
+                    state = .connected
+                    statusDetail = "Brain connected · \(appKindLabel(appKind)) lens"
+                    continuation.finish()
+                } catch {
+                    state = .error
+                    lastError = sanitized(error)
+                    statusDetail = lastError ?? "Super Brain route unavailable."
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
     }
 
-    private func mockStream(prompt: String, appKind: ShellAppKind) -> AsyncThrowingStream<String, Error> {
+    func markError(_ message: String) {
+        state = .error
+        lastError = sanitizedMessage(message)
+        statusDetail = lastError ?? "Super Brain route unavailable."
+    }
+
+    private func sanitizedMessage(_ message: String) -> String {
+        if message.lowercased().contains("token") || message.lowercased().contains("bearer") {
+            return "Brain unavailable. Session could not be established."
+        }
+        return message
+    }
+
+    private func unavailableStream(_ message: String) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             Task {
-                try? await Task.sleep(nanoseconds: 400_000_000)
-                continuation.yield("[Preview] \(appKindLabel(appKind)) received: \(prompt.prefix(120))… Connect brain for live response.")
+                state = .preview
+                statusDetail = message
+                continuation.yield(message)
                 continuation.finish()
             }
         }
+    }
+
+    private func sanitized(_ error: Error) -> String {
+        let raw = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+        if raw.lowercased().contains("token") || raw.lowercased().contains("bearer") {
+            return "Brain unavailable. Session could not be established."
+        }
+        return raw
     }
 
     private func appKindLabel(_ kind: ShellAppKind) -> String {
@@ -90,7 +137,7 @@ final class ShellBrainGateway {
     }
 }
 
-/// PRISM image generation — Claude implements against api.cortexnode.ai or Bedrock route.
+/// PRISM image generation — routes when brain connected.
 protocol ShellImageGenerationServing: Sendable {
     func generate(prompt: String, preset: String, style: String) async throws -> Data
 }
@@ -108,7 +155,7 @@ enum ShellBrainWireError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .previewOnly: return "Image generation requires brain connection."
-        case .notConnected: return "Connect to CORTEX backbone first."
+        case .notConnected: return "Super Brain route unavailable."
         }
     }
 }

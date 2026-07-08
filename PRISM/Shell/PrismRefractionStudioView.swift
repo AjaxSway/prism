@@ -1,17 +1,19 @@
 import SwiftUI
 
-// MARK: - PRISM Refraction Studio (Signal Composer · Blotato-style mock)
+// MARK: - PRISM Refraction Studio · Signal Composer · draft-only local workflow
 
 struct PrismRefractionStudioView: View {
     @Bindable var env: ShellEnvironment
     @State private var postText = ""
-    @State private var selectedChannels: Set<String> = Set(MockPrismCatalog.accounts.map(\.id))
+    @State private var selectedChannels: Set<String> = MockPrismCatalog.defaultSocialChannelIds
     @State private var selectedPrinciple = MockB2TB.today.principleTitle
     @State private var showPrinciplePicker = false
+    @State private var showRefractionPreview = false
+    @State private var isRefracting = false
     @State private var selectedAudience = "Executive"
     @FocusState private var captionFocused: Bool
 
-    private let audiences = ["Executive", "Founder", "Technical", "Public", "Internal"]
+    private let audiences = ["Executive", "Brand", "Technical", "Public", "Internal"]
     private var violet: Color { env.config.refractionAccent ?? Color(red: 0.545, green: 0.361, blue: 0.965) }
     private var pink: Color { env.config.refractionPink ?? Color(red: 0.925, green: 0.286, blue: 0.600) }
     private var cyan: Color { Color(red: 0.133, green: 0.827, blue: 0.933) }
@@ -23,7 +25,9 @@ struct PrismRefractionStudioView: View {
         ZStack {
             Color.black.ignoresSafeArea()
             ShellScanlineOverlay(accent: violet, opacity: 0.04)
-            ShellAmbientBackground(palette: palette, accentOverride: violet, intensity: 0.55, theme: env.theme)
+            ShellAmbientBackground(palette: palette, accentOverride: violet, intensity: 0.55, theme: env.theme, appKind: .prism)
+
+            UniverseHUDCorners(color: violet.opacity(0.52))
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 14) {
@@ -31,7 +35,7 @@ struct PrismRefractionStudioView: View {
                         ShellAvatarChip(imageName: "ShellPrismAvatar", accent: violet, size: 48)
                         VStack(alignment: .leading, spacing: 2) {
                             ShellMetallicTitle(text: "PRISM", size: 20, accent: violet)
-                            Text("One signal in · Every channel out · One voice")
+                            Text("Standalone content workspace · write · approve · distribute")
                                 .font(.system(size: 10, design: .monospaced))
                                 .foregroundColor(.white.opacity(0.45))
                         }
@@ -42,15 +46,24 @@ struct PrismRefractionStudioView: View {
                         violet: violet,
                         pink: pink,
                         cyan: cyan,
-                        orbState: env.orbState,
+                        orbState: isRefracting ? .executing : env.orbState,
                         onOrbTap: { env.demoOrbCycle() }
                     )
+                    .prismLivingCard(accent: violet)
 
-                    ShellStatusBadge(text: "Draft-only · Approval required · Not connected", palette: palette, tone: .warning)
+                    HStack(spacing: 6) {
+                        ShellStatusBadge(text: "Draft only", palette: palette, tone: .warning)
+                        ShellStatusBadge(text: "Approval required", palette: palette, tone: .warning)
+                        ShellStatusBadge(text: "Not connected", palette: palette, tone: .neutral)
+                    }
+
+                    composeCard
+
+                    refractionButton
 
                     ShellCanonSectionHeader(
                         title: "PRISM Communication Grid",
-                        subtitle: "Purple refraction beam · platform-ready outputs · mock only",
+                        subtitle: "Purple refraction beam · platform-ready outputs · draft-only",
                         accent: violet
                     )
 
@@ -58,37 +71,50 @@ struct PrismRefractionStudioView: View {
 
                     ShellCanonSectionHeader(
                         title: "Studio Surfaces",
-                        subtitle: "Composer · outputs · calendar · studio · approval",
+                        subtitle: "PRISM content workspace · distinct from CORTEX · compose · approve · publish",
                         accent: violet
                     )
 
                     prismModuleSurfacesStrip(env: env, palette: env.palette, violet: violet)
 
                     audienceSelectorSection
-                    b2tbCard
-                    composeCard
+                    brandVoiceCard
                     channelSection
-                    refractionButton
                     lockedAttributionFooter
                     taglineFooter
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
-                .padding(.bottom, 120)
+                .padding(.bottom, 180)
             }
         }
         .sheet(isPresented: $showPrinciplePicker) { principlePickerSheet }
+        .onAppear {
+            selectedAudience = env.draftStore.selectedAudience
+            selectedPrinciple = env.draftStore.selectedBrandPrinciple
+        }
+        .onChange(of: selectedAudience) { _, value in
+            env.draftStore.selectedAudience = value
+        }
+        .overlay {
+            ShellRefractionPreviewOverlay(
+                channels: Array(selectedChannels.compactMap { id in MockPrismCatalog.accounts.first(where: { $0.id == id })?.name }),
+                accent: violet,
+                secondary: pink,
+                isVisible: $showRefractionPreview
+            )
+        }
     }
 
-    private var b2tbCard: some View {
-        ShellGlassPanel(palette: env.palette) {
+    private var brandVoiceCard: some View {
+        ShellGlassPanel(palette: env.palette, livingBorder: true, livingSecondary: pink) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Label("Back to the Basics", systemImage: "shield.lefthalf.filled")
+                    Label("Brand Voice · Foundation", systemImage: "text.quote")
                         .font(.system(size: 11, weight: .bold))
                         .foregroundColor(gold)
                     Spacer()
-                    Text("365 doctrine · mock")
+                    Text("Doctrine preview · Draft-only")
                         .font(.system(size: 9, design: .monospaced))
                         .foregroundColor(.white.opacity(0.35))
                 }
@@ -111,10 +137,10 @@ struct PrismRefractionStudioView: View {
                 .buttonStyle(.plain)
 
                 HStack(spacing: 8) {
-                    mockGenButton("Create Signal", icon: "text.quote", accent: violet) {
+                    studioGenButton("Create Signal", icon: "text.quote", accent: violet) {
                         postText = MockB2TB.samplePost(principle: selectedPrinciple)
                     }
-                    mockGenButton("Image Draft", icon: "sparkles.rectangle.stack", accent: gold) {
+                    studioGenButton("Open Image Studio", icon: "sparkles.rectangle.stack", accent: gold) {
                         env.selectedTab = .studio
                     }
                 }
@@ -123,7 +149,7 @@ struct PrismRefractionStudioView: View {
     }
 
     private var composeCard: some View {
-        ShellGlassPanel(palette: env.palette) {
+        ShellGlassPanel(palette: env.palette, livingBorder: true, livingSecondary: pink) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("SIGNAL COMPOSER")
                     .font(.system(size: 10, weight: .bold, design: .monospaced))
@@ -158,11 +184,21 @@ struct PrismRefractionStudioView: View {
                         .font(.system(size: 10, weight: .bold, design: .monospaced))
                         .foregroundColor(.white.opacity(0.5))
                     Spacer()
-                    Text("Mock · \(selectedChannels.count)/\(MockPrismCatalog.accounts.count) · Draft-only")
+                    Text("Draft · \(selectedChannels.count)/\(MockPrismCatalog.accounts.count) · Approval required")
                         .font(.system(size: 9, design: .monospaced))
                         .foregroundColor(cyan.opacity(0.7))
                 }
-                ForEach(MockPrismCatalog.accounts) { account in
+                Text("Social · \(MockPrismCatalog.socialAccounts.count) surfaces")
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .foregroundColor(violet.opacity(0.75))
+                ForEach(MockPrismCatalog.socialAccounts) { account in
+                    channelRow(account)
+                }
+                Text("Extended channels")
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.35))
+                    .padding(.top, 4)
+                ForEach(MockPrismCatalog.otherAccounts) { account in
                     channelRow(account)
                 }
             }
@@ -193,10 +229,16 @@ struct PrismRefractionStudioView: View {
     }
 
     private var refractionButton: some View {
-        Button {} label: {
+        Button {
+            Task { await queueRefractionPreview() }
+        } label: {
             HStack(spacing: 8) {
-                Image(systemName: "arrow.triangle.branch")
-                Text("Queue Refraction Preview")
+                if isRefracting {
+                    ProgressView().tint(.black)
+                } else {
+                    Image(systemName: "arrow.triangle.branch")
+                }
+                Text(isRefracting ? "REFRACTING…" : "Queue Refraction Preview")
                     .font(.system(size: 13, weight: .bold))
             }
             .frame(maxWidth: .infinity)
@@ -207,15 +249,53 @@ struct PrismRefractionStudioView: View {
                     .fill(LinearGradient(colors: [violet, pink], startPoint: .leading, endPoint: .trailing))
             )
         }
-        .buttonStyle(.plain)
-        .disabled(true)
-        .opacity(0.55)
+        .buttonStyle(ShellPressableButtonStyle())
+        .disabled(isRefracting || postText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        .accessibilityIdentifier("prism-queue-refraction")
+        .opacity(postText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.55 : 1)
         .overlay(alignment: .bottom) {
-            Text("Connect brain · Approval gate required")
+            Text(postText.isEmpty ? "Create a signal first · Draft staging" : "Draft-only · Approval before publish")
                 .font(.system(size: 9, design: .monospaced))
                 .foregroundColor(.white.opacity(0.35))
                 .offset(y: 22)
         }
+    }
+
+    private func queueRefractionPreview() async {
+        guard !isRefracting else { return }
+        let text = postText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        isRefracting = true
+        env.orbState = .executing
+        env.impact(.medium)
+        env.draftStore.selectedAudience = selectedAudience
+        env.draftStore.selectedBrandPrinciple = selectedPrinciple
+        env.draftStore.selectedBrandTone = selectedAudience
+        try? await Task.sleep(for: .milliseconds(900))
+        let draft = env.draftStore.queueRefraction(
+            sourceText: text,
+            audience: selectedAudience,
+            brandPrinciple: selectedPrinciple,
+            brandTone: selectedAudience,
+            channelIds: Array(selectedChannels)
+        )
+        showRefractionPreview = true
+        env.activityStore.append(
+            title: "Refraction queued",
+            detail: "\(draft.channelOutputs.count) channels · \(selectedAudience)",
+            kind: .command
+        )
+        try? await Task.sleep(for: .seconds(2.2))
+        showRefractionPreview = false
+        isRefracting = false
+        env.orbState = .success
+        env.showToast(
+            "Saved to Draft Queue",
+            detail: "\(draft.channelOutputs.count) channel outputs · open Approval Gate",
+            tone: .success
+        )
+        try? await Task.sleep(for: .milliseconds(800))
+        env.orbState = .idle
     }
 
     private var audienceSelectorSection: some View {
@@ -243,7 +323,7 @@ struct PrismRefractionStudioView: View {
                         }
                     }
                 }
-                Text("Mock profile · \(selectedAudience) tone · Connect later")
+                Text("Brand profile · \(selectedAudience) tone · local refraction")
                     .font(.system(size: 10))
                     .foregroundColor(.white.opacity(0.4))
             }
@@ -270,25 +350,24 @@ struct PrismRefractionStudioView: View {
     }
 
     private func prismModuleSurfacesStrip(env: ShellEnvironment, palette: ShellThemePalette, violet: Color) -> some View {
-        let ids = ["signal_composer", "platform_outputs", "campaign_calendar", "brand_voice", "draft_queue", "distribution_status", "proof_assets", "approval_gate"]
+        let ids = ["signal_composer", "refraction_preview", "platform_outputs", "draft_queue", "approval_gate", "image_studio", "campaign_calendar", "audit_trail"]
+        let lockedIds: Set<String> = ["platform_outputs", "refraction_preview"]
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-            ForEach(ids, id: \.self) { id in
+            ForEach(Array(ids.enumerated()), id: \.element) { index, id in
                 if let module = env.config.modules.first(where: { $0.id == id }) {
-                    Button { env.openModule(module) } label: {
-                        ShellGlassPanel(palette: palette) {
-                            HStack(spacing: 8) {
-                                Image(systemName: module.icon)
-                                    .font(.system(size: 12))
-                                    .foregroundColor(violet)
-                                Text(module.title)
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundColor(palette.textPrimary)
-                                    .lineLimit(1)
-                                Spacer(minLength: 0)
-                            }
-                        }
+                    ShellForgeModuleTile(
+                        title: module.title,
+                        subtitle: module.subtitle,
+                        icon: module.icon,
+                        accent: violet,
+                        palette: palette,
+                        moduleId: module.id,
+                        livingMotion: true,
+                        isLocked: lockedIds.contains(id)
+                    ) {
+                        env.openModule(module)
                     }
-                    .buttonStyle(.plain)
+                    .prismStaggerAppear(index: index, accent: violet)
                 }
             }
         }
@@ -315,7 +394,7 @@ struct PrismRefractionStudioView: View {
         }
     }
 
-    private func mockGenButton(_ title: String, icon: String, accent: Color, action: @escaping () -> Void) -> some View {
+    private func studioGenButton(_ title: String, icon: String, accent: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 6) {
                 Image(systemName: icon)
@@ -337,21 +416,36 @@ struct MockPrismAccount: Identifiable {
     let name: String
     let handle: String
     let icon: String
+    var kind: MockPrismChannelKind = .other
+}
+
+enum MockPrismChannelKind {
+    case social
+    case other
 }
 
 enum MockPrismCatalog {
-    static let accounts: [MockPrismAccount] = [
-        MockPrismAccount(id: "blog", name: "Website / Blog", handle: "Draft channel placeholder", icon: "globe"),
-        MockPrismAccount(id: "email", name: "Email", handle: "Platform account not connected", icon: "envelope.fill"),
-        MockPrismAccount(id: "sms", name: "SMS", handle: "Connect later", icon: "message.fill"),
-        MockPrismAccount(id: "pod", name: "Podcast", handle: "Draft channel placeholder", icon: "mic.fill"),
-        MockPrismAccount(id: "x", name: "X", handle: "No channel authorized", icon: "at"),
-        MockPrismAccount(id: "ig", name: "Instagram", handle: "OAuth required later", icon: "camera.fill"),
-        MockPrismAccount(id: "li", name: "LinkedIn", handle: "Platform account not connected", icon: "briefcase.fill"),
-        MockPrismAccount(id: "yt", name: "YouTube", handle: "Draft channel placeholder", icon: "play.rectangle.fill"),
-        MockPrismAccount(id: "tt", name: "TikTok", handle: "No channel authorized", icon: "music.note"),
-        MockPrismAccount(id: "fb", name: "Facebook", handle: "Connect later", icon: "person.2.fill"),
+    static let socialAccounts: [MockPrismAccount] = [
+        MockPrismAccount(id: "x", name: "X", handle: "Not connected", icon: "at", kind: .social),
+        MockPrismAccount(id: "ig", name: "Instagram", handle: "Not connected", icon: "camera.fill", kind: .social),
+        MockPrismAccount(id: "li", name: "LinkedIn", handle: "Not connected", icon: "briefcase.fill", kind: .social),
+        MockPrismAccount(id: "fb", name: "Facebook", handle: "Not connected", icon: "person.2.fill", kind: .social),
+        MockPrismAccount(id: "threads", name: "Threads", handle: "Not connected", icon: "at.circle", kind: .social),
+        MockPrismAccount(id: "bluesky", name: "Bluesky", handle: "Not connected", icon: "cloud.fill", kind: .social),
     ]
+
+    static let otherAccounts: [MockPrismAccount] = [
+        MockPrismAccount(id: "blog", name: "Website / Blog", handle: "Draft channel", icon: "globe", kind: .other),
+        MockPrismAccount(id: "email", name: "Email", handle: "Not connected", icon: "envelope.fill", kind: .other),
+        MockPrismAccount(id: "sms", name: "SMS", handle: "Not connected", icon: "message.fill", kind: .other),
+        MockPrismAccount(id: "pod", name: "Podcast", handle: "Draft channel", icon: "mic.fill", kind: .other),
+        MockPrismAccount(id: "yt", name: "YouTube", handle: "Not connected", icon: "play.rectangle.fill", kind: .other),
+        MockPrismAccount(id: "tt", name: "TikTok", handle: "Not connected", icon: "music.note", kind: .other),
+    ]
+
+    static var accounts: [MockPrismAccount] { socialAccounts + otherAccounts }
+
+    static var defaultSocialChannelIds: Set<String> { Set(socialAccounts.map(\.id)) }
 }
 
 struct MockPrismTool: Identifiable {

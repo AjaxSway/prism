@@ -56,11 +56,11 @@ final class BlotatoService {
         "twitter":   15515,  // @CortexNodeAI
         "instagram": 38870,  // @cortexnode.ai
         "tiktok":    41309,  // @cortexnode
-        "linkedin":  16810,  // George Bayze / CORTEXNODE page
+        "linkedin":  16810,  // CORTEXNODE page
         "bluesky":   31454,  // cortexnode.bsky.social
         "threads":   5625,   // @cortexnode.ai
-        "facebook":  25358,  // George Bayze → CORTEXNODE.ai page
-        "youtube":   32333,  // George Bayze (CORTEXNODE)
+        "facebook":  25358,  // CORTEXNODE.ai page
+        "youtube":   32333,  // CORTEXNODE
     ]
 
     // Facebook requires a pageId to post to the company page (not personal profile)

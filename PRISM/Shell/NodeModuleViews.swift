@@ -8,10 +8,10 @@ struct NodeSystemMapView: View {
     var body: some View {
         let palette = env.palette
         VStack(spacing: 14) {
-            nodeHeader("System Map", "Sample topology · Five layers · Not connected", palette: palette)
+            nodeHeader("System Map", "Living ecosystem · Seven apps · Not connected", palette: palette)
             ShellStatusBadge(text: "Mock topology · Shell Preview", palette: palette)
-            ShellCanonIntegrationEcosystemView(accent: palette.accent, height: 220)
-            ShellCanonFiveLayersView(accent: palette.accent)
+            ShellLivingEcosystemMapView(accent: palette.accent, height: 360)
+            ShellCanonSevenLayersView(accent: palette.accent)
             topologyRows(palette: palette, config: env.config)
         }
     }
@@ -164,7 +164,17 @@ struct NodeAccountSurfaceView: View {
                         .foregroundColor(palette.textSecondary)
                 }
             }
-            ShellPrimaryButton(title: "Connect Account (Disabled)", palette: palette) {}
+            ShellPrimaryButton(title: "Connect Account", palette: palette) {
+                env.presentConnectLater(
+                    "Operator Account",
+                    detail: "Sign-in and sync activate when CORTEX backbone connects. Shell preview uses a local mock identity.",
+                    steps: [
+                        "Sign in to CORTEX once to seed session keys.",
+                        "Connect brain from Settings in this app.",
+                        "Account surface syncs operator profile and audit trail.",
+                    ]
+                )
+            }
         }
     }
 }

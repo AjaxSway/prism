@@ -102,6 +102,10 @@ struct ShellFloatingHubOrb: View {
     var body: some View {
         Button(action: onTap) {
             ZStack {
+                if isActive {
+                    PrismPulseRing(color: stateColor, secondary: secondaryColor, diameter: 68, speed: 1.35)
+                }
+
                 Circle()
                     .fill(Color.black.opacity(0.88))
                     .frame(width: 58, height: 58)
@@ -129,6 +133,7 @@ struct ShellFloatingHubOrb: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(appKind == .prism ? "prism-tab-home" : "\(appKind)-hub-orb")
     }
 }
 
@@ -136,28 +141,18 @@ struct ShellHUDTabBar: View {
     @Binding var selection: ShellTab
     let palette: ShellThemePalette
     let tabs: [ShellTab]
+    var appKind: ShellAppKind = .cortexNode
 
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(tabs, id: \.self) { tab in
-                Button {
-                    withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) { selection = tab }
-                } label: {
-                    VStack(spacing: 4) {
-                        Image(systemName: tab.icon)
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundStyle(selection == tab ? palette.accent : palette.textSecondary)
-                        Text(tab.rawValue.uppercased())
-                            .font(.system(size: 9, weight: .bold, design: .monospaced))
-                            .foregroundStyle(selection == tab ? palette.accent : palette.textSecondary.opacity(0.85))
-                        Capsule()
-                            .fill(selection == tab ? palette.accent : .clear)
-                            .frame(width: 18, height: 2)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                }
-                .buttonStyle(.plain)
+            if appKind == .prism {
+                let left: [ShellTab] = [.command, .channels, .modules].filter { tabs.contains($0) }
+                let right: [ShellTab] = [.studio, .settings, .about].filter { tabs.contains($0) }
+                tabGroup(left)
+                Color.clear.frame(width: 58).accessibilityHidden(true)
+                tabGroup(right)
+            } else {
+                tabGroup(tabs)
             }
         }
         .padding(.horizontal, 6)
@@ -179,6 +174,46 @@ struct ShellHUDTabBar: View {
                 )
                 .shadow(color: palette.accent.opacity(0.12), radius: 16, y: 4)
         )
+    }
+
+    @ViewBuilder
+    private func tabGroup(_ group: [ShellTab]) -> some View {
+        HStack(spacing: 0) {
+            ForEach(group, id: \.self) { tab in
+                tabButton(tab)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func tabButton(_ tab: ShellTab) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) { selection = tab }
+        } label: {
+            VStack(spacing: 4) {
+                Image(systemName: tab.icon)
+                    .font(.system(size: appKind == .prism ? 17 : 20, weight: .semibold))
+                    .foregroundStyle(selection == tab ? palette.accent : palette.textSecondary)
+                Text(tab.rawValue.uppercased())
+                    .font(.system(size: appKind == .prism ? 8 : 9, weight: .bold, design: .monospaced))
+                    .foregroundStyle(selection == tab ? palette.accent : palette.textSecondary.opacity(0.85))
+                Capsule()
+                    .fill(selection == tab ? palette.accent : .clear)
+                    .frame(width: 18, height: 2)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(tabAccessibilityID(for: tab))
+    }
+
+    private func tabAccessibilityID(for tab: ShellTab) -> String {
+        switch appKind {
+        case .prism: return "prism-tab-\(tab.rawValue.lowercased())"
+        case .jericho: return "jericho-tab-\(tab.rawValue.lowercased())"
+        case .cortexNode: return "node-tab-\(tab.rawValue.lowercased())"
+        }
     }
 }
 

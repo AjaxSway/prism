@@ -1,46 +1,41 @@
 import SwiftUI
 
-/// FORGE-style intro stack: every-launch poster splash + first-install cinematic overlay.
+/// Every launch: God Mode intro — theme · video + Adam welcome · still poster · ENTER.
 struct ShellUniverseIntroGate<Content: View>: View {
     let shellConfig: PremiumShellConfig
     let introConfig: AppIntroConfig
     @ViewBuilder var content: () -> Content
 
-    @AppStorage private var hasSeenCinematicIntro: Bool
     @State private var showSplash = true
+
+    private var skipIntroForTesting: Bool {
+        ProcessInfo.processInfo.arguments.contains("UI_TESTING")
+            || ProcessInfo.processInfo.environment["PRISM_SKIP_INTRO"] == "1"
+    }
 
     init(shellConfig: PremiumShellConfig, introConfig: AppIntroConfig, @ViewBuilder content: @escaping () -> Content) {
         self.shellConfig = shellConfig
         self.introConfig = introConfig
         self.content = content
-        _hasSeenCinematicIntro = AppStorage(wrappedValue: false, introConfig.defaultsKey)
     }
 
     var body: some View {
         ZStack {
-            if !showSplash {
-                content()
-                    .transition(.opacity)
-            } else {
-                Color.black.ignoresSafeArea()
-            }
+            content()
+                .opacity(showSplash && !skipIntroForTesting ? 0 : 1)
+                .allowsHitTesting(!showSplash || skipIntroForTesting)
 
-            if showSplash && hasSeenCinematicIntro {
+            if showSplash && !skipIntroForTesting {
                 ShellPosterSplashView(config: shellConfig) {
                     withAnimation(.easeOut(duration: 0.55)) { showSplash = false }
                 }
                 .zIndex(100)
+                .transition(.opacity)
             }
-
-            if !hasSeenCinematicIntro {
-                FirstLaunchCinematicIntroView(config: introConfig) {
-                    withAnimation(.easeIn(duration: 0.4)) {
-                        hasSeenCinematicIntro = true
-                        showSplash = false
-                    }
-                }
-                .zIndex(500)
-            }
+        }
+        .onAppear {
+            ShellIntroMusic.shared.ensurePlaying()
+            if skipIntroForTesting { showSplash = false }
         }
     }
 }
