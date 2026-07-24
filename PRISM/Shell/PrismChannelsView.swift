@@ -85,7 +85,7 @@ struct PrismChannelsView: View {
                             .buttonStyle(.plain)
 
                             Button { showQueueSheet = true } label: {
-                                Text("OPEN DRAFT QUEUE")
+                                Text("OPEN PUBLISH QUEUE")
                                     .font(.system(size: 11, weight: .bold, design: .monospaced))
                                     .foregroundColor(.black)
                                     .frame(maxWidth: .infinity)

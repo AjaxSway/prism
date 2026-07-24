@@ -13,7 +13,9 @@ final class PostingQueue {
     var approved: [QueuedPost] = []
     var posted: [QueuedPost] = []
 
-    private let storageKey = "prism_queue_drafts"
+    private let draftsKey = "prism_queue_drafts"
+    private let approvedKey = "prism_queue_approved"
+    private let postedKey = "prism_queue_posted"
     private init() { load() }
 
     func addDraft(content: String, platforms: [Platform], sourcePrompt: String) {
@@ -25,6 +27,26 @@ final class PostingQueue {
         )
         drafts.insert(post, at: 0)
         save()
+    }
+
+    /// Sync an approved Modules/Home draft into the publish queue (approved lane).
+    @discardableResult
+    func enqueueApprovedFromStudio(content: String, channelIds: [String], sourcePrompt: String) -> QueuedPost? {
+        let platforms = channelIds.compactMap { Platform.fromChannelId($0) }
+        guard !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        guard !platforms.isEmpty else { return nil }
+        // Dedupe: same content already waiting to broadcast
+        if approved.contains(where: { $0.content == content }) { return approved.first(where: { $0.content == content }) }
+        var post = QueuedPost(
+            content: content,
+            platforms: platforms,
+            sourcePrompt: sourcePrompt,
+            status: .approved
+        )
+        post.approvedAt = Date()
+        approved.insert(post, at: 0)
+        save()
+        return post
     }
 
     func approve(_ post: QueuedPost) {
@@ -60,15 +82,25 @@ final class PostingQueue {
     var pendingCount: Int { drafts.count }
 
     private func save() {
-        if let data = try? JSONEncoder().encode(drafts) {
-            UserDefaults.standard.set(data, forKey: storageKey)
-        }
+        let defaults = UserDefaults.standard
+        if let data = try? JSONEncoder().encode(drafts) { defaults.set(data, forKey: draftsKey) }
+        if let data = try? JSONEncoder().encode(approved) { defaults.set(data, forKey: approvedKey) }
+        if let data = try? JSONEncoder().encode(posted) { defaults.set(data, forKey: postedKey) }
     }
 
     private func load() {
-        if let data = UserDefaults.standard.data(forKey: storageKey),
+        let defaults = UserDefaults.standard
+        if let data = defaults.data(forKey: draftsKey),
            let saved = try? JSONDecoder().decode([QueuedPost].self, from: data) {
             drafts = saved
+        }
+        if let data = defaults.data(forKey: approvedKey),
+           let saved = try? JSONDecoder().decode([QueuedPost].self, from: data) {
+            approved = saved
+        }
+        if let data = defaults.data(forKey: postedKey),
+           let saved = try? JSONDecoder().decode([QueuedPost].self, from: data) {
+            posted = saved
         }
     }
 }
@@ -123,6 +155,21 @@ enum Platform: String, Codable, CaseIterable {
         case .threads:   return "bubble.circle.fill"
         case .facebook:  return "f.circle.fill"
         case .youtube:   return "play.rectangle.fill"
+        }
+    }
+
+    /// Maps MockPrismCatalog / studio channel ids → Platform.
+    static func fromChannelId(_ id: String) -> Platform? {
+        switch id.lowercased() {
+        case "x", "twitter": return .x
+        case "ig", "instagram": return .instagram
+        case "li", "linkedin": return .linkedin
+        case "fb", "facebook": return .facebook
+        case "threads": return .threads
+        case "bluesky", "bsky": return .bluesky
+        case "yt", "youtube": return .youtube
+        case "tt", "tiktok": return .tiktok
+        default: return nil
         }
     }
 }

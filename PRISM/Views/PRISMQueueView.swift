@@ -2,27 +2,30 @@ import SwiftUI
 
 struct PRISMQueueView: View {
     @State private var queue = PostingQueue.shared
+    @State private var channels = PlatformChannelManager.shared
     @State private var postingId: UUID?
-    @State private var errorId: UUID?
     @State private var errorMessage = ""
 
     private let v  = Color(red: 0.545, green: 0.361, blue: 0.965)
-    private let bg = Color(red: 0.008, green: 0.012, blue: 0.027)
     private let c  = Color(red: 0.133, green: 0.827, blue: 0.933)
     private let p  = Color(red: 0.925, green: 0.286, blue: 0.600)
 
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 4) {
-                Text("QUEUE")
-                    .font(.system(size: 28, weight: .black, design: .monospaced))
-                    .foregroundColor(v).tracking(6)
+                Text("PUBLISH QUEUE")
+                    .font(.system(size: 24, weight: .black, design: .monospaced))
+                    .foregroundColor(v).tracking(4)
                     .shadow(color: v.opacity(0.7), radius: 16)
+                Text("Approve · then broadcast only to connected accounts")
+                    .font(.system(size: 10))
+                    .foregroundColor(.white.opacity(0.45))
                 HStack(spacing: 12) {
                     queueChip("DRAFT",    count: queue.drafts.count,   color: v)
                     queueChip("APPROVED", count: queue.approved.count, color: c)
                     queueChip("POSTED",   count: queue.posted.count,   color: p)
                 }
+                .padding(.top, 6)
             }
             .padding(.top, 12).padding(.bottom, 14)
 
@@ -38,7 +41,7 @@ struct PRISMQueueView: View {
                     .multilineTextAlignment(.center)
             }
 
-            if queue.drafts.isEmpty && queue.approved.isEmpty {
+            if queue.drafts.isEmpty && queue.approved.isEmpty && queue.posted.isEmpty {
                 Spacer()
                 VStack(spacing: 12) {
                     Image(systemName: "tray")
@@ -47,7 +50,7 @@ struct PRISMQueueView: View {
                     Text("QUEUE EMPTY")
                         .font(.system(size: 11, weight: .black, design: .monospaced))
                         .foregroundColor(v.opacity(0.3)).tracking(3)
-                    Text("Use REVEAL to generate content.\nDrafts appear here for approval.")
+                    Text("Draft from Channels → New Draft,\nor approve a Home signal in Modules.\nBroadcast only when accounts are connected.")
                         .font(.system(size: 10, design: .monospaced))
                         .foregroundColor(.white.opacity(0.2))
                         .multilineTextAlignment(.center)
@@ -80,6 +83,9 @@ struct PRISMQueueView: View {
                 }
             }
         }
+        .task {
+            await channels.refreshGatewayAccounts()
+        }
     }
 
     private func queueChip(_ label: String, count: Int, color: Color) -> some View {
@@ -109,8 +115,15 @@ struct PRISMQueueView: View {
         .padding(.horizontal, 16).padding(.vertical, 8)
     }
 
+    private func connectedPlatforms(for post: QueuedPost) -> [Platform] {
+        post.platforms.filter { channels.isConnected($0) }
+    }
+
     private func postRow(_ post: QueuedPost, accent: Color) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let connected = connectedPlatforms(for: post)
+        let isPosting = postingId == post.id
+
+        return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(post.platformIcons)
                     .font(.system(size: 9, weight: .bold, design: .monospaced))
@@ -127,7 +140,6 @@ struct PRISMQueueView: View {
                 .lineLimit(3)
                 .lineSpacing(3)
 
-            // Attribution preview — shows exactly what will be posted
             Text("— Posted by CORTEX · cortexnode.ai")
                 .font(.system(size: 9, design: .monospaced))
                 .foregroundColor(accent.opacity(0.45))
@@ -160,37 +172,46 @@ struct PRISMQueueView: View {
                 }
             } else if post.status == .approved {
                 HStack {
-                    Spacer()
-                    let isPosting = postingId == post.id
-                    Button {
-                        guard !isPosting else { return }
-                        Task { await broadcastPost(post) }
-                    } label: {
-                        HStack(spacing: 6) {
-                            if isPosting {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .scaleEffect(0.6)
-                                    .tint(c)
-                                Text("BROADCASTING...")
-                                    .font(.system(size: 9, weight: .black, design: .monospaced))
-                                    .foregroundColor(c.opacity(0.6)).tracking(1)
-                            } else {
-                                Image(systemName: "dot.radiowaves.right")
-                                    .font(.system(size: 9, weight: .bold))
-                                    .foregroundColor(c)
-                                Text("BROADCAST NOW")
-                                    .font(.system(size: 9, weight: .black, design: .monospaced))
-                                    .foregroundColor(c).tracking(1)
+                    if connected.isEmpty {
+                        Text("NOT CONNECTED — connect accounts in Channels")
+                            .font(.system(size: 9, weight: .bold, design: .monospaced))
+                            .foregroundColor(.orange.opacity(0.85))
+                        Spacer()
+                    } else {
+                        Text("\(connected.count)/\(post.platforms.count) ready")
+                            .font(.system(size: 9, weight: .bold, design: .monospaced))
+                            .foregroundColor(c.opacity(0.7))
+                        Spacer()
+                        Button {
+                            guard !isPosting else { return }
+                            Task { await broadcastPost(post) }
+                        } label: {
+                            HStack(spacing: 6) {
+                                if isPosting {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                        .scaleEffect(0.6)
+                                        .tint(c)
+                                    Text("BROADCASTING...")
+                                        .font(.system(size: 9, weight: .black, design: .monospaced))
+                                        .foregroundColor(c.opacity(0.6)).tracking(1)
+                                } else {
+                                    Image(systemName: "dot.radiowaves.right")
+                                        .font(.system(size: 9, weight: .bold))
+                                        .foregroundColor(c)
+                                    Text("BROADCAST NOW")
+                                        .font(.system(size: 9, weight: .black, design: .monospaced))
+                                        .foregroundColor(c).tracking(1)
+                                }
                             }
+                            .padding(.horizontal, 14).padding(.vertical, 7)
+                            .background(c.opacity(0.08))
+                            .overlay(RoundedRectangle(cornerRadius: 4).stroke(c.opacity(isPosting ? 0.2 : 0.4), lineWidth: 1))
+                            .cornerRadius(4)
                         }
-                        .padding(.horizontal, 14).padding(.vertical, 7)
-                        .background(c.opacity(0.08))
-                        .overlay(RoundedRectangle(cornerRadius: 4).stroke(c.opacity(isPosting ? 0.2 : 0.4), lineWidth: 1))
-                        .cornerRadius(4)
+                        .buttonStyle(.plain)
+                        .disabled(isPosting)
                     }
-                    .buttonStyle(.plain)
-                    .disabled(isPosting)
                 }
             }
         }
@@ -216,21 +237,43 @@ struct PRISMQueueView: View {
         postingId = post.id
         errorMessage = ""
 
-        let results = await NativePlatformDispatcher.shared.dispatch(post)
+        let connected = connectedPlatforms(for: post)
+        guard !connected.isEmpty else {
+            postingId = nil
+            errorMessage = "No connected accounts for this draft. Connect in Channels first."
+            return
+        }
+
+        // Only dispatch to connected platforms — never claim success for skipped ones.
+        let scoped = QueuedPost(
+            content: post.content,
+            platforms: connected,
+            sourcePrompt: post.sourcePrompt,
+            status: .approved
+        )
+        // Preserve identity for markPosted by using original post after success
+        let results = await NativePlatformDispatcher.shared.dispatch(scoped)
 
         postingId = nil
 
-        let failures = results.filter { !$0.value.isSuccess }
-        if failures.isEmpty {
+        let successes = results.filter { $0.value.isSuccess }
+        let failures = results.filter {
+            if case .skipped = $0.value { return false }
+            return !$0.value.isSuccess
+        }
+
+        if !successes.isEmpty && failures.isEmpty {
             queue.markPosted(post)
-        } else {
+            errorMessage = ""
+        } else if !successes.isEmpty {
+            queue.markPosted(post)
             let platformNames = failures.keys.map(\.rawValue).joined(separator: ", ")
-            let reason = failures.values.first.map(\.label) ?? "Unknown error"
-            errorMessage = "Issues on \(platformNames): \(reason)"
-            // Mark as posted for any platforms that succeeded or are pending
-            if results.values.contains(where: { $0.isSuccess }) {
-                queue.markPosted(post)
-            }
+            let reason = failures.values.first.map(\.label) ?? "partial failure"
+            errorMessage = "Posted some · issues on \(platformNames): \(reason)"
+        } else {
+            let platformNames = results.keys.map(\.rawValue).joined(separator: ", ")
+            let reason = results.values.first.map(\.label) ?? "Unknown error"
+            errorMessage = "Not posted · \(platformNames): \(reason)"
         }
     }
 

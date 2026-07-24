@@ -291,7 +291,7 @@ struct PrismRefractionStudioView: View {
         env.orbState = .success
         env.showToast(
             "Saved to Draft Queue",
-            detail: "\(draft.channelOutputs.count) channel outputs · open Approval Gate",
+            detail: "\(draft.channelOutputs.count) channel outputs · approve in Modules, then Publish Queue",
             tone: .success
         )
         try? await Task.sleep(for: .milliseconds(800))

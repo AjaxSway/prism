@@ -270,7 +270,7 @@ struct PrismPlatformOutputsView: View {
                     }
                 }
             }
-            Text("Draft-only · No live platform publish in this build")
+            Text("Share locally anytime · publish connected accounts from Channels")
                 .font(.system(size: 10, design: .monospaced))
                 .foregroundColor(palette.textSecondary)
         }
@@ -405,12 +405,25 @@ struct PrismBrandVoiceView: View {
 
 struct PrismDraftQueueView: View {
     @Bindable var env: ShellEnvironment
+    @State private var showPublishQueue = false
 
     var body: some View {
         let palette = env.palette
         let violet = env.config.refractionAccent ?? palette.accent
         VStack(spacing: 14) {
-            moduleHeader("Draft Queue", "\(env.draftStore.drafts.count) on device · Approval required", palette: palette, accent: violet)
+            moduleHeader("Draft Queue", "\(env.draftStore.drafts.count) on device · Approves sync to Publish Queue", palette: palette, accent: violet)
+            Button {
+                showPublishQueue = true
+            } label: {
+                Text("OPEN PUBLISH QUEUE")
+                    .font(.system(size: 11, weight: .black, design: .monospaced))
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(violet)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(.plain)
             if env.draftStore.drafts.isEmpty {
                 ShellEmptyState(
                     palette: palette,
@@ -432,7 +445,7 @@ struct PrismDraftQueueView: View {
                                 if draft.approvalStatus != .approved {
                                     Button {
                                         env.draftStore.approve(draft.id)
-                                        env.showToast("Approved", detail: "Local export enabled · publish rail offline", tone: .success)
+                                        env.showToast("Approved", detail: "Synced to Publish Queue · open Channels to broadcast when connected", tone: .success)
                                     } label: {
                                         Text("APPROVE").font(.system(size: 9, weight: .black, design: .monospaced)).foregroundColor(violet)
                                     }
@@ -452,65 +465,97 @@ struct PrismDraftQueueView: View {
                 }
             }
         }
+        .sheet(isPresented: $showPublishQueue) { PRISMQueueView() }
     }
 }
 
 struct PrismDistributionStatusView: View {
     @Bindable var env: ShellEnvironment
+    @State private var channels = PlatformChannelManager.shared
+    @State private var showPublishQueue = false
 
     var body: some View {
         let palette = env.palette
         let violet = env.config.refractionAccent ?? palette.accent
         let draft = env.draftStore.latestDraft
+        let connected = channels.totalAccountCount
         VStack(spacing: 14) {
-            moduleHeader("Distribution Status", "Pipeline · channels · publish rail", palette: palette, accent: violet)
+            moduleHeader("Distribution Status", "Live connection state · Publish Queue", palette: palette, accent: violet)
 
-            ShellStatusBadge(text: "Not connected · Draft-only · Approval required", palette: palette, tone: .warning)
+            ShellStatusBadge(
+                text: connected == 0
+                    ? "No accounts connected · Draft and share locally, or connect in Channels"
+                    : "\(connected) account\(connected == 1 ? "" : "s") connected · approve then broadcast",
+                palette: palette,
+                tone: connected > 0 ? .success : .warning
+            )
 
             ShellHUDBracketPanel(accent: violet) {
                 VStack(alignment: .leading, spacing: 10) {
                     statusRow("Source Signal", draft == nil ? "None" : "Staged", palette: palette, accent: draft == nil ? palette.offline : violet)
                     statusRow("Refraction", draft == nil ? "Waiting" : "\(draft!.channelOutputs.count) outputs", palette: palette, accent: violet)
                     statusRow("Approval", draft?.approvalStatus.label ?? "—", palette: palette, accent: palette.warning)
-                    statusRow("Publish Rail", "Offline · gated", palette: palette, accent: palette.offline)
+                    statusRow(
+                        "Publish Rail",
+                        connected > 0 ? "Ready when approved" : "Not connected",
+                        palette: palette,
+                        accent: connected > 0 ? violet : palette.offline
+                    )
+                    statusRow("Publish Queue", "\(PostingQueue.shared.drafts.count) draft · \(PostingQueue.shared.approved.count) approved", palette: palette, accent: violet)
                 }
             }
 
+            Button {
+                showPublishQueue = true
+            } label: {
+                Text("OPEN PUBLISH QUEUE")
+                    .font(.system(size: 11, weight: .black, design: .monospaced))
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(violet)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(.plain)
+
             ShellCanonSectionHeader(
                 title: "Social Channels",
-                subtitle: "All offline · Draft and share locally until OAuth ships",
+                subtitle: connected == 0 ? "Connect in Channels tab to enable broadcast" : "Connected accounts can receive approved posts",
                 accent: violet
             )
 
-            ForEach(MockPrismCatalog.socialAccounts) { account in
+            ForEach(publishablePlatforms, id: \.self) { platform in
+                let linked = channels.isConnected(platform)
                 ShellGlassPanel(palette: palette) {
                     HStack(spacing: 10) {
-                        Image(systemName: account.icon)
+                        Image(systemName: platform.icon)
                             .foregroundColor(violet)
                             .frame(width: 28)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(account.name).font(palette.bodyFont.weight(.semibold)).foregroundColor(palette.textPrimary)
-                            Text("Not connected").font(.system(size: 10)).foregroundColor(palette.textSecondary)
+                            Text(platform.rawValue).font(palette.bodyFont.weight(.semibold)).foregroundColor(palette.textPrimary)
+                            Text(linked ? "Connected" : "Not connected")
+                                .font(.system(size: 10))
+                                .foregroundColor(palette.textSecondary)
                         }
                         Spacer()
-                        Button { env.presentChannelConnect(account) } label: {
-                            Text("WHY OFFLINE")
+                        Button {
+                            env.selectedTab = .channels
+                        } label: {
+                            Text(linked ? "MANAGE" : "CONNECT")
                                 .font(.system(size: 9, weight: .black, design: .monospaced))
                                 .foregroundColor(violet)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(violet.opacity(0.12))
-                                .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)
                     }
                 }
             }
-
-            Text("Share approved drafts locally until channels connect.")
-                .font(.system(size: 10, design: .monospaced))
-                .foregroundColor(palette.textSecondary)
         }
+        .sheet(isPresented: $showPublishQueue) { PRISMQueueView() }
+        .task { await channels.refreshGatewayAccounts() }
+    }
+
+    private var publishablePlatforms: [Platform] {
+        [.x, .instagram, .linkedin, .facebook, .threads, .bluesky, .youtube, .tiktok]
     }
 
     private func statusRow(_ name: String, _ status: String, palette: ShellThemePalette, accent: Color) -> some View {
@@ -584,7 +629,7 @@ struct PrismApprovalGateView: View {
                             HStack(spacing: 10) {
                                 ShellPrimaryButton(title: "Approve", palette: palette) {
                                     env.draftStore.approve(draft.id)
-                                    env.showToast("Approved", detail: "Local export enabled · publish rail offline", tone: .success)
+                                    env.showToast("Approved", detail: "Synced to Publish Queue · broadcast from Channels when connected", tone: .success)
                                     env.activityStore.append(title: "Approved", detail: draft.titleLine.prefix(40).description, kind: .command)
                                 }
                                 Button {

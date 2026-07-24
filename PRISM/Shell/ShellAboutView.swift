@@ -115,7 +115,7 @@ struct ShellAboutView: View {
                 "Signal composer with local save and refraction across social channels.",
                 "Draft queue, approval gate, campaign calendar, and audit trail on device.",
                 "Image Studio with preset gallery, share export, and proof attach.",
-                "DRAFT ONLY · APPROVAL REQUIRED · no live platform publish today.",
+                "Approve once, then publish from Channels → Publish Queue when accounts are connected.",
             ]
         }
     }
@@ -138,8 +138,8 @@ struct ShellAboutView: View {
             return [
                 "All drafts, images, and audit events persist locally on your iPhone.",
                 "Super Brain routes through api.cortexnode.ai when session is available.",
-                "Share and export use the system share sheet — no cloud publish without approval.",
-                "Nothing posts to social platforms without your explicit sign-off.",
+                "Share locally anytime · Broadcast from Publish Queue only when Channels are connected.",
+                "Nothing posts to social platforms without your explicit Approve + Broadcast.",
             ]
         }
     }

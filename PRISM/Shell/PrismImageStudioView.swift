@@ -1,6 +1,12 @@
 import SwiftUI
 
-/// PRISM Image Studio — canvas + prompt + local draft generator (Apple viewing).
+// RETIRED — mock image generator, not reachable from any production build.
+// PremiumShellRouter.swift routes PRISM's Studio tab to the real
+// ImageGenerationView (ImageStudio/ImageGenerationView.swift) instead, which
+// calls the authenticated CORTEXNODE backend (POST /generate-image) via
+// DALLEImageGenerationService. PrismMockImageResult/presetForPrompt() below
+// return bundled preset images regardless of the prompt — never wire this
+// view back into a production tab. Kept for historical reference only.
 struct PrismImageStudioView: View {
     @Bindable var env: ShellEnvironment
     @State private var prompt = ""
@@ -451,10 +457,18 @@ struct PrismImageStudioView: View {
     private func presetForPrompt(_ text: String) -> PrismVisionPreset {
         let lower = text.lowercased()
         if lower.contains("forge") { return .forgeCharacter }
-        if lower.contains("aurion") || lower.contains("gold") { return .aurionGold }
+        if lower.contains("aurion") || lower.contains("gold armor") { return .aurionGold }
         if lower.contains("b2tb") || lower.contains("pillar") || lower.contains("doctrine") { return .b2tbPillars }
         if lower.contains("map") || lower.contains("ecosystem") { return .ecosystemMap }
         if lower.contains("control") || lower.contains("dashboard") { return .controlCenter }
+        if lower.contains("jericho") { return .jerichoSheet }
+        if lower.contains("god mode") { return .godModeHUD }
+        if lower.contains("signal zero") || lower.contains("execution layer") { return .signalZeroSheet }
+        if lower.contains("baby") || lower.contains("babies") || lower.contains("chibi") { return .babiesRoster }
+        if lower.contains("sovereign") { return .sovereignPoster }
+        if lower.contains("pricing") || lower.contains("choose your cortex") { return .pricingUniverse }
+        if lower.contains("atlas") { return .atlasOps }
+        if lower.contains("brand sheet") || lower.contains("quick sheet") { return .cortexBrandSheet }
         return .cortexPoster
     }
 
@@ -512,6 +526,9 @@ enum PrismImageStyle: String, CaseIterable, Identifiable {
 
 enum PrismVisionPreset: String, CaseIterable, Identifiable {
     case cortexPoster, b2tbPillars, controlCenter, forgeCharacter, aurionGold, ecosystemMap
+    case cortexBrandSheet, signalZeroSheet, jerichoSheet, godModeHUD
+    case babiesRoster, sovereignPoster, pricingUniverse, atlasOps, s0Execution
+
     var id: String { rawValue }
     var label: String {
         switch self {
@@ -521,6 +538,15 @@ enum PrismVisionPreset: String, CaseIterable, Identifiable {
         case .forgeCharacter: return "FORGE Character"
         case .aurionGold: return "AURION Gold"
         case .ecosystemMap: return "Ecosystem Map"
+        case .cortexBrandSheet: return "CORTEX Sheet"
+        case .signalZeroSheet: return "Signal Zero"
+        case .jerichoSheet: return "Jericho"
+        case .godModeHUD: return "God Mode"
+        case .babiesRoster: return "Babies Cards"
+        case .sovereignPoster: return "Sovereign"
+        case .pricingUniverse: return "Pricing"
+        case .atlasOps: return "Atlas Ops"
+        case .s0Execution: return "S0 Execution"
         }
     }
     var assetImageName: String? {
@@ -531,22 +557,31 @@ enum PrismVisionPreset: String, CaseIterable, Identifiable {
         case .forgeCharacter: return "ShellPresetForge"
         case .aurionGold: return "ShellPresetAurion"
         case .ecosystemMap: return "ShellPresetEcosystem"
+        case .cortexBrandSheet, .signalZeroSheet, .jerichoSheet, .godModeHUD,
+             .babiesRoster, .sovereignPoster, .pricingUniverse, .atlasOps, .s0Execution:
+            return nil
         }
     }
     var gradient: LinearGradient {
         switch self {
-        case .cortexPoster:
+        case .cortexPoster, .cortexBrandSheet:
             return LinearGradient(colors: [Color(red: 0.1, green: 0.4, blue: 0.95), Color(red: 0.05, green: 0.15, blue: 0.35)], startPoint: .topLeading, endPoint: .bottomTrailing)
         case .b2tbPillars:
             return LinearGradient(colors: [Color(red: 0.95, green: 0.45, blue: 0.1), Color(red: 0.55, green: 0.15, blue: 0.05)], startPoint: .top, endPoint: .bottom)
-        case .controlCenter:
+        case .controlCenter, .signalZeroSheet, .s0Execution:
             return LinearGradient(colors: [Color(red: 0.0, green: 0.75, blue: 0.95), Color.black], startPoint: .top, endPoint: .bottom)
         case .forgeCharacter:
             return LinearGradient(colors: [Color(white: 0.25), Color(red: 0.1, green: 0.5, blue: 0.9)], startPoint: .leading, endPoint: .bottomTrailing)
-        case .aurionGold:
+        case .aurionGold, .sovereignPoster:
             return LinearGradient(colors: [Color(red: 0.85, green: 0.65, blue: 0.15), Color(red: 0.6, green: 0.1, blue: 0.1)], startPoint: .topLeading, endPoint: .bottomTrailing)
-        case .ecosystemMap:
+        case .ecosystemMap, .atlasOps:
             return LinearGradient(colors: [Color(red: 0.2, green: 0.8, blue: 0.5), Color(red: 0.1, green: 0.3, blue: 0.6)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .jerichoSheet, .godModeHUD:
+            return LinearGradient(colors: [Color(red: 0.85, green: 0.12, blue: 0.18), Color.black], startPoint: .top, endPoint: .bottom)
+        case .babiesRoster:
+            return LinearGradient(colors: [Color(red: 0.55, green: 0.35, blue: 0.95), Color(red: 0.1, green: 0.4, blue: 0.9)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .pricingUniverse:
+            return LinearGradient(colors: [Color(red: 0.15, green: 0.35, blue: 0.95), Color(red: 0.55, green: 0.2, blue: 0.85)], startPoint: .leading, endPoint: .trailing)
         }
     }
     var defaultPrompt: String {
@@ -557,6 +592,33 @@ enum PrismVisionPreset: String, CaseIterable, Identifiable {
         case .forgeCharacter: return "FORGE execution layer chibi robot, hammer, cyan glow, industrial forge"
         case .aurionGold: return "AURION legacy command intelligence, gold armor, red core, championship mode"
         case .ecosystemMap: return "CORTEXNODE ecosystem map five layers, neon lanes, command control"
+        case .cortexBrandSheet:
+            return CortexMarketingImageCanon.campaign(id: "cortex_brand_sheet")?.prompt
+                ?? "CORTEX brand sheet metallic wordmark cyan glow quick sheet HUD"
+        case .signalZeroSheet:
+            return CortexMarketingImageCanon.campaign(id: "signal_zero_sheet")?.prompt
+                ?? "SIGNAL ZERO brand sheet ice blue NO NOISE JUST TRUTH"
+        case .jerichoSheet:
+            return CortexMarketingImageCanon.campaign(id: "jericho_sheet")?.prompt
+                ?? "JERICHO war-room crimson brand sheet"
+        case .godModeHUD:
+            return CortexMarketingImageCanon.campaign(id: "god_mode_blue")?.prompt
+                ?? "CORTEX God Mode circular vault HUD cyan crown"
+        case .babiesRoster:
+            return CortexMarketingImageCanon.campaign(id: "babies_roster")?.prompt
+                ?? "CORTEX Babies chibi character card grid"
+        case .sovereignPoster:
+            return CortexMarketingImageCanon.campaign(id: "sovereign_poster")?.prompt
+                ?? "CORTEX SOVEREIGN cyber imperial gold poster"
+        case .pricingUniverse:
+            return CortexMarketingImageCanon.campaign(id: "pricing_universe")?.prompt
+                ?? "CORTEX pricing universe plan cards"
+        case .atlasOps:
+            return CortexMarketingImageCanon.campaign(id: "atlas_ops")?.prompt
+                ?? "ATLAS Operational Intelligence OS marketing"
+        case .s0Execution:
+            return CortexMarketingImageCanon.campaign(id: "s0_execution")?.prompt
+                ?? "SIGNAL ZERO Execution Layer phone arc marketing"
         }
     }
 }

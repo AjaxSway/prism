@@ -187,7 +187,17 @@ final class PrismLocalDraftStore {
 
     func approve(_ draftID: UUID) {
         mutate(draftID) { $0.approvalStatus = .approved }
-        logAudit("Operator approved", detail: "Draft cleared for export · publish rail stays offline")
+        if let draft = drafts.first(where: { $0.id == draftID }) {
+            let content = draft.channelOutputs.first?.refractedText ?? draft.sourceText
+            _ = PostingQueue.shared.enqueueApprovedFromStudio(
+                content: content,
+                channelIds: draft.channelIds,
+                sourcePrompt: draft.sourceText
+            )
+            logAudit("Operator approved", detail: "Synced to Channels publish queue · approval still required before broadcast")
+        } else {
+            logAudit("Operator approved", detail: "Draft approved · open Channels → Publish Queue")
+        }
     }
 
     func reject(_ draftID: UUID) {

@@ -21,7 +21,7 @@ final class ShellEnvironment {
     var shellStatusLine: String {
         let count = draftStore.drafts.count
         if count == 0 { return "Draft studio · \(config.displayName) · local saves on device" }
-        return "\(count) local draft\(count == 1 ? "" : "s") · approval-gated · no live publish"
+        return "\(count) local draft\(count == 1 ? "" : "s") · approval-gated · publish when connected"
     }
 
     let brain = ShellBrainGateway.shared
@@ -116,14 +116,11 @@ final class ShellEnvironment {
     }
 
     func presentChannelConnect(_ account: MockPrismAccount) {
-        presentConnectLater(
-            account.name,
-            detail: "\(account.name) is not authorized yet. Draft, approve, and share locally until OAuth provisioning is enabled.",
-            steps: [
-                "Tap Connect when operator OAuth is live.",
-                "Complete platform authorization in the secure flow.",
-                "Until then, use Approval Gate and Share draft for export.",
-            ]
+        selectedTab = .channels
+        showToast(
+            "Channels",
+            detail: "Connect \(account.name) in Channels, then publish from the Publish Queue.",
+            tone: .info
         )
     }
 
@@ -131,11 +128,11 @@ final class ShellEnvironment {
         impact(.medium)
         connectSheet = ShellConnectSheetPayload(
             feature: feature,
-            detail: detail ?? "Cloud publish and OAuth unlock in a future update.",
+            detail: detail ?? "Connect accounts in the Channels tab to enable publish.",
             steps: steps ?? [
                 "Finish draft review in Approval Gate.",
-                "Export or share locally today.",
-                "Live platform publish requires operator OAuth setup.",
+                "Open Channels and connect Bluesky or gateway accounts.",
+                "Approve, then Broadcast from the Publish Queue.",
             ]
         )
     }

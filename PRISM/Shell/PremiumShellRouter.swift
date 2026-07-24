@@ -31,9 +31,11 @@ struct PremiumShellRouter: View {
                 case .activity:
                     ShellActivityView(env: env)
                 case .studio:
-                    if config.appKind == .prism {
-                        PrismImageStudioView(env: env)
-                    } else if config.barTabs.contains(.studio) {
+                    // PRISM's Studio tab uses the real, authenticated generator
+                    // (ImageGenerationView -> ImageHistoryStore -> DALLEImageGenerationService
+                    // -> POST /generate-image). PrismImageStudioView is retired mock code —
+                    // see its file header — and is not reachable from any production build.
+                    if config.barTabs.contains(.studio) {
                         ImageGenerationView(env: env)
                     } else {
                         ShellHomeView(env: env)

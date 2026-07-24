@@ -138,9 +138,16 @@ struct ShellSettingsView: View {
                             .foregroundColor(palette.accent)
                     }
                     .buttonStyle(ShellPressableButtonStyle(scale: 0.98))
-                    legalRow("Plans & Pricing", url: ShellLegalLinks.pricing, palette: palette)
-                    legalRow("Subscription Terms", url: ShellLegalLinks.subscriptionTerms, palette: palette)
-                    legalRow("Refund Policy", url: ShellLegalLinks.refundPolicy, palette: palette)
+                    // Guideline 3.1.1 fix: these three links pointed straight to
+                    // cortexnode.ai's real, live, purchasable-via-website pricing
+                    // page — a working $19.99/mo checkout with no Apple IAP
+                    // equivalent in this app. Confirmed via Apple's own review
+                    // screenshots on JERICHO (shared Settings code): tap Plans &
+                    // Pricing → real external checkout. No app in this Shell
+                    // family has a working Apple IAP right now (zero products
+                    // registered in App Store Connect) — no legitimate reason to
+                    // advertise a paid upgrade path that isn't purchasable
+                    // through Apple.
                     Button {
                         Task {
                             await CortexStoreManager.shared.restorePurchases()

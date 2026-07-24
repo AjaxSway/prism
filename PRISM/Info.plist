@@ -32,6 +32,7 @@
   <key>UIRequiredDeviceCapabilities</key>
   <array><string>arm64</string></array>
   <key>ITSAppUsesNonExemptEncryption</key><false/>
+  <key>NSPhotoLibraryAddUsageDescription</key><string>PRISM saves images you generate to your Photos library.</string>
   <key>CFBundleURLTypes</key>
   <array>
     <dict>
