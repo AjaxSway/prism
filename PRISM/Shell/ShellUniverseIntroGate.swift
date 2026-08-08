@@ -21,9 +21,15 @@ struct ShellUniverseIntroGate<Content: View>: View {
 
     var body: some View {
         ZStack {
-            content()
-                .opacity(showSplash && !skipIntroForTesting ? 0 : 1)
-                .allowsHitTesting(!showSplash || skipIntroForTesting)
+            // Content is only mounted once the splash is dismissed. Previously it was
+            // always mounted underneath at opacity 0, which meant every perpetual
+            // animation in the live app (e.g. the brain-pulse rotating rings) ran the
+            // entire time the splash was visible, pinning the main thread and
+            // starving touch input on the splash itself.
+            if !showSplash || skipIntroForTesting {
+                content()
+                    .transition(.opacity)
+            }
 
             if showSplash && !skipIntroForTesting {
                 ShellPosterSplashView(config: shellConfig) {

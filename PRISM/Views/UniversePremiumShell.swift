@@ -43,7 +43,6 @@ struct UniverseHUDCorners: View {
 }
 
 struct UniverseFilmGrainOverlay: View {
-    @State private var seed: Double = 0
     var body: some View {
         Canvas { ctx, size in
             for _ in 0..<900 {
@@ -54,12 +53,10 @@ struct UniverseFilmGrainOverlay: View {
                 ctx.fill(Path(ellipseIn: CGRect(x: x, y: y, width: r, height: r)), with: .color(.white.opacity(a)))
             }
         }
+        .drawingGroup()
         .blendMode(.overlay)
         .opacity(0.35)
         .allowsHitTesting(false)
-        .onAppear {
-            withAnimation(.linear(duration: 0.08).repeatForever(autoreverses: true)) { seed += 1 }
-        }
     }
 }
 
@@ -118,6 +115,7 @@ struct UniverseStarfieldLite: View {
                 )
             }
         }
+        .drawingGroup()
         .opacity(twinkle ? 1 : 0.72)
         .onAppear {
             withAnimation(.easeInOut(duration: 2.8).repeatForever(autoreverses: true)) { twinkle = true }

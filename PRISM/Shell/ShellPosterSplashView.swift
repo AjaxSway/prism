@@ -166,26 +166,11 @@ struct ShellPosterSplashView: View {
     }
 
     private var splashLoadingHUD: some View {
-        VStack(spacing: 14) {
-            HStack(spacing: 8) {
-                ForEach(0..<3, id: \.self) { i in
-                    Circle()
-                        .fill(i == loadingPhase % 3 ? config.accent : config.accentDeep.opacity(0.35))
-                        .frame(width: 6, height: 6)
-                        .scaleEffect(glowPulse && i == loadingPhase % 3 ? 1.25 : 1)
-                }
-            }
-            Text(loadingLines[min(loadingPhase, loadingLines.count - 1)])
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .foregroundStyle(.white.opacity(0.78))
-                .animation(.easeInOut(duration: 0.35), value: loadingPhase)
-        }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color.black.opacity(0.5))
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(config.accent.opacity(0.28), lineWidth: 1))
+        SplashLoadingHUD(
+            config: config,
+            loadingPhase: loadingPhase,
+            loadingLines: loadingLines,
+            glowPulse: glowPulse
         )
     }
 
@@ -224,5 +209,41 @@ struct ShellPosterSplashView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
             withAnimation(.easeIn(duration: 0.45)) { enterVisible = true }
         }
+    }
+}
+
+/// Isolated from ShellPosterSplashView's body so the perpetual glowPulse animation
+/// only invalidates these three small dots, not the surrounding gradient-filled
+/// layers — mixing them in one view-builder function forced RenderBox to
+/// re-rasterize the vignette/scanline gradients every animation frame forever,
+/// pinning the main thread and starving touch input (Simulator software-render path).
+private struct SplashLoadingHUD: View {
+    let config: PremiumShellConfig
+    let loadingPhase: Int
+    let loadingLines: [String]
+    let glowPulse: Bool
+
+    var body: some View {
+        VStack(spacing: 14) {
+            HStack(spacing: 8) {
+                ForEach(0..<3, id: \.self) { i in
+                    Circle()
+                        .fill(i == loadingPhase % 3 ? config.accent : config.accentDeep.opacity(0.35))
+                        .frame(width: 6, height: 6)
+                        .scaleEffect(glowPulse && i == loadingPhase % 3 ? 1.25 : 1)
+                }
+            }
+            Text(loadingLines[min(loadingPhase, loadingLines.count - 1)])
+                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .foregroundStyle(.white.opacity(0.78))
+                .animation(.easeInOut(duration: 0.35), value: loadingPhase)
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 16)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.black.opacity(0.5))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(config.accent.opacity(0.28), lineWidth: 1))
+        )
     }
 }
