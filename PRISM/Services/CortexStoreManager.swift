@@ -120,9 +120,9 @@ final class CortexStoreManager {
         for await result in Transaction.currentEntitlements {
             guard let transaction = try? CortexStoreManager.verified(result) else { continue }
             switch transaction.productID {
-            case ProductID.operator_.rawValue:
+            case ProductID.operator_.rawValue, "ai.cortexnode.cortex.operator.monthly":
                 highestTier = .operator_
-            case ProductID.pro.rawValue:
+            case ProductID.pro.rawValue, "ai.cortexnode.cortex.pro.monthly":
                 if highestTier < .operator_ { highestTier = .pro }
             default:
                 break
