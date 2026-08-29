@@ -43,7 +43,7 @@ struct PremiumShellRouter: View {
                 case .settings:
                     ShellSettingsView(env: env)
                 case .about:
-                    ShellAboutView(config: env.config, palette: env.palette, brain: env.brain)
+                    ShellAboutView(env: env)
                 case .nexus:
                     ShellNexusView(env: env)
                 case .gaming:

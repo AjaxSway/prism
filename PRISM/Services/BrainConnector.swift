@@ -100,13 +100,17 @@ final class BrainConnector {
                                 continuation.yield(text)
                             }
                         }
+                        // Snapshot into immutable values so nothing mutable crosses the
+                        // concurrency boundary (fixes the Swift 6 captured-var data-race warning).
+                        let finalResponse = responseText
+                        let lastUserContent = messages.last(where: { $0.role == "user" })?.content
                         // Persist both turns on MainActor to guard against concurrent mutation.
                         await MainActor.run {
-                            if let userTurn = messages.last(where: { $0.role == "user" }) {
-                                MemoryStore.shared.append(role: "user", content: userTurn.content)
+                            if let lastUserContent {
+                                MemoryStore.shared.append(role: "user", content: lastUserContent)
                             }
-                            if !responseText.isEmpty {
-                                MemoryStore.shared.append(role: "assistant", content: responseText)
+                            if !finalResponse.isEmpty {
+                                MemoryStore.shared.append(role: "assistant", content: finalResponse)
                             }
                         }
                         continuation.finish()
