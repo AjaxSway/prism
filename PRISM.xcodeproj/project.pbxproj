@@ -335,7 +335,6 @@
 				BAF819035B645BDC5BCF99F1 /* CortexPaywallView.swift */,
 				E9EB95B9A11DCA5B22A5771C /* FirstLaunchCinematicIntroView.swift */,
 				F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */,
-				D55650647C57C06B33240CD6 /* PRISMSettingsView.swift */,
 				A5E6BFED429ACDF4ED0177BB /* PRISMSplashView.swift */,
 				74DEB5E3B860046F3C018A25 /* UniversePremiumShell.swift */,
 			);
@@ -534,7 +533,6 @@
 				33EC4F27DCA4A3BAD5986FC9 /* NodeModuleViews.swift in Sources */,
 				45B17D4FB593E69A1D14E951 /* PRISMApp.swift in Sources */,
 				C0AE6559FE5FE9CDE3FF28E3 /* PRISMQueueView.swift in Sources */,
-				FCFD7333795EEA0019467CEC /* PRISMSettingsView.swift in Sources */,
 				E8350E82608CCA9DEA237E54 /* PRISMSplashView.swift in Sources */,
 				DD9114C7C5C3E3AFADA25EB6 /* PRISMState.swift in Sources */,
 				9BF5BE258876D0FAE513D977 /* PlatformChannelManager.swift in Sources */,

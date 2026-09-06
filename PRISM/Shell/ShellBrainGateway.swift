@@ -15,7 +15,7 @@ final class ShellBrainGateway {
     }
 
     private(set) var state: ConnectionState = .preview
-    private(set) var statusDetail = "Super Brain route · first prompt establishes session."
+    private(set) var statusDetail = "COMING SOON · Super Brain is not connected in this build."
     private(set) var lastError: String?
 
     var isLive: Bool {
@@ -29,7 +29,7 @@ final class ShellBrainGateway {
     func refreshState() {
         if !ShellFeatureFlags.brainConnected {
             state = .preview
-            statusDetail = "Shell preview · Super Brain route requires setup."
+            statusDetail = "COMING SOON · Super Brain is not connected in this build."
             return
         }
         state = .offline

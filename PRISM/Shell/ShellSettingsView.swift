@@ -30,7 +30,7 @@ struct ShellSettingsView: View {
     }
 
     private var brainStatusLabel: String {
-        if !ShellFeatureFlags.brainConnected { return "Shell preview · Super Brain connect later" }
+        if !ShellFeatureFlags.brainConnected { return "COMING SOON" }
         return env.brain.statusDetail
     }
 
@@ -96,6 +96,7 @@ struct ShellSettingsView: View {
                     Text("You control memory, connections, and account data.")
                         .font(palette.captionFont)
                         .foregroundColor(palette.textSecondary)
+                    legalRow("Data & Privacy", url: ShellLegalLinks.privacy, palette: palette)
                     legalRow("Privacy Policy", url: ShellLegalLinks.privacy, palette: palette)
                     legalRow("Terms of Service", url: ShellLegalLinks.terms, palette: palette)
                     legalRow("AI Safety Notice", url: ShellLegalLinks.aiSafety, palette: palette)
@@ -151,7 +152,7 @@ struct ShellSettingsView: View {
                     Button {
                         Task {
                             await CortexStoreManager.shared.restorePurchases()
-                            env.showToast("Purchases Restored", detail: "Your subscription status has been updated.", tone: .info)
+                            env.showToast("Restore attempted", detail: "No App Store products are configured for PRISM in this build.", tone: .info)
                         }
                     } label: {
                         Text("RESTORE PURCHASES")
@@ -167,7 +168,8 @@ struct ShellSettingsView: View {
                         .font(palette.captionFont)
                         .foregroundColor(palette.textSecondary)
                     legalRow("Delete Account", url: ShellLegalLinks.accountDeletion, palette: palette)
-                    legalRow("Contact Support", url: ShellLegalLinks.support, palette: palette)
+                    legalRow("Support", url: URL(string: "https://cortexnode.ai/support")!, palette: palette)
+                    legalRow("Email Support", url: ShellLegalLinks.support, palette: palette)
                 }
 
                 ShellSettingsSection(title: "Voice", palette: palette) {

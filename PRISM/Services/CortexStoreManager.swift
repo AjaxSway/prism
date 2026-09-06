@@ -3,7 +3,8 @@ import Foundation
 
 // MARK: - CORTEX Store Manager
 // Handles all Apple IAP using StoreKit 2.
-// Two subscription tiers: Pro ($39.99) and Operator ($199).
+// Two planned product IDs. Prices come from StoreKit when App Store products exist.
+// Do not invent or hardcode Chat, Public, CORTEXNODE, or JERICHO prices.
 // Single source of truth for entitlements across the entire app.
 
 @MainActor

@@ -164,7 +164,7 @@ struct CortexPaywallView: View {
                     ],
                     accentColor: Color(red: 0.6, green: 0.3, blue: 1.0),
                     isRecommended: true,
-                    originalValue: "$298/mo if purchased individually"
+                    originalValue: nil
                 )
             }
 
