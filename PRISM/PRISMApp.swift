@@ -51,7 +51,8 @@ enum PrismUniverseHandoff {
         let token = items.first(where: { $0.name == "token" })?.value
         if path.isEmpty || path == "/" || path.hasSuffix("/open") {
             if let token, !token.isEmpty {
-                print("[CORTEX-UNIVERSE] handoff rejected: server verification is not available")
+                let gated = ProcessInfo.processInfo.environment["CORTEX_UNIVERSE_CONTRACT"] == "1"
+                print("[CORTEX-UNIVERSE] handoff rejected: \(gated ? "redeem requires live contract" : "server verification is not available")")
             }
             return
         }
