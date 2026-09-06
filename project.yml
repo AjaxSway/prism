@@ -60,6 +60,22 @@ targets:
     dependencies:
       - package: CortexEcosystemBrain
 
+  PRISMTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: PRISMTests
+        createIntermediateGroups: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cortexnode.prism.tests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 72N4R2QL9Q
+    dependencies:
+      - target: PRISM
+      - package: CortexEcosystemBrain
+
   PRISMUITests:
     type: bundle.ui-testing
     platform: iOS
@@ -86,6 +102,7 @@ schemes:
     test:
       config: Debug
       targets:
+        - PRISMTests
         - PRISMUITests
       environmentVariables:
         PRISM_DISABLE_MUSIC: "1"

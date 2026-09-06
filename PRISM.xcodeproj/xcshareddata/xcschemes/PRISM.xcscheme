@@ -44,6 +44,17 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C59C801D50120AF5E23FD1E"
+               BuildableName = "PRISMTests.xctest"
+               BlueprintName = "PRISMTests"
+               ReferencedContainer = "container:PRISM.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "0F0D733F63FD58F099901262"
                BuildableName = "PRISMUITests.xctest"
                BlueprintName = "PRISMUITests"

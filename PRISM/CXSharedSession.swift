@@ -1,5 +1,6 @@
 import Foundation
 import Security
+import CortexEcosystemBrain
 
 /// Shared session storage for the CORTEX Universe app family.
 /// Uses a shared Keychain Access Group and App Group container so that
@@ -111,6 +112,7 @@ enum CXSharedSession {
     /// Full sign-out: clear everything across all apps.
     static func signOut() {
         clearSessionToken()
+        CortexUniverseRuntime.revoke(scheme: "prism", bundleId: "com.cortexnode.prism")
     }
 
     /// Check if any valid session exists (not expired).
