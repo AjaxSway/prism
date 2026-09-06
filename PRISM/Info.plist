@@ -37,12 +37,20 @@
   <array>
     <dict>
       <key>CFBundleURLName</key>
-      <string>ai.cortexnode.prism.oauth</string>
+      <string>com.cortexnode.prism</string>
       <key>CFBundleURLSchemes</key>
       <array>
         <string>prism</string>
       </array>
     </dict>
+  </array>
+  <key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>cortex-chat</string>
+    <string>cortexpublic</string>
+    <string>cortexnode</string>
+    <string>signalzero</string>
+    <string>jericho</string>
   </array>
 </dict>
 </plist>
