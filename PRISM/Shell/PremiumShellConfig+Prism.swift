@@ -49,6 +49,6 @@ extension PremiumShellConfig {
         monthlyPriceDisplay: "Preview · App Store setup pending",
         freeTierDisplay: "Free: Full draft studio · local saves · approval gate",
         aiDisclaimer: "PRISM drafts content for your approval. Nothing publishes without explicit sign-off. Not therapy or professional advice.",
-        barTabs: [.command, .channels, .modules, .studio, .settings, .about]
+        barTabs: [.command, .channels, .modules, .activity, .studio, .settings, .about]
     )
 }

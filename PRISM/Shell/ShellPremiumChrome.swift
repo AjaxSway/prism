@@ -146,7 +146,7 @@ struct ShellHUDTabBar: View {
     var body: some View {
         HStack(spacing: 0) {
             if appKind == .prism {
-                let left: [ShellTab] = [.command, .channels, .modules].filter { tabs.contains($0) }
+                let left: [ShellTab] = [.command, .channels, .modules, .activity].filter { tabs.contains($0) }
                 let right: [ShellTab] = [.studio, .settings, .about].filter { tabs.contains($0) }
                 tabGroup(left)
                 Color.clear.frame(width: 58).accessibilityHidden(true)

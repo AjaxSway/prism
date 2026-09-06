@@ -74,6 +74,7 @@ struct ShellAboutView: View {
             Text("About")
                 .font(palette.titleFont)
                 .foregroundColor(palette.textPrimary)
+                .accessibilityIdentifier("prism-about-title")
             Text(config.displayName)
                 .font(.system(size: 9, weight: .medium, design: .monospaced))
                 .foregroundColor(palette.textSecondary)

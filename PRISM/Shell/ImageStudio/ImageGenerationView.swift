@@ -82,6 +82,7 @@ struct ImageGenerationView: View {
                         Text("IMAGE STUDIO")
                             .font(.system(size: 20, weight: .black, design: .monospaced))
                             .foregroundStyle(LinearGradient(colors: [.white, palette.accent], startPoint: .leading, endPoint: .trailing))
+                            .accessibilityIdentifier("prism-studio-title")
                         Text("Compose · generate · save to Photos")
                             .font(.system(size: 11))
                             .foregroundColor(palette.textSecondary)
@@ -140,6 +141,7 @@ struct ImageGenerationView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 .buttonStyle(ShellPressableButtonStyle())
+                .accessibilityIdentifier("prism-generate-draft")
                 .disabled(!mode.isImplemented || isGenerating || prompt.isEmpty)
 
                 Text(liveStatusText)
@@ -378,6 +380,7 @@ struct ImagePromptComposer: View {
                     .font(palette.bodyFont)
                     .foregroundColor(palette.textPrimary)
                     .lineLimit(2...5)
+                    .accessibilityIdentifier("prism-studio-prompt")
 
                 Text("Negative prompt (optional)")
                     .font(palette.captionFont)

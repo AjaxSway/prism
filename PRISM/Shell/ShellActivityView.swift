@@ -95,6 +95,7 @@ struct ShellActivityView: View {
     private func activityHeader(palette: ShellThemePalette) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             ShellMetallicTitle(text: "Activity", size: 22, accent: palette.accent)
+                .accessibilityIdentifier("prism-activity-title")
             Text(activitySubtitle)
                 .font(.system(size: 10, weight: .medium, design: .monospaced))
                 .foregroundColor(palette.textSecondary)
