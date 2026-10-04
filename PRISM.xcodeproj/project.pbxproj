@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		004308065394F0143F50596F /* CortexEcosystemBrain in Frameworks */ = {isa = PBXBuildFile; productRef = 69F0DBEC4F1FB7BFD299A671 /* CortexEcosystemBrain */; };
 		049881EE25C829A1003A6B6A /* ShellActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAEFBF468F78DC3607D5D6D /* ShellActivityView.swift */; };
+		049C59FC028A75038566300F /* PublishRetryWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1298548F9293A699FEC8A3 /* PublishRetryWiringTests.swift */; };
 		054A3D2E7F9B274B9ECF96E4 /* ShellVoicePreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9C38E17B55C42F7D498954 /* ShellVoicePreferences.swift */; };
 		0825BFB7AB605137D05D3BE7 /* PrismLocalDraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CBEB84DF6B7B05A2CB71F5 /* PrismLocalDraftStore.swift */; };
 		0A0F6016E5EB3BB6F4F8DE89 /* prism_intro_godmode.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD73E755D58CEC35587DE689 /* prism_intro_godmode.mp4 */; };
@@ -221,6 +222,7 @@
 		F8F741340D15FC43100C5B15 /* PRISMQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMQueueView.swift; sourceTree = "<group>"; };
 		F8FE1CB3A9672E6B5D3CF44F /* PlatformChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformChannelManager.swift; sourceTree = "<group>"; };
 		F983E365968DA08A71686E93 /* prism_brain_loop.mp4 */ = {isa = PBXFileReference; path = prism_brain_loop.mp4; sourceTree = "<group>"; };
+		FB1298548F9293A699FEC8A3 /* PublishRetryWiringTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PublishRetryWiringTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -342,6 +344,7 @@
 				AA0200000000000000000002 /* NativePlatformDispatcherTests.swift */,
 				B01A24E15034D7A16058E856 /* PublishAccountIntegrityTests.swift */,
 				973857A9F3FB9FCF5CC39281 /* PublishRetrySafetyTests.swift */,
+				FB1298548F9293A699FEC8A3 /* PublishRetryWiringTests.swift */,
 			);
 			path = PRISMTests;
 			sourceTree = "<group>";
@@ -584,6 +587,7 @@
 				AA0100000000000000000001 /* NativePlatformDispatcherTests.swift in Sources */,
 				56DB10A3FD92518AA18FF8BF /* PublishAccountIntegrityTests.swift in Sources */,
 				A9D97865AD645AD4FEBE92EC /* PublishRetrySafetyTests.swift in Sources */,
+				049C59FC028A75038566300F /* PublishRetryWiringTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -726,7 +730,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2026100415;
+				CURRENT_PROJECT_VERSION = 2026100416;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 72N4R2QL9Q;
 				ENABLE_BITCODE = NO;
@@ -864,7 +868,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2026100415;
+				CURRENT_PROJECT_VERSION = 2026100416;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 72N4R2QL9Q;
 				ENABLE_BITCODE = NO;

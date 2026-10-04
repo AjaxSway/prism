@@ -251,8 +251,18 @@ struct PRISMQueueView: View {
             sourcePrompt: post.sourcePrompt,
             status: .approved
         )
-        // Preserve identity for markPosted by using original post after success
-        let results = await NativePlatformDispatcher.shared.dispatch(scoped)
+        // RETRY SAFETY: exclude accounts that already published for THIS post
+        // (persisted across relaunch) so a retry never double-posts.
+        let alreadyDone = Set(post.succeededAccountIds)
+        let detailed = await NativePlatformDispatcher.shared.dispatchDetailed(
+            scoped, excludingAccountIds: alreadyDone
+        )
+        let results = detailed.platformResults
+        // Persist newly-succeeded accounts onto the post so a future retry skips them.
+        let newlyDone = detailed.newlySucceededAccountIds
+        if !newlyDone.isEmpty {
+            queue.recordSucceededAccounts(post, accountIds: newlyDone)
+        }
 
         postingId = nil
 

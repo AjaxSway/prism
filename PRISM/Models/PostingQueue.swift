@@ -63,8 +63,21 @@ final class PostingQueue {
         save()
     }
 
-    func markPosted(_ post: QueuedPost) {
-        approved.removeAll { $0.id == post.id }
+    /// Persist which gateway accounts have already published for this post, so a
+    /// retry excludes them (survives relaunch via save()). Merges, never drops.
+    func recordSucceededAccounts(_ post: QueuedPost, accountIds: [String]) {
+        func merge(_ arr: inout [QueuedPost]) {
+            if let i = arr.firstIndex(where: { $0.id == post.id }) {
+                var updated = arr[i]
+                updated.succeededAccountIds = Array(Set(updated.succeededAccountIds).union(accountIds))
+                arr[i] = updated
+            }
+        }
+        merge(&approved); merge(&drafts); merge(&posted)
+        save()
+    }
+
+    func markPosted(_ post: QueuedPost) {        approved.removeAll { $0.id == post.id }
         var updated = post
         updated.status = .posted
         updated.postedAt = Date()
@@ -114,6 +127,10 @@ struct QueuedPost: Identifiable, Codable {
     let createdAt: Date
     var approvedAt: Date?
     var postedAt: Date?
+    /// Gateway account IDs that have ALREADY published successfully (or were
+    /// accepted) for this post. A retry MUST NOT re-send to these — prevents
+    /// double-posting. Persisted so the guarantee survives app relaunch.
+    var succeededAccountIds: [String] = []
 
     init(content: String, platforms: [Platform], sourcePrompt: String, status: PostStatus) {
         self.id = UUID()
@@ -122,6 +139,24 @@ struct QueuedPost: Identifiable, Codable {
         self.sourcePrompt = sourcePrompt
         self.status = status
         self.createdAt = Date()
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, content, platforms, sourcePrompt, status, createdAt, approvedAt, postedAt, succeededAccountIds
+    }
+
+    // Decodes older persisted posts that lack succeededAccountIds.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(UUID.self, forKey: .id)
+        content = try c.decode(String.self, forKey: .content)
+        platforms = try c.decode([Platform].self, forKey: .platforms)
+        sourcePrompt = try c.decode(String.self, forKey: .sourcePrompt)
+        status = try c.decode(PostStatus.self, forKey: .status)
+        createdAt = try c.decode(Date.self, forKey: .createdAt)
+        approvedAt = try c.decodeIfPresent(Date.self, forKey: .approvedAt)
+        postedAt = try c.decodeIfPresent(Date.self, forKey: .postedAt)
+        succeededAccountIds = try c.decodeIfPresent([String].self, forKey: .succeededAccountIds) ?? []
     }
 
     var platformIcons: String {

@@ -53,11 +53,38 @@ final class NativePlatformDispatcher {
     }
 
     func dispatch(_ post: QueuedPost, imageURL: URL? = nil) async -> [Platform: DispatchResult] {
+        await dispatchDetailed(post, imageURL: imageURL).platformResults
+    }
+
+    /// Result of a dispatch: the per-platform summary (for display) AND the
+    /// per-account outcomes keyed by gateway accountId (for safe retry).
+    struct DetailedDispatch {
+        var platformResults: [Platform: DispatchResult] = [:]
+        var accountOutcomes: [String: AccountOutcome] = [:]
+        /// Accounts that were already confirmed BEFORE this attempt (excluded
+        /// from sending). Tracked so they aren't double-counted as "newly" done.
+        var previouslyConfirmed: Set<String> = []
+        /// Account IDs that published (succeeded or accepted) in THIS dispatch.
+        var newlySucceededAccountIds: [String] {
+            accountOutcomes
+                .filter { $0.value.isResolvedPositive && !previouslyConfirmed.contains($0.key) }
+                .map(\.key)
+        }
+    }
+
+    /// Dispatch that EXCLUDES accounts already known to have published (from a
+    /// prior attempt), so a retry never reposts to them. Returns per-account
+    /// outcomes so the caller can persist newly-succeeded accounts.
+    func dispatchDetailed(
+        _ post: QueuedPost,
+        imageURL: URL? = nil,
+        excludingAccountIds excluded: Set<String> = []
+    ) async -> DetailedDispatch {
+        var out = DetailedDispatch()
+        out.previouslyConfirmed = excluded
         var results: [Platform: DispatchResult] = [:]
 
         // Partition every selected platform by how it can actually be published.
-        // Anything that is neither a gateway platform nor Bluesky has no publish
-        // path in this build and must be reported, not dropped.
         for platform in post.platforms where !platform.usesGatewayOAuth && platform != .bluesky {
             results[platform] = .unsupported(
                 "\(platform.displayName) publishing isn't available yet — the gateway hasn't shipped this platform's OAuth. Nothing was sent."
@@ -67,35 +94,56 @@ final class NativePlatformDispatcher {
         // --- Gateway-OAuth platforms (X, Instagram, LinkedIn, Threads, YouTube) ---
         let gatewayPlatforms = post.platforms.filter { $0.usesGatewayOAuth && $0 != .bluesky }
         if !gatewayPlatforms.isEmpty {
-            let gatewayAccountIds = channels.accountIds(for: gatewayPlatforms)
-            if gatewayAccountIds.isEmpty {
-                // No connected accounts for any selected gateway platform.
+            let allAccountIds = channels.accountIds(for: gatewayPlatforms)
+            // RETRY SAFETY: never re-send to an account that already published.
+            let sendAccountIds = allAccountIds.filter { !excluded.contains($0) }
+
+            if allAccountIds.isEmpty {
+                for platform in gatewayPlatforms { results[platform] = .skipped("Not connected") }
+            } else if sendAccountIds.isEmpty {
+                // Every account was already published in a prior attempt.
                 for platform in gatewayPlatforms {
-                    results[platform] = .skipped("Not connected")
+                    results[platform] = .success("Already published (no re-send)")
+                    for id in channels.accountIds(for: [platform]) where excluded.contains(id) {
+                        out.accountOutcomes[id] = .succeeded(receipt: "previously confirmed")
+                    }
                 }
             } else {
                 do {
                     let publishResults = try await gatewayPublish(
                         post.content,
-                        gatewayAccountIds,
+                        sendAccountIds,
                         imageURL?.absoluteString
                     )
                     for platform in gatewayPlatforms {
-                        let requested = channels.accountIds(for: [platform])
+                        let requested = channels.accountIds(for: [platform]).filter { !excluded.contains($0) }
+                        if requested.isEmpty {
+                            // all this platform's accounts were excluded (already done)
+                            results[platform] = .success("Already published (no re-send)")
+                            continue
+                        }
                         results[platform] = resolveGatewayResult(
                             for: platform,
                             requestedAccountIds: requested,
                             from: publishResults
                         )
+                        let pk = GatewaySocialAccount.normalizePlatform(platform)
+                        for (id, outcome) in Self.classifyAccounts(
+                            requestedAccountIds: requested, from: publishResults, platformKey: pk
+                        ) { out.accountOutcomes[id] = outcome }
                     }
                 } catch {
-                    // A thrown error means the whole /publish request failed
-                    // (network, 401, 5xx). Report it on every gateway platform
-                    // we attempted — never leave one without a result.
                     for platform in gatewayPlatforms {
                         results[platform] = .failed(error.localizedDescription)
+                        for id in channels.accountIds(for: [platform]) where !excluded.contains(id) {
+                            out.accountOutcomes[id] = .failed(error.localizedDescription)
+                        }
                     }
                 }
+            }
+            // Mark already-excluded accounts as previously-succeeded for the record.
+            for id in excluded where allAccountIds.contains(id) {
+                if out.accountOutcomes[id] == nil { out.accountOutcomes[id] = .succeeded(receipt: "previously confirmed") }
             }
         }
 
@@ -114,7 +162,8 @@ final class NativePlatformDispatcher {
             }
         }
 
-        return results
+        out.platformResults = results
+        return out
     }
 
     /// Maps the gateway's per-account results for a single platform into one
