@@ -31,11 +31,23 @@ Receipt-classifier integrity your directive flagged:
   - 6 `PublishAccountIntegrityTests` (my account-level tests)
 - Earlier full run (build + UI walkthrough) also green on the merge baseline (28) before +6.
 
-## Deployed-backend finding (production, not local source)
-- `GET https://api.cortexnode.ai/oauth/connections` → **HTTP 401**
-- `https://api.cortexnode.ai/publish` → **HTTP 401**
-- 401 (not 404) = routes EXIST and are auth-guarded in PRODUCTION.
-→ **No backend deploy required.** The publish contract is already live; the defects were client-side.
+## Deployed-backend finding (CORRECTED — earlier 401 conclusion retracted)
+RETRACTED: my earlier claim that "401 proves the session expired and the backend works, only login
+remains" was unsound. The curl requests sent NO auth; the router is mounted `app.use(auth, prismGatewayRouter)`
+so the `auth` middleware returns 401 BEFORE routing — even for nonexistent paths. GET /publish also
+does not exercise POST /publish. So 401 established nothing.
+Verified instead by reading DEPLOYED source (`routes/prism-gateway.js`, `server.js:710-720`):
+- `router.get('/oauth/connections')`, `router.post('/publish', publishLimiter, …CSRF/origin guards)`.
+- Mounted authed at `server.js:720`.
+→ Routes + methods exist IN THE SOURCE TREE. Whether this is exactly what production RUNS is still
+  unverified. Whether a backend deploy is needed: UNVERIFIED. No deploy performed.
+
+## PRISM auth (CORRECTED — not SIGNAL ZERO's model)
+PRISM's `AuthSessionStore` auto-issues a DEVICE-scoped session JWT via `POST /v1/auth/session-token`
+(device id + bundle id), caches in Keychain, refreshes <60s before expiry, re-exchanges on 401.
+→ There is NO interactive George-login for PRISM's gateway session. My earlier "re-auth needed" was
+  imported from SIGNAL ZERO and is wrong for PRISM. The real dependency is confirming a CONNECTED
+  social account via /oauth/connections, not a founder login.
 
 ## Still blocked (genuine dependencies — need George)
 1. **Live connected-accounts list**: `/oauth/connections` needs the Founder/user session, which is
@@ -46,15 +58,16 @@ Receipt-classifier integrity your directive flagged:
    connected account. No real post has been demonstrated yet; I will not claim one until a receipt
    (URL or provider post ID) returns from a live account.
 
-## PROPOSED POST (prepared, awaiting your approval — NOT sent)
-- Platform: **X** (first live target; `/oauth/x/start` route confirmed in prod)
-- Destination account: **[the X account to be confirmed from /oauth/connections once you re-auth]**
+## PROPOSED POST (prepared, awaiting approval — NOT sent; copy corrected)
+- Platform: **X** (first target; `router.post('/publish')` + `/oauth/x/start` present in deployed source — production-run status still unverified)
+- Destination account: **UNKNOWN until a connected account is verified.** `/oauth/connections`
+  returns the real list via PRISM's device-session (AuthSessionStore) — must be fetched from the
+  app/an authorized call. A placeholder is NOT a publication-ready destination.
 - Media: `~/Developer/PRISM/PRISM-LOGO-1024.png` (approved brand logo)
-- Text:
-  > PRISM is live — the CORTEX publishing surface. One brain, every platform,
-  > approval required before anything goes out. Built so nothing posts without you.
-- Rationale: short, on-brand (matches the app's own line "PRISM is the publisher" /
-  "approval required before publish"), no unverifiable claims.
+- Text (no "live", no "every platform", no unsupported guarantees):
+  > Building in public with CORTEX PRISM — one brain, one approval step before anything is published.
+  > More to share soon.
+- Facebook/TikTok are explicitly **not supported** by the gateway yet; the post must not imply they are.
 
 ## Next executable action
 When you re-auth the Founder/user session: (a) GET /oauth/connections to confirm the exact X
