@@ -19,6 +19,22 @@ final class PlatformChannelManager {
     var connections: [Platform: PlatformConnection] = [:]
     var gatewayAccounts: [GatewaySocialAccount] = []
 
+    /// Outcome of the most recent gateway-account refresh. The UI reads this so
+    /// a connection/auth failure is NEVER shown as "no accounts connected".
+    enum GatewayRefreshState: Equatable {
+        case idle                     // not refreshed yet
+        case loaded                   // refresh succeeded (list may legitimately be empty)
+        case sessionExpired           // 401 — user must sign in again
+        case unreachable(String)      // network/offline or server error
+    }
+    var gatewayRefreshState: GatewayRefreshState = .idle
+
+    /// True only when a refresh actually succeeded and returned zero accounts —
+    /// i.e. genuinely nothing connected, as opposed to a failed refresh.
+    var hasNoConnectedAccountsVerified: Bool {
+        gatewayRefreshState == .loaded && gatewayAccounts.isEmpty && connections[.bluesky]?.isConnected != true
+    }
+
     func connection(for platform: Platform) -> PlatformConnection {
         connections[platform] ?? PlatformConnection(platform: platform)
     }
@@ -54,8 +70,16 @@ final class PlatformChannelManager {
         do {
             gatewayAccounts = try await PrismGatewayOAuthService.shared.fetchConnections()
             syncLegacyConnectionsFromGateway()
+            gatewayRefreshState = .loaded
+        } catch GatewayOAuthError.noSession {
+            // 401 — the session expired/was cleared. This is DISTINCT from
+            // "no accounts": we don't know the real connection state. Surface it
+            // so the UI can prompt a re-auth instead of showing a clean empty list.
+            gatewayRefreshState = .sessionExpired
         } catch {
-            // Offline or session not ready — keep cached gateway list empty
+            // Offline or server error. Preserve any cached accounts (don't wipe
+            // them on a transient failure) and record that the refresh failed.
+            gatewayRefreshState = .unreachable(error.localizedDescription)
         }
     }
 

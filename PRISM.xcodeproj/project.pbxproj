@@ -42,6 +42,7 @@
 		539A1505C27EF30F9CDE02C5 /* PremiumShellConfig+Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEA0031972F96E9EBD492C6 /* PremiumShellConfig+Prism.swift */; };
 		5622D3B89FDCDE9F435CEBB6 /* ShellLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B8A9A9F6B7F8D4C4E221A7 /* ShellLaunchView.swift */; };
 		57F68F8CFDEB9CC932D7B179 /* CortexUniverseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2A37CC4BB2F10E64891C3E /* CortexUniverseClientTests.swift */; };
+		AA0100000000000000000001 /* NativePlatformDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0200000000000000000002 /* NativePlatformDispatcherTests.swift */; };
 		5A22C37A3700FE8EDBE9015A /* ShellLivingEcosystemMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CB86E3304FE11D0368D374 /* ShellLivingEcosystemMapView.swift */; };
 		64CF1ADEFFE2BFB6D7C50787 /* PrismLivingVisuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1964988025F8AACD3EC07BC /* PrismLivingVisuals.swift */; };
 		6818461F871907A1C44B7C83 /* ShellHeroBrainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC4F17FFC887ECDEC2DAE07 /* ShellHeroBrainView.swift */; };
@@ -159,6 +160,7 @@
 		63395E8A22AC6830570F36BA /* CortexStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexStoreManager.swift; sourceTree = "<group>"; };
 		69106DEEAB0FE574C19DD62C /* ShellAppHomes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellAppHomes.swift; sourceTree = "<group>"; };
 		6C2A37CC4BB2F10E64891C3E /* CortexUniverseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexUniverseClientTests.swift; sourceTree = "<group>"; };
+		AA0200000000000000000002 /* NativePlatformDispatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePlatformDispatcherTests.swift; sourceTree = "<group>"; };
 		71B447BEEDC74653FFA07F55 /* ShellEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellEnvironment.swift; sourceTree = "<group>"; };
 		73BA6C7839846529AD7AB689 /* ShellCortexBrainPulse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellCortexBrainPulse.swift; sourceTree = "<group>"; };
 		74DEB5E3B860046F3C018A25 /* UniversePremiumShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversePremiumShell.swift; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				6C2A37CC4BB2F10E64891C3E /* CortexUniverseClientTests.swift */,
+				AA0200000000000000000002 /* NativePlatformDispatcherTests.swift */,
 			);
 			path = PRISMTests;
 			sourceTree = "<group>";
@@ -574,6 +577,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				57F68F8CFDEB9CC932D7B179 /* CortexUniverseClientTests.swift in Sources */,
+				AA0100000000000000000001 /* NativePlatformDispatcherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
