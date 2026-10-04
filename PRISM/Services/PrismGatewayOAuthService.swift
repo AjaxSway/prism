@@ -81,9 +81,10 @@ struct GatewayPublishResult: Decodable {
     /// A verifiable receipt: a non-empty URL OR a non-empty provider post ID.
     /// A provider that returns only an id (e.g. a tweet/toot id) HAS confirmed
     /// publication; we must not downgrade that to "unverified".
+    /// Fields are trimmed; whitespace-only values do NOT count as a receipt.
     var receipt: String? {
-        if let u = postUrl, !u.isEmpty { return u }
-        if let i = postId, !i.isEmpty { return i }
+        if let u = postUrl?.trimmingCharacters(in: .whitespacesAndNewlines), !u.isEmpty { return u }
+        if let i = postId?.trimmingCharacters(in: .whitespacesAndNewlines), !i.isEmpty { return i }
         return nil
     }
 }

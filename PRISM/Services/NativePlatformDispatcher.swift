@@ -191,9 +191,69 @@ final class NativePlatformDispatcher {
         let err = accountResults.compactMap(\.error).filter { !$0.isEmpty }.joined(separator: "; ")
         return .failed(err.isEmpty ? "Gateway publish failed" : err)
     }
+
+    /// Per-account outcomes for the EXACT accounts requested on a platform.
+    /// Pure + nonisolated so retry logic and tests can use it directly. Keyed by
+    /// accountId. A requested account with no server result is `.noResult`
+    /// (unknown — never silently treated as failed OR succeeded).
+    nonisolated static func classifyAccounts(
+        requestedAccountIds: [String],
+        from publishResults: [GatewayPublishResult],
+        platformKey: String
+    ) -> [String: AccountOutcome] {
+        let relevant = publishResults.filter {
+            GatewaySocialAccount.normalizePlatformString($0.platform ?? "") == platformKey
+        }
+        var byAccount: [String: [GatewayPublishResult]] = [:]
+        for r in relevant { byAccount[r.accountId, default: []].append(r) }
+
+        var out: [String: AccountOutcome] = [:]
+        for id in requestedAccountIds {
+            let rs = byAccount[id] ?? []
+            if rs.isEmpty { out[id] = .noResult; continue }
+            if rs.count > 1 {
+                // Ambiguous — treat as unknown, do NOT assume a clean success.
+                out[id] = .failed("Duplicate results for account \(id)")
+                continue
+            }
+            let r = rs[0]
+            if r.success {
+                if let receipt = r.receipt { out[id] = .succeeded(receipt: receipt) }
+                else { out[id] = .accepted }
+            } else {
+                out[id] = .failed(r.error?.isEmpty == false ? r.error! : "publish failed")
+            }
+        }
+        return out
+    }
+
+    /// Accounts that are SAFE to re-send on retry (not already succeeded/accepted).
+    /// Prevents reposting to an account that already published.
+    nonisolated static func accountsNeedingRetry(_ outcomes: [String: AccountOutcome]) -> [String] {
+        outcomes.filter { !$0.value.isResolvedPositive }.map(\.key)
+    }
 }
 
 // MARK: - Result types
+
+/// Outcome for a SINGLE account. Preserved so a partial failure never collapses
+/// into a platform-wide failure that would repost to accounts that already
+/// succeeded. Retry logic must re-send ONLY accounts whose outcome is not
+/// `.succeeded`/`.accepted`.
+enum AccountOutcome: Equatable {
+    case succeeded(receipt: String)   // confirmed, with URL or provider post id
+    case accepted                     // provider accepted; no receipt returned yet
+    case failed(String)               // definitive failure (safe to retry this account)
+    case noResult                     // we requested it but got nothing back (unknown — do NOT assume failed)
+
+    /// Accounts that must NOT be re-sent on retry (would duplicate a post).
+    var isResolvedPositive: Bool {
+        switch self {
+        case .succeeded, .accepted: return true
+        case .failed, .noResult:    return false
+        }
+    }
+}
 
 enum DispatchResult: Equatable {
     case success(String)        // post URL or ID — a real, verifiable receipt
