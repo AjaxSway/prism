@@ -516,20 +516,32 @@ cortexnode.ai
             var successCount = 0
             for post in toPost {
                 let results = await NativePlatformDispatcher.shared.dispatch(post)
-                let anySuccess = results.values.contains { $0.isSuccess }
-                let anyFailed = results.values.contains {
-                    if case .failed = $0 { return true }
-                    return false
-                }
-                if anySuccess || !anyFailed {
+                // "Accepted" = genuinely reached a provider (verified success OR
+                // accepted-without-receipt). Skipped/unsupported/pending do NOT
+                // count as a send, and must never silently mark a post as posted.
+                let anyAccepted = results.values.contains { $0.isAccepted }
+                if anyAccepted {
                     PostingQueue.shared.markPosted(post)
                     successCount += 1
+                    // Surface any per-platform problems even on a partial success,
+                    // so a mixed result is never reported as a clean broadcast.
+                    let problems = results.compactMap { (platform, r) -> String? in
+                        switch r {
+                        case .success, .unverified: return nil
+                        default: return "\(platform.displayName): \(r.label)"
+                        }
+                    }
+                    if !problems.isEmpty {
+                        PRISMState.shared.addMessage(role: .system, content: "Partial broadcast — \(problems.joined(separator: ", "))")
+                    }
                 } else {
-                    let failMsgs = results.values.compactMap { (r: DispatchResult) -> String? in
-                        if case .failed(let m) = r { return m }
-                        return nil
-                    }.joined(separator: ", ")
-                    PRISMState.shared.addMessage(role: .system, content: "Broadcast failed: \(failMsgs)")
+                    // Nothing was accepted. Report exactly why for each platform
+                    // (failed / skipped / unsupported / pending) — no silent drop.
+                    let reasons = results
+                        .map { "\($0.key.displayName): \($0.value.label)" }
+                        .sorted()
+                        .joined(separator: ", ")
+                    PRISMState.shared.addMessage(role: .system, content: "Nothing broadcast — \(reasons.isEmpty ? "no destinations selected" : reasons)")
                 }
             }
             broadcasting = false

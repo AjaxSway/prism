@@ -256,22 +256,31 @@ struct PRISMQueueView: View {
 
         postingId = nil
 
-        let successes = results.filter { $0.value.isSuccess }
-        let failures = results.filter {
-            if case .skipped = $0.value { return false }
-            return !$0.value.isSuccess
+        // Accepted = verified success OR accepted-without-receipt (unverified).
+        let accepted = results.filter { $0.value.isAccepted }
+        // Problems worth surfacing: hard failures, unsupported platforms, and
+        // pending states. Skipped (not connected) is informational, not a failure.
+        let problems = results.filter {
+            switch $0.value {
+            case .success, .unverified, .skipped: return false
+            default: return true
+            }
         }
 
-        if !successes.isEmpty && failures.isEmpty {
+        if !accepted.isEmpty && problems.isEmpty {
             queue.markPosted(post)
-            errorMessage = ""
-        } else if !successes.isEmpty {
+            // Note any unverified sends so an accepted-without-receipt isn't shown as a clean post.
+            let unverified = accepted.filter { if case .unverified = $0.value { return true }; return false }
+            errorMessage = unverified.isEmpty
+                ? ""
+                : "Posted · unverified on \(unverified.keys.map(\.displayName).joined(separator: ", ")) (no receipt URL returned)"
+        } else if !accepted.isEmpty {
             queue.markPosted(post)
-            let platformNames = failures.keys.map(\.rawValue).joined(separator: ", ")
-            let reason = failures.values.first.map(\.label) ?? "partial failure"
+            let platformNames = problems.keys.map(\.displayName).joined(separator: ", ")
+            let reason = problems.values.first.map(\.label) ?? "partial failure"
             errorMessage = "Posted some · issues on \(platformNames): \(reason)"
         } else {
-            let platformNames = results.keys.map(\.rawValue).joined(separator: ", ")
+            let platformNames = results.keys.map(\.displayName).joined(separator: ", ")
             let reason = results.values.first.map(\.label) ?? "Unknown error"
             errorMessage = "Not posted · \(platformNames): \(reason)"
         }

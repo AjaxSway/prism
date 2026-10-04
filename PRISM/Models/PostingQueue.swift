@@ -158,6 +158,20 @@ enum Platform: String, Codable, CaseIterable {
         }
     }
 
+    /// Human-readable platform name for user-facing status messages.
+    var displayName: String {
+        switch self {
+        case .x:         return "X"
+        case .instagram: return "Instagram"
+        case .tiktok:    return "TikTok"
+        case .linkedin:  return "LinkedIn"
+        case .bluesky:   return "Bluesky"
+        case .threads:   return "Threads"
+        case .facebook:  return "Facebook"
+        case .youtube:   return "YouTube"
+        }
+    }
+
     /// Maps MockPrismCatalog / studio channel ids → Platform.
     static func fromChannelId(_ id: String) -> Platform? {
         switch id.lowercased() {

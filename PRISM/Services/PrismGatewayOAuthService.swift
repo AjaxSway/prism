@@ -67,13 +67,24 @@ struct GatewayPublishResult: Decodable {
     let handle: String?
     let success: Bool
     let postUrl: String?
+    let postId: String?
     let error: String?
 
     enum CodingKeys: String, CodingKey {
         case accountId = "account_id"
         case platform, handle, success
         case postUrl = "post_url"
+        case postId = "post_id"
         case error
+    }
+
+    /// A verifiable receipt: a non-empty URL OR a non-empty provider post ID.
+    /// A provider that returns only an id (e.g. a tweet/toot id) HAS confirmed
+    /// publication; we must not downgrade that to "unverified".
+    var receipt: String? {
+        if let u = postUrl, !u.isEmpty { return u }
+        if let i = postId, !i.isEmpty { return i }
+        return nil
     }
 }
 

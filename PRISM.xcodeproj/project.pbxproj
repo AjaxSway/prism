@@ -41,6 +41,7 @@
 		4CB4E86F7E0B1E85AEC4D208 /* ShellStoreKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C761EFAF6B9562A86AF2C32D /* ShellStoreKitBridge.swift */; };
 		539A1505C27EF30F9CDE02C5 /* PremiumShellConfig+Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEA0031972F96E9EBD492C6 /* PremiumShellConfig+Prism.swift */; };
 		5622D3B89FDCDE9F435CEBB6 /* ShellLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B8A9A9F6B7F8D4C4E221A7 /* ShellLaunchView.swift */; };
+		56DB10A3FD92518AA18FF8BF /* PublishAccountIntegrityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01A24E15034D7A16058E856 /* PublishAccountIntegrityTests.swift */; };
 		57F68F8CFDEB9CC932D7B179 /* CortexUniverseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2A37CC4BB2F10E64891C3E /* CortexUniverseClientTests.swift */; };
 		5A22C37A3700FE8EDBE9015A /* ShellLivingEcosystemMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CB86E3304FE11D0368D374 /* ShellLivingEcosystemMapView.swift */; };
 		64CF1ADEFFE2BFB6D7C50787 /* PrismLivingVisuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1964988025F8AACD3EC07BC /* PrismLivingVisuals.swift */; };
@@ -71,6 +72,7 @@
 		A38BF7AD55BA96EF7A517657 /* prism-intro-overlay.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6140017BDBDC0C20B4F66275 /* prism-intro-overlay.mp4 */; };
 		A4F4A3234AB63B2C8719E5FF /* PrismRefractionStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF45ED7058B6962D44057C /* PrismRefractionStudioView.swift */; };
 		A9434292A8ADCF9651AE92ED /* CortexIntroVideoOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40B1C355B272FB1BFF2F86A /* CortexIntroVideoOverlay.swift */; };
+		AA0100000000000000000001 /* NativePlatformDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0200000000000000000002 /* NativePlatformDispatcherTests.swift */; };
 		AD5F3FD555EF2078F1BB1868 /* ShellGamingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B737A71A11A1399AD3E2417E /* ShellGamingView.swift */; };
 		BC65691F4669CBC330F72643 /* BlueskyNativeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072405798C1BE666C8C9B188 /* BlueskyNativeService.swift */; };
 		BE98D46E5CE004690A69D985 /* UniversePremiumShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DEB5E3B860046F3C018A25 /* UniversePremiumShell.swift */; };
@@ -176,9 +178,11 @@
 		A5E6BFED429ACDF4ED0177BB /* PRISMSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMSplashView.swift; sourceTree = "<group>"; };
 		A5F2BD3EB2D62F42021AF244 /* PrismImageStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismImageStudioView.swift; sourceTree = "<group>"; };
 		A9D4736F5B40DEF0D34BEA18 /* ShellActivityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellActivityStore.swift; sourceTree = "<group>"; };
+		AA0200000000000000000002 /* NativePlatformDispatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePlatformDispatcherTests.swift; sourceTree = "<group>"; };
 		AB170C1410C693ED01799211 /* ShellInteractionFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellInteractionFeedback.swift; sourceTree = "<group>"; };
 		AD73E755D58CEC35587DE689 /* prism_intro_godmode.mp4 */ = {isa = PBXFileReference; path = prism_intro_godmode.mp4; sourceTree = "<group>"; };
 		AE824CE1EEF0B712E75DB733 /* cortex_intro_greeting.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cortex_intro_greeting.mp3; sourceTree = "<group>"; };
+		B01A24E15034D7A16058E856 /* PublishAccountIntegrityTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PublishAccountIntegrityTests.swift; sourceTree = "<group>"; };
 		B40B1C355B272FB1BFF2F86A /* CortexIntroVideoOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexIntroVideoOverlay.swift; sourceTree = "<group>"; };
 		B737A71A11A1399AD3E2417E /* ShellGamingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellGamingView.swift; sourceTree = "<group>"; };
 		BA201CCA28AE3F10E963E65E /* ShellNexusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellNexusView.swift; sourceTree = "<group>"; };
@@ -333,6 +337,8 @@
 			isa = PBXGroup;
 			children = (
 				6C2A37CC4BB2F10E64891C3E /* CortexUniverseClientTests.swift */,
+				AA0200000000000000000002 /* NativePlatformDispatcherTests.swift */,
+				B01A24E15034D7A16058E856 /* PublishAccountIntegrityTests.swift */,
 			);
 			path = PRISMTests;
 			sourceTree = "<group>";
@@ -450,8 +456,6 @@
 				20D332E0CA692BF6F9F43EDA /* PBXTargetDependency */,
 			);
 			name = PRISMUITests;
-			packageProductDependencies = (
-			);
 			productName = PRISMUITests;
 			productReference = 7F9A9D2B4E7F2A01458995EF /* PRISMUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -530,7 +534,7 @@
 			mainGroup = 9ACB8EA292F0BE5D323F4DC2;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "../CORTEX_SUPER_BRAIN" */,
+				3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "CORTEX_SUPER_BRAIN" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9DFE55D93D71E8D607CD0AF1 /* Products */;
@@ -574,6 +578,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				57F68F8CFDEB9CC932D7B179 /* CortexUniverseClientTests.swift in Sources */,
+				AA0100000000000000000001 /* NativePlatformDispatcherTests.swift in Sources */,
+				56DB10A3FD92518AA18FF8BF /* PublishAccountIntegrityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -809,7 +815,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = PRISM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cortexnode.prism;
 				PRODUCT_NAME = PRISM;
 				SDKROOT = iphoneos;
@@ -913,7 +922,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = PRISM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cortexnode.prism;
 				PRODUCT_NAME = PRISM;
 				SDKROOT = iphoneos;
@@ -963,7 +975,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "../CORTEX_SUPER_BRAIN" */ = {
+		3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "CORTEX_SUPER_BRAIN" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../CORTEX_SUPER_BRAIN;
 		};
