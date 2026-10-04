@@ -14,41 +14,50 @@ final class NativePlatformDispatcher {
     func dispatch(_ post: QueuedPost, imageURL: URL? = nil) async -> [Platform: DispatchResult] {
         var results: [Platform: DispatchResult] = [:]
 
-        let gatewayPlatforms = post.platforms.filter { $0.usesGatewayOAuth && $0 != .bluesky }
+        // 1) Platforms the gateway does not yet support (e.g. Facebook, TikTok)
+        //    must get an EXPLICIT "unavailable" result. Previously they were
+        //    filtered out of every branch and silently vanished from the report.
+        let unsupported = post.platforms.filter { !$0.gatewaySupported && $0 != .bluesky }
+        for platform in unsupported {
+            results[platform] = .unavailable(
+                "\(platform.displayName) publishing is not available yet — the gateway adapter is not deployed."
+            )
+        }
+
+        let gatewayPlatforms = post.platforms.filter { $0.gatewaySupported && $0 != .bluesky }
         let gatewayAccountIds = channels.accountIds(for: gatewayPlatforms)
 
-        if !gatewayAccountIds.isEmpty {
-            do {
-                let publishResults = try await gateway.publish(
-                    content: post.content,
-                    accountIds: gatewayAccountIds,
-                    imageURL: imageURL?.absoluteString
-                )
+        if !gatewayPlatforms.isEmpty {
+            if gatewayAccountIds.isEmpty {
+                // No accounts for any requested gateway platform — distinguish a
+                // genuine "not connected" from a hidden refresh/auth failure.
                 for platform in gatewayPlatforms {
-                    let platformKey = GatewaySocialAccount.normalizePlatform(platform)
-                    let platformResults = publishResults.filter {
-                        GatewaySocialAccount.normalizePlatformString($0.platform ?? "") == platformKey
+                    results[platform] = channels.lastRefreshFailed
+                        ? .failed("Connection status unavailable — sign-in may have expired. Reconnect and retry.")
+                        : .skipped("Not connected")
+                }
+            } else {
+                do {
+                    let publishResults = try await gateway.publish(
+                        content: post.content,
+                        accountIds: gatewayAccountIds,
+                        imageURL: imageURL?.absoluteString
+                    )
+                    for platform in gatewayPlatforms {
+                        let platformKey = GatewaySocialAccount.normalizePlatform(platform)
+                        let platformResults = publishResults.filter {
+                            GatewaySocialAccount.normalizePlatformString($0.platform ?? "") == platformKey
+                        }
+                        results[platform] = Self.classify(
+                            platformResults,
+                            isConnected: channels.isConnected(platform)
+                        )
                     }
-                    if platformResults.isEmpty {
-                        results[platform] = channels.isConnected(platform)
-                            ? .pending("No gateway account matched")
-                            : .skipped("Not connected")
-                    } else if platformResults.allSatisfy(\.success) {
-                        let url = platformResults.compactMap(\.postUrl).first ?? "posted"
-                        results[platform] = .success(url)
-                    } else {
-                        let err = platformResults.compactMap(\.error).joined(separator: "; ")
-                        results[platform] = .failed(err.isEmpty ? "Gateway publish failed" : err)
+                } catch {
+                    for platform in gatewayPlatforms {
+                        results[platform] = .failed(error.localizedDescription)
                     }
                 }
-            } catch {
-                for platform in gatewayPlatforms {
-                    results[platform] = .failed(error.localizedDescription)
-                }
-            }
-        } else {
-            for platform in gatewayPlatforms {
-                results[platform] = .skipped("Not connected")
             }
         }
 
@@ -72,15 +81,40 @@ final class NativePlatformDispatcher {
 
         return results
     }
+
+    /// Pure classification of a single platform's gateway publish results.
+    /// Extracted so the success/pending/failed rules are unit-testable without
+    /// the shared singletons. Rules:
+    ///   • no results for a connected platform → pending (response didn't cover it)
+    ///   • no results for a disconnected platform → skipped
+    ///   • all succeeded WITH a non-empty post URL → success(url)
+    ///   • all succeeded but NO post URL → pending (never a fake "posted")
+    ///   • any failure → failed(joined errors)
+    nonisolated static func classify(_ platformResults: [GatewayPublishResult], isConnected: Bool) -> DispatchResult {
+        if platformResults.isEmpty {
+            return isConnected
+                ? .pending("No gateway account matched the publish response")
+                : .skipped("Not connected")
+        }
+        if platformResults.allSatisfy(\.success) {
+            if let url = platformResults.compactMap(\.postUrl).first, !url.isEmpty {
+                return .success(url)
+            }
+            return .pending("Accepted by gateway; awaiting a confirmed post URL")
+        }
+        let err = platformResults.compactMap(\.error).joined(separator: "; ")
+        return .failed(err.isEmpty ? "Gateway publish failed" : err)
+    }
 }
 
 // MARK: - Result types
 
-enum DispatchResult {
+enum DispatchResult: Equatable {
     case success(String)        // post URL or ID
     case failed(String)         // error message
     case skipped(String)        // reason
     case pending(String)        // needs manual step
+    case unavailable(String)    // platform not supported by the gateway yet
 
     var isSuccess: Bool {
         if case .success = self { return true }
@@ -89,10 +123,11 @@ enum DispatchResult {
 
     var label: String {
         switch self {
-        case .success(let ref):  return "Posted · \(ref)"
-        case .failed(let msg):   return "Failed · \(msg)"
-        case .skipped(let msg):  return "Skipped · \(msg)"
-        case .pending(let msg):  return "Pending · \(msg)"
+        case .success(let ref):     return "Posted · \(ref)"
+        case .failed(let msg):      return "Failed · \(msg)"
+        case .skipped(let msg):     return "Skipped · \(msg)"
+        case .pending(let msg):     return "Pending · \(msg)"
+        case .unavailable(let msg): return "Unavailable · \(msg)"
         }
     }
 }

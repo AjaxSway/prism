@@ -93,6 +93,7 @@
 		E8350E82608CCA9DEA237E54 /* PRISMSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E6BFED429ACDF4ED0177BB /* PRISMSplashView.swift */; };
 		EA4997AEE49C13BBB86A7581 /* ShellCortexBrainPulse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BA6C7839846529AD7AB689 /* ShellCortexBrainPulse.swift */; };
 		EEF410EA5F27302A613FA40F /* CortexEcosystemBrain in Frameworks */ = {isa = PBXBuildFile; productRef = BDD82369265F9D73FD0C3FFA /* CortexEcosystemBrain */; };
+		F06A202AC3B62EF7EFF1CE17 /* PublishDispatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D054DC8EE4ECACC6290F85BC /* PublishDispatchTests.swift */; };
 		F3B428250B1560910C037304 /* BrainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61119682068B87BF0DFD440E /* BrainConnector.swift */; };
 		FA7A403431C8BCA3C80CB60F /* PrismAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07BC25809649AFBEE78CAA4 /* PrismAppIntents.swift */; };
 		FCB0F690A3FA4F627305E880 /* ShellOrbState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34EACF0BE87534F84E553B0 /* ShellOrbState.swift */; };
@@ -193,6 +194,7 @@
 		CBB5EDAC4C0D56D8455438EB /* DALLEImageGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DALLEImageGenerationService.swift; sourceTree = "<group>"; };
 		CD92E17BDD9A5EA5FD74E3C6 /* ShellForgeNightDeck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellForgeNightDeck.swift; sourceTree = "<group>"; };
 		CF40D98D8E722D00B6E59B3D /* ShellTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellTheme.swift; sourceTree = "<group>"; };
+		D054DC8EE4ECACC6290F85BC /* PublishDispatchTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PublishDispatchTests.swift; sourceTree = "<group>"; };
 		D07BC25809649AFBEE78CAA4 /* PrismAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismAppIntents.swift; sourceTree = "<group>"; };
 		D1C76BB9938FDD419B3D28F3 /* ShellWorldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellWorldView.swift; sourceTree = "<group>"; };
 		D7B25102C9704023842C0F26 /* CortexMarketingImageCanon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CortexMarketingImageCanon.swift; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				6C2A37CC4BB2F10E64891C3E /* CortexUniverseClientTests.swift */,
+				D054DC8EE4ECACC6290F85BC /* PublishDispatchTests.swift */,
 			);
 			path = PRISMTests;
 			sourceTree = "<group>";
@@ -450,8 +453,6 @@
 				20D332E0CA692BF6F9F43EDA /* PBXTargetDependency */,
 			);
 			name = PRISMUITests;
-			packageProductDependencies = (
-			);
 			productName = PRISMUITests;
 			productReference = 7F9A9D2B4E7F2A01458995EF /* PRISMUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -530,7 +531,7 @@
 			mainGroup = 9ACB8EA292F0BE5D323F4DC2;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "../CORTEX_SUPER_BRAIN" */,
+				3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "CORTEX_SUPER_BRAIN" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9DFE55D93D71E8D607CD0AF1 /* Products */;
@@ -574,6 +575,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				57F68F8CFDEB9CC932D7B179 /* CortexUniverseClientTests.swift in Sources */,
+				F06A202AC3B62EF7EFF1CE17 /* PublishDispatchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -809,7 +811,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = PRISM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cortexnode.prism;
 				PRODUCT_NAME = PRISM;
 				SDKROOT = iphoneos;
@@ -913,7 +918,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = PRISM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cortexnode.prism;
 				PRODUCT_NAME = PRISM;
 				SDKROOT = iphoneos;
@@ -963,7 +971,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "../CORTEX_SUPER_BRAIN" */ = {
+		3B8A5C8EF2037E46D9F99F68 /* XCLocalSwiftPackageReference "CORTEX_SUPER_BRAIN" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../CORTEX_SUPER_BRAIN;
 		};

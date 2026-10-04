@@ -19,6 +19,13 @@ final class PlatformChannelManager {
     var connections: [Platform: PlatformConnection] = [:]
     var gatewayAccounts: [GatewaySocialAccount] = []
 
+    /// True when the last `refreshGatewayAccounts()` attempt failed (expired
+    /// session, network, or server error). Lets the UI and dispatcher tell a
+    /// hidden auth/connection failure apart from a genuine "no accounts
+    /// connected" state, instead of both looking like an empty list.
+    var lastRefreshFailed: Bool = false
+    var lastRefreshError: String?
+
     func connection(for platform: Platform) -> PlatformConnection {
         connections[platform] ?? PlatformConnection(platform: platform)
     }
@@ -54,8 +61,15 @@ final class PlatformChannelManager {
         do {
             gatewayAccounts = try await PrismGatewayOAuthService.shared.fetchConnections()
             syncLegacyConnectionsFromGateway()
+            lastRefreshFailed = false
+            lastRefreshError = nil
         } catch {
-            // Offline or session not ready — keep cached gateway list empty
+            // Do NOT silently pretend "no accounts." Record the failure so the
+            // UI/dispatcher can show "connection status unavailable" distinctly
+            // from "nothing connected." Keep the previously known accounts so a
+            // transient blip doesn't wipe a working connection view.
+            lastRefreshFailed = true
+            lastRefreshError = error.localizedDescription
         }
     }
 

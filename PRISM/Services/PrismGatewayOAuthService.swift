@@ -249,6 +249,31 @@ extension Platform {
         }
     }
 
+    /// Whether the DEPLOYED gateway can actually publish to this platform.
+    /// Facebook and TikTok have UI/connect copy ("coming after next deploy")
+    /// but no `/oauth/<p>/start` route or publish adapter on the backend yet,
+    /// so a selected FB/TikTok post must report `unavailable`, not silently
+    /// disappear. Bluesky publishes on-device and is handled separately.
+    var gatewaySupported: Bool {
+        switch self {
+        case .facebook, .tiktok, .bluesky: return false
+        default: return true
+        }
+    }
+
+    var displayName: String {
+        switch self {
+        case .x:         return "X"
+        case .instagram: return "Instagram"
+        case .linkedin:  return "LinkedIn"
+        case .threads:   return "Threads"
+        case .youtube:   return "YouTube"
+        case .facebook:  return "Facebook"
+        case .tiktok:    return "TikTok"
+        case .bluesky:   return "Bluesky"
+        }
+    }
+
     var gatewayOAuthSegment: String {
         switch self {
         case .x: return "x"
