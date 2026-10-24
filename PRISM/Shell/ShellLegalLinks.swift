@@ -10,6 +10,6 @@ enum ShellLegalLinks {
     static let subscriptionTerms = URL(string: "https://cortexnode.ai/terms#subscription-terms")!
     static let refundPolicy = URL(string: "https://cortexnode.ai/terms#refund-policy")!
     static let security = URL(string: "https://cortexnode.ai/security")!
-    static let support = URL(string: "mailto:admin@cortexnode.ai")!
+    static let support = URL(string: "mailto:support@cortexnode.ai")!
     static let pricing = URL(string: "https://cortexnode.ai/pricing")!
 }
