@@ -541,7 +541,7 @@ enum PrismVisionPreset: String, CaseIterable, Identifiable {
         case .cortexBrandSheet: return "CORTEX Sheet"
         case .signalZeroSheet: return "Signal Zero"
         case .jerichoSheet: return "Jericho"
-        case .godModeHUD: return "God Mode"
+        case .godModeHUD: return "Vault HUD"
         case .babiesRoster: return "Babies Cards"
         case .sovereignPoster: return "Sovereign"
         case .pricingUniverse: return "Pricing"
@@ -603,7 +603,7 @@ enum PrismVisionPreset: String, CaseIterable, Identifiable {
                 ?? "JERICHO war-room crimson brand sheet"
         case .godModeHUD:
             return CortexMarketingImageCanon.campaign(id: "god_mode_blue")?.prompt
-                ?? "CORTEX God Mode circular vault HUD cyan crown"
+                ?? "CORTEX circular vault HUD cyan crown"
         case .babiesRoster:
             return CortexMarketingImageCanon.campaign(id: "babies_roster")?.prompt
                 ?? "CORTEX Babies chibi character card grid"

@@ -1,8 +1,8 @@
 import Foundation
 
 // MARK: - CORTEX MARKETING Image Canon
-// Locked visual language from Sir's reference boards (Babies cards, brand sheets,
-// God Mode HUDs, pricing heroes, Signal Zero / Atlas / Sovereign / Vehicle UI).
+// Locked visual language from the Founder's reference boards (Babies cards, brand sheets,
+// vault HUDs, pricing heroes, Signal Zero / Atlas / Sovereign / Vehicle UI).
 // Used by Image Studio presets + DALL-E style enrichment.
 
 struct CortexMarketingCampaign: Identifiable, Equatable {
@@ -18,9 +18,9 @@ struct CortexMarketingCampaign: Identifiable, Equatable {
 enum CortexMarketingImageCanon {
 
     static let brandLaw = """
-    CORTEX MARKETING · God Mode finish. Dark void black / charcoal base. Metallic \
+    CORTEX MARKETING · command finish. Dark void black / charcoal base. Metallic \
     beveled typography with rim light and controlled bloom. Neon accent lanes only — \
-    cyan/ice blue for CORTEX & SIGNAL ZERO, crimson for JERICHO / red God Mode, gold for \
+    cyan/ice blue for CORTEX & SIGNAL ZERO, crimson for JERICHO / red vault, gold for \
     SOVEREIGN & AURION, violet/magenta for PRISM & Babies, orange for FORGE, green for ATLAS. \
     War-room HUD density: thin frames, status panels, no cartoon clutter, no purple-on-white \
     generic AI look. Premium, cinematic, photoreal materials. Honest status labels only \
@@ -71,14 +71,14 @@ enum CortexMarketingImageCanon {
             JERICHO war-room brand sheet — chiseled metallic JERICHO title with crimson neon outline, \
             tagline INTELLIGENCE. PRECISION. DOMINANCE. Red ember particles, threat-level HUD. \
             Bottom-left JERICHO // QUICK SHEET with j- commands. SIGNAL ZERO mark bottom-right. \
-            Tactical black metal, red God Mode energy.
+            Tactical black metal, red command energy.
             """,
             negativePrompt: sharedNegative
         ),
         CortexMarketingCampaign(
             id: "god_mode_blue",
-            label: "God Mode Blue HUD",
-            shortLabel: "God Mode",
+            label: "Vault Blue HUD",
+            shortLabel: "Vault Blue",
             aspectRatio: .square,
             style: .godModeHUD,
             prompt: """
@@ -91,8 +91,8 @@ enum CortexMarketingImageCanon {
         ),
         CortexMarketingCampaign(
             id: "god_mode_red",
-            label: "God Mode Red HUD",
-            shortLabel: "God Red",
+            label: "Vault Red HUD",
+            shortLabel: "Vault Red",
             aspectRatio: .square,
             style: .godModeHUD,
             prompt: """
@@ -125,7 +125,7 @@ enum CortexMarketingImageCanon {
             prompt: """
             Full-body CORTEX Baby robot mascot — pearlescent white armor, charcoal joints, glowing blue \
             visor eyes and crescent smile, concentric blue chest core, standing on reflective dark platform \
-            with holographic floor rings. Cute chibi proportions, studio God Mode lighting, bokeh deep blue bg.
+            with holographic floor rings. Cute chibi proportions, studio command lighting, bokeh deep blue bg.
             """,
             negativePrompt: sharedNegative
         ),

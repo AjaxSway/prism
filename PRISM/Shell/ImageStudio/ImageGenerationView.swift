@@ -53,7 +53,7 @@ struct ImageGenerationView: View {
         ImagePreset(id: "cortex_brand", label: "CORTEX Sheet", style: .cortexBrandSheet),
         ImagePreset(id: "s0", label: "Signal Zero", style: .signalZeroBlue),
         ImagePreset(id: "jericho", label: "Jericho", style: .jerichoRed),
-        ImagePreset(id: "god_mode", label: "God Mode", style: .godModeHUD),
+        ImagePreset(id: "god_mode", label: "Vault HUD", style: .godModeHUD),
         ImagePreset(id: "babies", label: "Babies", style: .babiesChibi),
         ImagePreset(id: "sovereign", label: "Sovereign", style: .sovereignGold),
         ImagePreset(id: "aurion", label: "Aurion", style: .aurionGoldRed),
@@ -91,7 +91,7 @@ struct ImageGenerationView: View {
                 }
 
                 ShellStatusBadge(
-                    text: lastError != nil ? "Error · \(lastError!)" : "CORTEX MARKETING · God Mode presets loaded",
+                    text: lastError != nil ? "Error · \(lastError!)" : "CORTEX MARKETING · Vault presets loaded",
                     palette: palette,
                     tone: lastError != nil ? .warning : .neutral
                 )

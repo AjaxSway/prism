@@ -21,11 +21,11 @@ enum ImageStylePreset: String, CaseIterable, Identifiable {
     case nodeBlueprint = "Node Blueprint"
     case executiveDark = "Executive Dark"
     case minimalGlass = "Minimal Glass"
-    // CORTEX MARKETING · God Mode (Sir reference boards)
+    // CORTEX MARKETING · vault finish (Founder reference boards)
     case cortexBrandSheet = "CORTEX Brand"
     case signalZeroBlue = "Signal Zero"
     case jerichoRed = "Jericho Red"
-    case godModeHUD = "God Mode HUD"
+    case godModeHUD = "Vault HUD"
     case babiesChibi = "Babies Chibi"
     case sovereignGold = "Sovereign"
     case aurionGoldRed = "Aurion Gold"
@@ -53,7 +53,7 @@ enum ImageStylePreset: String, CaseIterable, Identifiable {
         case .jerichoRed:
             return "Crimson tactical war-room, industrial metal type, threat-red particles."
         case .godModeHUD:
-            return "Circular vault HUD, crown biometric lock, corner status widgets, God Mode."
+            return "Circular vault HUD, crown biometric lock, corner status widgets, command finish."
         case .babiesChibi:
             return "Premium chibi CORTEX Baby characters, collectible cards, glowing cores, cute + industrial."
         case .sovereignGold:
