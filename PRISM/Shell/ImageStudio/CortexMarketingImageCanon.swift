@@ -82,7 +82,7 @@ enum CortexMarketingImageCanon {
             aspectRatio: .square,
             style: .godModeHUD,
             prompt: """
-            CORTEX SIGNAL ZERO GOD MODE circular vault HUD — metallic CORTEX + SIGNAL ZERO + GOD MODE \
+            CORTEX SIGNAL ZERO circular vault HUD — metallic CORTEX + SIGNAL ZERO \
             center plate, silver crown with cyan gems, fingerprint lock, corner panels STATUS ONLINE, \
             SYSTEM INTEGRITY 100%, CORE LINK ESTABLISHED. Footer GUARDED. GROUNDED. GRATEFUL. \
             Gunmetal + electric cyan conduits, concentric rings.
@@ -96,8 +96,8 @@ enum CortexMarketingImageCanon {
             aspectRatio: .square,
             style: .godModeHUD,
             prompt: """
-            CORTEX SIGNAL ZERO GOD MODE hardened red vault HUD — crown with red gems, CORTEX / SIGNAL ZERO / \
-            GOD MODE center stack, slogan NO NOISE. JUST TRUTH. Corner widgets SYSTEM STATUS, MAC HUD, \
+            CORTEX SIGNAL ZERO hardened red vault HUD — crown with red gems, CORTEX / SIGNAL ZERO \
+            center stack, slogan NO NOISE. JUST TRUTH. Corner widgets SYSTEM STATUS, MAC HUD, \
             INTEGRITY 100%, CORE LINK SECURE AES-256, fingerprint scanner. Crimson circuitry on charcoal metal.
             """,
             negativePrompt: sharedNegative
